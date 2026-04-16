@@ -1,50 +1,40 @@
 const nodemailer = require('nodemailer');
-const https = require('https');
 
-function saveToGitHub(data) {
+async function saveToGitHub(data) {
     const token = process.env.GITHUB_TOKEN;
-    if (!token) return Promise.resolve();
+    if (!token) {
+        console.log('No GITHUB_TOKEN set');
+        return;
+    }
 
     const slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-    const path = `responses/${slug}-${timestamp}.json`;
+    const filePath = `responses/${slug}-${timestamp}.json`;
     const content = Buffer.from(JSON.stringify(data, null, 2)).toString('base64');
 
-    const body = JSON.stringify({
-        message: `Survey response from ${data.name}`,
-        content: content,
-    });
-
-    return new Promise((resolve, reject) => {
-        const ghReq = https.request({
-            hostname: 'api.github.com',
-            path: `/repos/MatiasGramkow/EDCxClaudeWorkshop/contents/${path}`,
+    const resp = await fetch(
+        `https://api.github.com/repos/MatiasGramkow/EDCxClaudeWorkshop/contents/${filePath}`,
+        {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'User-Agent': 'edc-workshop-survey',
                 'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(body),
+                'Accept': 'application/vnd.github+json',
             },
-        }, (ghRes) => {
-            let responseBody = '';
-            ghRes.on('data', (chunk) => responseBody += chunk);
-            ghRes.on('end', () => {
-                console.log('GitHub API status:', ghRes.statusCode, 'response:', responseBody.slice(0, 200));
-                if (ghRes.statusCode >= 200 && ghRes.statusCode < 300) {
-                    resolve(responseBody);
-                } else {
-                    reject(new Error(`GitHub API ${ghRes.statusCode}: ${responseBody.slice(0, 200)}`));
-                }
-            });
-        });
-        ghReq.on('error', (err) => {
-            console.error('GitHub request error:', err.message);
-            reject(err);
-        });
-        ghReq.write(body);
-        ghReq.end();
-    });
+            body: JSON.stringify({
+                message: `Survey response from ${data.name}`,
+                content: content,
+            }),
+        }
+    );
+
+    const text = await resp.text();
+    console.log('GitHub API:', resp.status, text.slice(0, 200));
+
+    if (!resp.ok) {
+        throw new Error(`GitHub API ${resp.status}: ${text.slice(0, 200)}`);
+    }
 }
 
 module.exports = async function handler(req, res) {
