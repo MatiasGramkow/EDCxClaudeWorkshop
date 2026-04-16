@@ -102,8 +102,8 @@ module.exports = async function handler(req, res) {
             html: htmlBody,
         });
 
-        // Save to GitHub repo (fire and forget — don't block the response)
-        saveToGitHub(data).catch(() => {});
+        // Save to GitHub repo
+        await saveToGitHub(data).catch(() => {});
 
         return res.status(200).json({ success: true });
     } catch (err) {
