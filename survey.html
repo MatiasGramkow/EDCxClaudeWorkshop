@@ -512,7 +512,7 @@
 
     <div class="success-panel" id="successPanel">
         <h3>Tak for dine svar!</h3>
-        <p>Dine svar er sendt til Matias. Vi ses til workshoppen!</p>
+        <p>Din mail-klient har åbnet med dine svar. Tryk send i Outlook, og vi ses til workshoppen!</p>
     </div>
 </div>
 
@@ -580,56 +580,25 @@
         };
     }
 
-    // Form submission
-    document.getElementById('surveyForm').addEventListener('submit', async function(e) {
+    // Form submission — opens Outlook/mail client with pre-filled email
+    document.getElementById('surveyForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
-        const btn = document.getElementById('submitBtn');
-        btn.innerHTML = '<span class="spinner"></span>Sender...';
-        btn.disabled = true;
-
         const responseData = collectData();
+        const text = formatAsText(responseData);
+        const subject = encodeURIComponent(`Claude Code Workshop svar fra ${responseData.name}`);
+        const body = encodeURIComponent(text);
 
-        // Send via formsubmit.co (emails structured data to Matias)
-        try {
-            const formData = new FormData();
-            formData.append('_subject', `Claude Code Workshop svar fra ${responseData.name}`);
-            formData.append('_template', 'table');
-            formData.append('_captcha', 'false');
+        window.location.href = `mailto:magr@edc.dk?subject=${subject}&body=${body}`;
 
-            formData.append('Navn', responseData.name);
-            formData.append('Claude Code niveau', responseData.cc_level);
-            formData.append('Features brugt', responseData.cc_features.join(', ') || 'Ingen');
-            formData.append('Prompting niveau', responseData.prompting_skill + '/5');
-            formData.append('Prompting teknikker', responseData.prompting_techniques.join(', ') || 'Ingen');
-            formData.append('Use cases', responseData.use_cases.join(', ') || 'Ingen');
-            formData.append('Vil laere', responseData.want_to_learn.join(', ') || 'Ingen');
-            formData.append('Fritekst', responseData.freetext || '-');
-            formData.append('_JSON_DATA', JSON.stringify(responseData));
-
-            const resp = await fetch('https://formsubmit.co/ajax/magr@edc.dk', {
-                method: 'POST',
-                body: formData
-            });
-
-            if (resp.ok) {
-                document.getElementById('surveyForm').style.display = 'none';
-                document.querySelector('.submit-section').style.display = 'none';
-                document.getElementById('successPanel').style.display = 'block';
-                document.getElementById('successPanel').scrollIntoView({ behavior: 'smooth' });
-                document.getElementById('progressBar').style.width = '100%';
-            } else {
-                throw new Error('Server error');
-            }
-        } catch (err) {
-            // Fallback: mailto
-            const text = formatAsText(responseData);
-            const subject = encodeURIComponent(`Claude Code Workshop svar fra ${responseData.name}`);
-            const body = encodeURIComponent(text);
-            window.location.href = `mailto:magr@edc.dk?subject=${subject}&body=${body}`;
-            btn.textContent = 'Send mine svar';
-            btn.disabled = false;
-        }
+        // Show success after a short delay (mail client has opened)
+        setTimeout(() => {
+            document.getElementById('surveyForm').style.display = 'none';
+            document.querySelector('.submit-section').style.display = 'none';
+            document.getElementById('successPanel').style.display = 'block';
+            document.getElementById('successPanel').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('progressBar').style.width = '100%';
+        }, 1000);
     });
 
     function formatAsText(d) {
