@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDC x Claude Code — Hvor er du i din rejse?</title>
+    <style>
+        :root {
+            --edc-blue: #003366;
+            --edc-light: #e8f0fe;
+            --edc-accent: #0066cc;
+            --edc-green: #28a745;
+            --bg: #f7f8fa;
+            --card: #ffffff;
+            --text: #1a1a2e;
+            --muted: #6b7280;
+            --border: #e2e8f0;
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--edc-blue) 0%, #005599 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .header p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+        .intro-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--edc-accent);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .intro-card p { color: var(--muted); font-size: 0.95rem; }
+
+        .section {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-number {
+            background: var(--edc-blue);
+            color: white;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.9rem; flex-shrink: 0;
+        }
+
+        .section-title { font-size: 1.2rem; font-weight: 600; }
+
+        .field { margin-bottom: 1.5rem; }
+        .field:last-child { margin-bottom: 0; }
+
+        label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem; }
+        .hint { display: block; font-size: 0.85rem; color: var(--muted); font-weight: 400; margin-top: 0.15rem; }
+
+        input[type="text"], input[type="email"], select, textarea {
+            width: 100%; padding: 0.75rem 1rem;
+            border: 1.5px solid var(--border); border-radius: 8px;
+            font-size: 0.95rem; font-family: inherit;
+            transition: border-color 0.2s; background: white;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none; border-color: var(--edc-accent);
+            box-shadow: 0 0 0 3px rgba(0,102,204,0.1);
+        }
+
+        textarea { resize: vertical; min-height: 80px; }
+
+        .radio-group, .checkbox-group { display: flex; flex-direction: column; gap: 0.5rem; }
+
+        .radio-option, .checkbox-option {
+            display: flex; align-items: flex-start; gap: 0.75rem;
+            padding: 0.75rem 1rem; border: 1.5px solid var(--border);
+            border-radius: 8px; cursor: pointer; transition: all 0.15s;
+        }
+
+        .radio-option:hover, .checkbox-option:hover {
+            background: var(--edc-light); border-color: var(--edc-accent);
+        }
+
+        .radio-option input, .checkbox-option input {
+            margin-top: 2px; accent-color: var(--edc-accent);
+            width: 18px; height: 18px; flex-shrink: 0;
+        }
+
+        .radio-option span, .checkbox-option span { font-size: 0.95rem; }
+
+        .radio-option.selected, .checkbox-option.selected {
+            background: var(--edc-light); border-color: var(--edc-accent);
+        }
+
+        .scale-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+        .scale-option { flex: 1; min-width: 60px; text-align: center; }
+        .scale-option input { display: none; }
+
+        .scale-option label {
+            display: flex; flex-direction: column; align-items: center;
+            padding: 0.75rem 0.5rem; border: 1.5px solid var(--border);
+            border-radius: 8px; cursor: pointer; transition: all 0.15s; font-weight: 500;
+        }
+
+        .scale-option label:hover { background: var(--edc-light); border-color: var(--edc-accent); }
+
+        .scale-option input:checked + label {
+            background: var(--edc-accent); color: white; border-color: var(--edc-accent);
+        }
+
+        .scale-label { font-size: 1.25rem; font-weight: 700; }
+        .scale-desc { font-size: 0.7rem; margin-top: 0.25rem; font-weight: 400; }
+
+        .checklist { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+        @media (max-width: 600px) { .checklist { grid-template-columns: 1fr; } }
+
+        .submit-section { text-align: center; padding: 2rem 0; }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--edc-blue) 0%, #005599 100%);
+            color: white; border: none; padding: 1rem 3rem;
+            font-size: 1.1rem; font-weight: 600; border-radius: 8px;
+            cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,51,102,0.3); }
+        .submit-btn:active { transform: translateY(0); }
+
+        .success-panel {
+            display: none;
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--edc-green);
+            text-align: center;
+        }
+
+        .success-panel h3 { color: var(--edc-green); margin-bottom: 0.75rem; font-size: 1.4rem; }
+        .success-panel p { color: var(--muted); font-size: 1rem; }
+
+        .progress-bar {
+            position: fixed; top: 0; left: 0; height: 4px;
+            background: var(--edc-accent); transition: width 0.3s; z-index: 100;
+        }
+
+        .spinner {
+            display: inline-block; width: 20px; height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white; border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            vertical-align: middle; margin-right: 0.5rem;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="header">
+    <h1>EDC x Claude Code Workshops</h1>
+    <p>Hjælp os med at tilpasse workshoppen til dig — det tager under 3 minutter.</p>
+</div>
+
+<div class="container">
+    <div class="intro-card">
+        <p>Vi starter en workshop-serie om Claude Code for alle EDC-udviklere. For at sikre det bedste udbytte for alle, vil vi gerne vide hvor du er i dag. Der er ingen forkerte svar — vi vil bare møde dig der, hvor du er.</p>
+    </div>
+
+    <form id="surveyForm">
+
+        <!-- Section 1: Navn -->
+        <div class="section" data-section="1">
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <div class="section-title">Om dig</div>
+            </div>
+            <div class="field">
+                <label for="name">Navn</label>
+                <input type="text" id="name" name="name" required placeholder="Dit fulde navn">
+            </div>
+        </div>
+
+        <!-- Section 2: Claude Code erfaring -->
+        <div class="section" data-section="2">
+            <div class="section-header">
+                <div class="section-number">2</div>
+                <div class="section-title">Din Claude Code-erfaring</div>
+            </div>
+
+            <div class="field">
+                <label>Hvordan vil du beskrive din Claude Code-erfaring?</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="cc_level" value="never" required>
+                        <span>Har ikke brugt det endnu (kun installeret)</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="cc_level" value="tried">
+                        <span>Har prøvet det et par gange</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="cc_level" value="regular">
+                        <span>Bruger det jævnligt til arbejdsopgaver</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="cc_level" value="daily">
+                        <span>Det er en del af min daglige workflow</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="cc_level" value="advanced">
+                        <span>Bruger avancerede features (hooks, MCP, custom commands, osv.)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Hvilke Claude Code-features har du prøvet?
+                    <span class="hint">Vælg alle du har brugt mindst én gang</span>
+                </label>
+                <div class="checkbox-group checklist">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="cc_features" value="basic-chat">
+                        <span>Grundlæggende chat/spørgsmål</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="cc_features" value="file-edit">
+                        <span>Fil-redigering (lade Claude redigere kode)</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="cc_features" value="bash-commands">
+                        <span>Bash-kommandoer (lade Claude køre kommandoer)</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="cc_features" value="git-operations">
+                        <span>Git-operationer (commit, diff, log)</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="cc_features" value="slash-commands">
+                        <span>Slash commands (/commit, /review, osv.)</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="cc_features" value="claude-md">
+                        <span>CLAUDE.md projekt-instruktioner</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="cc_features" value="memory">
+                        <span>Memory-system (auto-hukommelse)</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="cc_features" value="mcp">
+                        <span>MCP-servere (Model Context Protocol)</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="cc_features" value="hooks">
+                        <span>Hooks (automatiske handlinger)</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="cc_features" value="custom-commands">
+                        <span>Custom slash commands</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="cc_features" value="permissions">
+                        <span>Permission-indstillinger</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="cc_features" value="ide-extension">
+                        <span>IDE-extension (VS Code / JetBrains)</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="cc_features" value="subagents">
+                        <span>Subagents / parallelle agenter</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="cc_features" value="plan-mode">
+                        <span>Plan mode</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="cc_features" value="web-search">
+                        <span>Web search</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Prompting og workflow -->
+        <div class="section" data-section="3">
+            <div class="section-header">
+                <div class="section-number">3</div>
+                <div class="section-title">Prompting og arbejdsflow</div>
+            </div>
+
+            <div class="field">
+                <label>Hvor tryg er du ved at skrive gode prompts til AI-værktøjer?</label>
+                <div class="scale-group">
+                    <div class="scale-option">
+                        <input type="radio" name="prompting_skill" id="ps_1" value="1" required>
+                        <label for="ps_1">
+                            <span class="scale-label">1</span>
+                            <span class="scale-desc">Usikker</span>
+                        </label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" name="prompting_skill" id="ps_2" value="2">
+                        <label for="ps_2">
+                            <span class="scale-label">2</span>
+                            <span class="scale-desc">Basalt</span>
+                        </label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" name="prompting_skill" id="ps_3" value="3">
+                        <label for="ps_3">
+                            <span class="scale-label">3</span>
+                            <span class="scale-desc">OK</span>
+                        </label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" name="prompting_skill" id="ps_4" value="4">
+                        <label for="ps_4">
+                            <span class="scale-label">4</span>
+                            <span class="scale-desc">God</span>
+                        </label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" name="prompting_skill" id="ps_5" value="5">
+                        <label for="ps_5">
+                            <span class="scale-label">5</span>
+                            <span class="scale-desc">Avanceret</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Hvilke prompting-teknikker kender du til?
+                    <span class="hint">Vælg alle du har hørt om eller brugt</span>
+                </label>
+                <div class="checkbox-group checklist">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="prompting_techniques" value="context-setting">
+                        <span>Give kontekst/baggrund i prompten</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="prompting_techniques" value="step-by-step">
+                        <span>Bede om step-by-step</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="prompting_techniques" value="examples">
+                        <span>Give eksempler (few-shot)</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="prompting_techniques" value="constraints">
+                        <span>Sætte begrænsninger/regler</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="prompting_techniques" value="role-prompting">
+                        <span>Rollespil ("Du er en ekspert i...")</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="prompting_techniques" value="iterative">
+                        <span>Iterativ forbedring af prompts</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="prompting_techniques" value="none">
+                        <span>Ingen af dem / ved ikke</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Hvad bruger du (eller vil gerne bruge) AI til i dit daglige arbejde?
+                    <span class="hint">Vælg alle der passer</span>
+                </label>
+                <div class="checkbox-group checklist">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="use_cases" value="write-code">
+                        <span>Skrive ny kode</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="use_cases" value="debug">
+                        <span>Debugge fejl</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="use_cases" value="refactor">
+                        <span>Refaktorering</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="use_cases" value="tests">
+                        <span>Skrive tests</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="use_cases" value="code-review">
+                        <span>Code review</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="use_cases" value="understand-code">
+                        <span>Forstå eksisterende kode</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="use_cases" value="docs">
+                        <span>Dokumentation</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="use_cases" value="git">
+                        <span>Git-workflow (commits, PRs)</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="use_cases" value="architecture">
+                        <span>Arkitekturbeslutninger</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="use_cases" value="learning">
+                        <span>Lære nye teknologier</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Forventninger -->
+        <div class="section" data-section="4">
+            <div class="section-header">
+                <div class="section-number">4</div>
+                <div class="section-title">Hvad vil du gerne lære?</div>
+            </div>
+
+            <div class="field">
+                <label>Hvad vil du gerne lære mest i workshoppen?
+                    <span class="hint">Prioriter op til 3</span>
+                </label>
+                <div class="checkbox-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="want_to_learn" value="basics">
+                        <span>Det helt basale — kom godt i gang med Claude Code</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="want_to_learn" value="prompting">
+                        <span>Bedre prompting-teknikker</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="want_to_learn" value="workflow">
+                        <span>Effektive workflows med Claude Code i dagligdagen</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="want_to_learn" value="advanced-features">
+                        <span>Avancerede features (MCP, hooks, custom commands)</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="want_to_learn" value="project-setup">
+                        <span>Projekt-setup (CLAUDE.md, permissions, config)</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="want_to_learn" value="code-review-pr">
+                        <span>Code review og PR-workflows med Claude</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="want_to_learn" value="testing">
+                        <span>Test-generering og debugging med Claude</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="want_to_learn" value="best-practices">
+                        <span>Best practices og faldgruber</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="freetext">Noget du vil tilføje?
+                    <span class="hint">Ting du gerne vil have dækket, forslag, eller noget helt fjerde</span>
+                </label>
+                <textarea id="freetext" name="freetext" rows="4" placeholder="Skriv frit her..."></textarea>
+            </div>
+        </div>
+
+        <div class="submit-section">
+            <button type="submit" class="submit-btn" id="submitBtn">Send mine svar</button>
+        </div>
+
+    </form>
+
+    <div class="success-panel" id="successPanel">
+        <h3>Tak for dine svar!</h3>
+        <p>Dine svar er sendt til Matias. Vi ses til workshoppen!</p>
+    </div>
+</div>
+
+<script>
+    // Highlight selected radio/checkbox options
+    document.querySelectorAll('.radio-option, .checkbox-option').forEach(option => {
+        const input = option.querySelector('input');
+        input.addEventListener('change', () => {
+            if (input.type === 'radio') {
+                option.closest('.radio-group, .checkbox-group')
+                    .querySelectorAll('.radio-option')
+                    .forEach(o => o.classList.remove('selected'));
+            }
+            if (input.checked) option.classList.add('selected');
+            else option.classList.remove('selected');
+        });
+    });
+
+    // Limit want_to_learn to 3
+    document.querySelectorAll('input[name="want_to_learn"]').forEach(cb => {
+        cb.addEventListener('change', () => {
+            const checked = document.querySelectorAll('input[name="want_to_learn"]:checked');
+            if (checked.length > 3) {
+                cb.checked = false;
+                cb.closest('.checkbox-option').classList.remove('selected');
+            }
+        });
+    });
+
+    // Progress bar
+    function updateProgress() {
+        const sections = document.querySelectorAll('.section');
+        let filled = 0;
+        sections.forEach(section => {
+            const required = section.querySelectorAll('[required]');
+            let sectionFilled = true;
+            required.forEach(input => {
+                if (input.type === 'radio') {
+                    if (!document.querySelector(`input[name="${input.name}"]:checked`)) sectionFilled = false;
+                } else if (!input.value) sectionFilled = false;
+            });
+            if (sectionFilled) filled++;
+        });
+        document.getElementById('progressBar').style.width = (filled / sections.length * 100) + '%';
+    }
+
+    document.querySelectorAll('input, select, textarea').forEach(el => {
+        el.addEventListener('change', updateProgress);
+        el.addEventListener('input', updateProgress);
+    });
+
+    // Collect form data as structured object
+    function collectData() {
+        const data = new FormData(document.getElementById('surveyForm'));
+        return {
+            name: data.get('name'),
+            cc_level: data.get('cc_level'),
+            cc_features: data.getAll('cc_features'),
+            prompting_skill: parseInt(data.get('prompting_skill')),
+            prompting_techniques: data.getAll('prompting_techniques'),
+            use_cases: data.getAll('use_cases'),
+            want_to_learn: data.getAll('want_to_learn'),
+            freetext: data.get('freetext') || '',
+            submitted_at: new Date().toISOString()
+        };
+    }
+
+    // Form submission
+    document.getElementById('surveyForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const btn = document.getElementById('submitBtn');
+        btn.innerHTML = '<span class="spinner"></span>Sender...';
+        btn.disabled = true;
+
+        const responseData = collectData();
+
+        // Send via formsubmit.co (emails structured data to Matias)
+        try {
+            const formData = new FormData();
+            formData.append('_subject', `Claude Code Workshop svar fra ${responseData.name}`);
+            formData.append('_template', 'table');
+            formData.append('_captcha', 'false');
+
+            formData.append('Navn', responseData.name);
+            formData.append('Claude Code niveau', responseData.cc_level);
+            formData.append('Features brugt', responseData.cc_features.join(', ') || 'Ingen');
+            formData.append('Prompting niveau', responseData.prompting_skill + '/5');
+            formData.append('Prompting teknikker', responseData.prompting_techniques.join(', ') || 'Ingen');
+            formData.append('Use cases', responseData.use_cases.join(', ') || 'Ingen');
+            formData.append('Vil laere', responseData.want_to_learn.join(', ') || 'Ingen');
+            formData.append('Fritekst', responseData.freetext || '-');
+            formData.append('_JSON_DATA', JSON.stringify(responseData));
+
+            const resp = await fetch('https://formsubmit.co/ajax/magr@edc.dk', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (resp.ok) {
+                document.getElementById('surveyForm').style.display = 'none';
+                document.querySelector('.submit-section').style.display = 'none';
+                document.getElementById('successPanel').style.display = 'block';
+                document.getElementById('successPanel').scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('progressBar').style.width = '100%';
+            } else {
+                throw new Error('Server error');
+            }
+        } catch (err) {
+            // Fallback: mailto
+            const text = formatAsText(responseData);
+            const subject = encodeURIComponent(`Claude Code Workshop svar fra ${responseData.name}`);
+            const body = encodeURIComponent(text);
+            window.location.href = `mailto:magr@edc.dk?subject=${subject}&body=${body}`;
+            btn.textContent = 'Send mine svar';
+            btn.disabled = false;
+        }
+    });
+
+    function formatAsText(d) {
+        const levels = {
+            'never': 'Kun installeret',
+            'tried': 'Proevet et par gange',
+            'regular': 'Jaevnlig brug',
+            'daily': 'Daglig workflow',
+            'advanced': 'Avanceret bruger'
+        };
+        let t = `EDC x Claude Code Workshop\n${'='.repeat(40)}\n\n`;
+        t += `Navn: ${d.name}\n`;
+        t += `CC-niveau: ${levels[d.cc_level] || d.cc_level}\n`;
+        t += `Features: ${d.cc_features.join(', ') || 'Ingen'}\n`;
+        t += `Prompting: ${d.prompting_skill}/5\n`;
+        t += `Teknikker: ${d.prompting_techniques.join(', ') || 'Ingen'}\n`;
+        t += `Use cases: ${d.use_cases.join(', ') || 'Ingen'}\n`;
+        t += `Vil laere: ${d.want_to_learn.join(', ') || 'Ingen'}\n`;
+        if (d.freetext) t += `\nFritekst:\n${d.freetext}\n`;
+        t += `\n---\nJSON:\n${JSON.stringify(d, null, 2)}`;
+        return t;
+    }
+</script>
+
+</body>
+</html>
