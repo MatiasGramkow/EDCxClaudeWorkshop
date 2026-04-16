@@ -1,4 +1,41 @@
 const nodemailer = require('nodemailer');
+const https = require('https');
+
+function saveToGitHub(data) {
+    const token = process.env.GITHUB_TOKEN;
+    if (!token) return Promise.resolve();
+
+    const slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const path = `responses/${slug}-${timestamp}.json`;
+    const content = Buffer.from(JSON.stringify(data, null, 2)).toString('base64');
+
+    const body = JSON.stringify({
+        message: `Survey response from ${data.name}`,
+        content: content,
+    });
+
+    return new Promise((resolve) => {
+        const req = https.request({
+            hostname: 'api.github.com',
+            path: `/repos/MatiasGramkow/EDCxClaudeWorkshop/contents/${path}`,
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'User-Agent': 'edc-workshop-survey',
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(body),
+            },
+        }, (res) => {
+            let data = '';
+            res.on('data', (chunk) => data += chunk);
+            res.on('end', () => resolve(data));
+        });
+        req.on('error', () => resolve());
+        req.write(body);
+        req.end();
+    });
+}
 
 module.exports = async function handler(req, res) {
     // CORS
@@ -64,6 +101,9 @@ module.exports = async function handler(req, res) {
             subject: `Claude Code Workshop svar fra ${data.name}`,
             html: htmlBody,
         });
+
+        // Save to GitHub repo (fire and forget — don't block the response)
+        saveToGitHub(data).catch(() => {});
 
         return res.status(200).json({ success: true });
     } catch (err) {
