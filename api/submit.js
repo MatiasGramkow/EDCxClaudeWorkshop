@@ -15,8 +15,8 @@ function saveToGitHub(data) {
         content: content,
     });
 
-    return new Promise((resolve) => {
-        const req = https.request({
+    return new Promise((resolve, reject) => {
+        const ghReq = https.request({
             hostname: 'api.github.com',
             path: `/repos/MatiasGramkow/EDCxClaudeWorkshop/contents/${path}`,
             method: 'PUT',
@@ -26,14 +26,24 @@ function saveToGitHub(data) {
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(body),
             },
-        }, (res) => {
-            let data = '';
-            res.on('data', (chunk) => data += chunk);
-            res.on('end', () => resolve(data));
+        }, (ghRes) => {
+            let responseBody = '';
+            ghRes.on('data', (chunk) => responseBody += chunk);
+            ghRes.on('end', () => {
+                console.log('GitHub API status:', ghRes.statusCode, 'response:', responseBody.slice(0, 200));
+                if (ghRes.statusCode >= 200 && ghRes.statusCode < 300) {
+                    resolve(responseBody);
+                } else {
+                    reject(new Error(`GitHub API ${ghRes.statusCode}: ${responseBody.slice(0, 200)}`));
+                }
+            });
         });
-        req.on('error', () => resolve());
-        req.write(body);
-        req.end();
+        ghReq.on('error', (err) => {
+            console.error('GitHub request error:', err.message);
+            reject(err);
+        });
+        ghReq.write(body);
+        ghReq.end();
     });
 }
 
@@ -103,7 +113,12 @@ module.exports = async function handler(req, res) {
         });
 
         // Save to GitHub repo
-        await saveToGitHub(data).catch(() => {});
+        try {
+            await saveToGitHub(data);
+            console.log('GitHub save OK');
+        } catch (ghErr) {
+            console.error('GitHub save failed:', ghErr.message);
+        }
 
         return res.status(200).json({ success: true });
     } catch (err) {
