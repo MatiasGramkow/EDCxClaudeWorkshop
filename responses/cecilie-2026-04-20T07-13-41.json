@@ -1,0 +1,43 @@
+{
+  "name": "Cecilie",
+  "cc_level": "advanced",
+  "cc_features": [
+    "basic-chat",
+    "file-edit",
+    "bash-commands",
+    "git-operations",
+    "slash-commands",
+    "claude-md",
+    "memory",
+    "mcp",
+    "custom-commands",
+    "ide-extension",
+    "subagents",
+    "plan-mode",
+    "web-search"
+  ],
+  "prompting_skill": 4,
+  "prompting_techniques": [
+    "context-setting",
+    "step-by-step",
+    "examples",
+    "constraints"
+  ],
+  "use_cases": [
+    "write-code",
+    "debug",
+    "refactor",
+    "tests",
+    "code-review",
+    "understand-code",
+    "docs",
+    "learning"
+  ],
+  "want_to_learn": [
+    "prompting",
+    "advanced-features",
+    "best-practices"
+  ],
+  "freetext": "",
+  "submitted_at": "2026-04-20T07:13:40.500Z"
+}
