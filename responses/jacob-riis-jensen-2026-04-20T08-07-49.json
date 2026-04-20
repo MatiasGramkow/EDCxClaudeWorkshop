@@ -1,0 +1,40 @@
+{
+  "name": "Jacob Riis Jensen",
+  "cc_level": "daily",
+  "cc_features": [
+    "basic-chat",
+    "file-edit",
+    "bash-commands",
+    "git-operations",
+    "claude-md",
+    "memory",
+    "permissions",
+    "plan-mode"
+  ],
+  "prompting_skill": 5,
+  "prompting_techniques": [
+    "context-setting",
+    "step-by-step",
+    "examples",
+    "constraints"
+  ],
+  "use_cases": [
+    "write-code",
+    "debug",
+    "refactor",
+    "tests",
+    "code-review",
+    "understand-code",
+    "docs",
+    "git",
+    "architecture",
+    "learning"
+  ],
+  "want_to_learn": [
+    "workflow",
+    "advanced-features",
+    "best-practices"
+  ],
+  "freetext": "",
+  "submitted_at": "2026-04-20T08:07:48.815Z"
+}
