@@ -1,0 +1,23 @@
+{
+  "name": "John Larsen",
+  "cc_level": "regular",
+  "cc_features": [
+    "basic-chat",
+    "file-edit",
+    "bash-commands"
+  ],
+  "prompting_skill": 1,
+  "prompting_techniques": [
+    "none"
+  ],
+  "use_cases": [
+    "debug"
+  ],
+  "want_to_learn": [
+    "basics",
+    "prompting",
+    "best-practices"
+  ],
+  "freetext": "",
+  "submitted_at": "2026-04-20T10:27:11.554Z"
+}
