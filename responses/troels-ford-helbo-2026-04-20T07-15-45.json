@@ -1,0 +1,29 @@
+{
+  "name": "Troels Ford Helbo",
+  "cc_level": "tried",
+  "cc_features": [
+    "basic-chat",
+    "file-edit",
+    "bash-commands",
+    "git-operations",
+    "claude-md",
+    "mcp",
+    "ide-extension",
+    "subagents"
+  ],
+  "prompting_skill": 2,
+  "prompting_techniques": [
+    "context-setting"
+  ],
+  "use_cases": [
+    "tests",
+    "docs"
+  ],
+  "want_to_learn": [
+    "workflow",
+    "advanced-features",
+    "best-practices"
+  ],
+  "freetext": "",
+  "submitted_at": "2026-04-20T07:15:44.622Z"
+}
