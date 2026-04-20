@@ -1,0 +1,42 @@
+{
+  "name": "Jacob Fredensborg Welin",
+  "cc_level": "advanced",
+  "cc_features": [
+    "basic-chat",
+    "file-edit",
+    "bash-commands",
+    "git-operations",
+    "slash-commands",
+    "claude-md",
+    "mcp",
+    "custom-commands",
+    "ide-extension",
+    "subagents",
+    "plan-mode"
+  ],
+  "prompting_skill": 4,
+  "prompting_techniques": [
+    "context-setting",
+    "step-by-step",
+    "examples"
+  ],
+  "use_cases": [
+    "write-code",
+    "debug",
+    "refactor",
+    "tests",
+    "code-review",
+    "understand-code",
+    "docs",
+    "git",
+    "architecture",
+    "learning"
+  ],
+  "want_to_learn": [
+    "workflow",
+    "advanced-features",
+    "best-practices"
+  ],
+  "freetext": "",
+  "submitted_at": "2026-04-20T09:10:04.708Z"
+}
