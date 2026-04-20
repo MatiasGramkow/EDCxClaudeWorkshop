@@ -1,0 +1,45 @@
+{
+  "name": "Oliver Pasha Rasoli",
+  "cc_level": "advanced",
+  "cc_features": [
+    "basic-chat",
+    "file-edit",
+    "bash-commands",
+    "git-operations",
+    "slash-commands",
+    "claude-md",
+    "mcp",
+    "hooks",
+    "custom-commands",
+    "permissions",
+    "ide-extension",
+    "subagents",
+    "plan-mode",
+    "web-search"
+  ],
+  "prompting_skill": 4,
+  "prompting_techniques": [
+    "context-setting",
+    "step-by-step",
+    "constraints",
+    "role-prompting",
+    "iterative"
+  ],
+  "use_cases": [
+    "write-code",
+    "debug",
+    "refactor",
+    "code-review",
+    "understand-code",
+    "docs",
+    "architecture",
+    "learning"
+  ],
+  "want_to_learn": [
+    "prompting",
+    "advanced-features",
+    "best-practices"
+  ],
+  "freetext": "",
+  "submitted_at": "2026-04-20T07:13:03.985Z"
+}
