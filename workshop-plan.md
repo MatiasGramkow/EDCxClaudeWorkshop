@@ -7,6 +7,24 @@
 
 ---
 
+## 📍 Status pr. 2026-04-23
+
+- **Live site:** `/workshop` på Vercel (edc-x-claude-workshops) — 10 sessioner med server-side gating pr. dato
+- **Start-dato:** Tirsdag 2026-05-05 kl. 09:00 (sat i `api/session.js` → `START_DATE_ISO`)
+- **Facilitator peek:** URL `/workshop?peek=<WORKSHOP_PEEK_TOKEN>` (env var på Vercel). På localhost: hvilken som helst `?peek=anything` virker.
+- **Indhold:** leveres fra `api/session.js` (ikke længere fra denne md-fil). Alt kopierbart via copy-buttons på siden.
+- **Survey:** afsluttet. GitHub-integration i `api/submit.js` fjernet.
+- **Ændringer siden v1-planen nedenfor:**
+  - Session 1 reframed til **kollaborativ** (ingen A/B-spor; "facilitator, ikke guru")
+  - Session 2: tilføjet context-hygiejne (`/clear`, `/compact`, `/context`)
+  - Session 4: tilføjet TDD-loop pattern
+  - Session 7: tilføjet headless mode (`claude -p`)
+  - Session 8: omdøbt til "Subagents, MCP og hooks" — subagents er nu hovedemne
+  - Alle demos er strukturerede: "sig dette" + "kopier prompt" + "forventet resultat"
+  - Dårlige prompt-eksempler er nu "realistisk dårlige" (ikke stråmænd)
+
+---
+
 ## Hvad fortæller survey'en os?
 
 Baseret på de første svar (6 stk, ~20 forventet):
