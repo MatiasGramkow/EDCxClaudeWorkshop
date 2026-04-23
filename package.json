@@ -1,6 +1,9 @@
 {
     "name": "edc-claude-workshop-survey",
     "private": true,
+    "engines": {
+        "node": ">=22"
+    },
     "dependencies": {
         "nodemailer": "^6.9.0"
     }

@@ -169,6 +169,13 @@
 
         .success-panel h3 { color: var(--edc-green); margin-bottom: 0.75rem; font-size: 1.4rem; }
         .success-panel p { color: var(--muted); font-size: 1rem; }
+        .success-panel .workshop-link {
+            display: inline-block; margin-top: 1.25rem; padding: 0.75rem 1.5rem;
+            background: var(--edc-blue); color: white; text-decoration: none;
+            border-radius: 8px; font-weight: 600; font-size: 0.95rem;
+            transition: background 0.15s;
+        }
+        .success-panel .workshop-link:hover { background: var(--edc-accent); }
 
         .progress-bar {
             position: fixed; top: 0; left: 0; height: 4px;
@@ -513,6 +520,7 @@
     <div class="success-panel" id="successPanel">
         <h3>Tak for dine svar!</h3>
         <p>Dine svar er sendt. Vi ses til workshoppen!</p>
+        <a href="/workshop" class="workshop-link">Gå til workshop-materiale →</a>
     </div>
 </div>
 

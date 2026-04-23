@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDC x Claude Code — Workshop-materiale</title>
+    <style>
+        :root {
+            --edc-blue: #003366;
+            --edc-light: #e8f0fe;
+            --edc-accent: #0066cc;
+            --edc-green: #28a745;
+            --edc-red: #dc3545;
+            --edc-gray: #6b7280;
+            --bg: #f7f8fa;
+            --card: #ffffff;
+            --text: #1a1a2e;
+            --muted: #6b7280;
+            --border: #e2e8f0;
+            --code-bg: #0f172a;
+            --code-text: #e2e8f0;
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--edc-blue) 0%, #005599 100%);
+            color: white;
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .header p { font-size: 1.05rem; opacity: 0.9; max-width: 720px; margin: 0 auto; }
+
+        .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+        .intro-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 1.25rem 1.75rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--edc-accent);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .intro-card p { color: var(--muted); font-size: 0.95rem; }
+        .intro-card strong { color: var(--text); }
+
+        .overview-heading {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--edc-gray);
+            margin: 2rem 0 0.75rem;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 3rem;
+        }
+
+        .overview-card {
+            background: var(--card);
+            border-radius: 10px;
+            padding: 1rem 1.1rem;
+            border: 1.5px solid var(--border);
+            cursor: pointer;
+            transition: all 0.15s;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .overview-card:hover {
+            border-color: var(--edc-accent);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,51,102,0.08);
+        }
+
+        .overview-card.locked {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .overview-card.locked:hover {
+            transform: none;
+            border-color: var(--border);
+            box-shadow: none;
+        }
+
+        .overview-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .session-number-sm {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--edc-gray);
+        }
+
+        .status-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.5rem;
+            border-radius: 100px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .status-badge.open { background: #e7f7ee; color: var(--edc-green); }
+        .status-badge.locked { background: #f1f5f9; color: var(--edc-gray); }
+
+        .overview-card-title {
+            font-size: 0.98rem;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.3;
+        }
+
+        .overview-card-day {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .sessions-stack { display: flex; flex-direction: column; gap: 1.5rem; }
+
+        .session-panel {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            overflow: hidden;
+            scroll-margin-top: 1rem;
+        }
+
+        .session-panel-header {
+            padding: 1.5rem 2rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .session-panel-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .session-number-lg {
+            background: var(--edc-blue);
+            color: white;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.9rem; flex-shrink: 0;
+        }
+
+        .session-day {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--edc-gray);
+        }
+
+        .session-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 0.15rem;
+        }
+
+        .session-subtitle {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .session-panel-body {
+            padding: 1.5rem 2rem 2rem;
+        }
+
+        .session-panel.locked .session-panel-body {
+            text-align: center;
+            padding: 2.5rem 2rem;
+        }
+
+        .locked-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.5;
+        }
+
+        .countdown {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 1.1rem;
+            color: var(--edc-gray);
+            margin-top: 0.5rem;
+        }
+
+        .section-block { margin-bottom: 1.75rem; }
+        .section-block:last-child { margin-bottom: 0; }
+
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--edc-accent);
+            margin-bottom: 0.6rem;
+        }
+
+        .section-block ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .section-block ul li {
+            position: relative;
+            padding-left: 1.4rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .section-block ul li::before {
+            content: '';
+            position: absolute;
+            left: 0.35rem;
+            top: 0.7em;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--edc-accent);
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+        }
+
+        .schedule-table td {
+            padding: 0.4rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .schedule-table td:first-child {
+            color: var(--edc-accent);
+            font-weight: 600;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            white-space: nowrap;
+            padding-right: 1rem;
+            width: 110px;
+        }
+
+        .schedule-table tr:last-child td { border-bottom: none; }
+
+        .track-box {
+            background: var(--edc-light);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-top: 0.5rem;
+        }
+
+        .track-box + .track-box { margin-top: 0.75rem; }
+
+        .track-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--edc-blue);
+        }
+
+        .track-box ol {
+            padding-left: 1.25rem;
+            font-size: 0.93rem;
+        }
+
+        .track-box ol li { margin-bottom: 0.25rem; }
+
+        .prompt-card {
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+        }
+
+        .prompt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 1rem;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .prompt-label {
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .copy-btn {
+            background: var(--edc-blue);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.85rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+
+        .copy-btn:hover { background: var(--edc-accent); }
+        .copy-btn.copied { background: var(--edc-green); }
+
+        .prompt-card pre {
+            margin: 0;
+            padding: 1rem 1.25rem;
+            background: var(--code-bg);
+            color: var(--code-text);
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .demo-step {
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            background: var(--card);
+        }
+
+        .demo-step-header {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .demo-step-num {
+            background: var(--edc-accent);
+            color: white;
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .demo-step-heading {
+            font-weight: 700;
+            font-size: 0.98rem;
+        }
+
+        .demo-step-body {
+            font-size: 0.93rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .demo-step-body:empty { display: none; }
+
+        .demo-step-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--edc-gray);
+            margin: 0.5rem 0 0.3rem;
+        }
+
+        .demo-step-expected {
+            background: #f0fdf4;
+            border-left: 3px solid var(--edc-green);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            margin-top: 0.5rem;
+        }
+
+        .demo-step-expected strong { color: #15803d; }
+
+        .handout-card {
+            background: linear-gradient(135deg, #fff7e6 0%, #fffbf0 100%);
+            border-left: 4px solid #f59e0b;
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+        }
+
+        .handout-card .handout-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #92400e;
+        }
+
+        .handout-card p { margin: 0.25rem 0; font-size: 0.93rem; }
+        .handout-card strong { color: var(--text); }
+
+        .hjemmeopgave {
+            background: #f0f9ff;
+            border-left: 4px solid var(--edc-accent);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+        }
+
+        .hjemmeopgave ul li::before { background: var(--edc-accent); }
+
+        .theme-pill {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.55rem;
+            background: var(--edc-light);
+            color: var(--edc-blue);
+            border-radius: 100px;
+            letter-spacing: 0.02em;
+        }
+
+        .peek-banner {
+            background: #fef3c7;
+            border-bottom: 1px solid #fcd34d;
+            padding: 0.5rem 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #92400e;
+            font-weight: 600;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px; height: 16px;
+            border: 2px solid rgba(0,102,204,0.2);
+            border-top-color: var(--edc-accent);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading-state {
+            padding: 3rem 1rem;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .footer a { color: var(--edc-accent); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+
+        @media (max-width: 600px) {
+            .header { padding: 2rem 1rem 1.5rem; }
+            .header h1 { font-size: 1.5rem; }
+            .session-panel-body, .session-panel-header { padding-left: 1.25rem; padding-right: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="peekBanner" class="peek-banner" style="display:none;">
+    🔑 Facilitator-tilstand: alt indhold er synligt (peek-token aktivt)
+</div>
+
+<div class="header">
+    <h1>EDC x Claude Code — Workshop-materiale</h1>
+    <p>Alt fra de 10 sessioner samlet ét sted. Hver session låses op når vi mødes.</p>
+</div>
+
+<div class="container">
+
+    <div class="intro-card">
+        <p><strong>Sådan fungerer siden:</strong> Hver session åbner automatisk når timen starter. Klik på et kort i oversigten for at hoppe direkte til sessionen. Alle prompts kan kopieres med ét klik — så du kan følge med uden at skrive af.</p>
+    </div>
+
+    <div class="overview-heading">Oversigt — 10 sessioner</div>
+    <div class="overview-grid" id="overviewGrid">
+        <div class="loading-state"><span class="spinner"></span> Henter oversigt…</div>
+    </div>
+
+    <div class="sessions-stack" id="sessionsStack">
+        <!-- Session panels rendered by JS -->
+    </div>
+
+</div>
+
+<div class="footer">
+    <p>EDC x Claude Code workshop-serie · Facilitator: Matias Gramkow</p>
+    <p style="margin-top:0.5rem;"><a href="/">← Tilbage til survey</a></p>
+</div>
+
+<script>
+    const peekToken = new URLSearchParams(location.search).get('peek');
+    if (peekToken) {
+        document.getElementById('peekBanner').style.display = 'block';
+    }
+
+    async function fetchJSON(url) {
+        const r = await fetch(url, { cache: 'no-store' });
+        if (!r.ok) {
+            const text = await r.text().catch(() => '');
+            throw new Error(`HTTP ${r.status} from ${url}: ${text.slice(0, 200)}`);
+        }
+        return r.json();
+    }
+
+    function apiUrl(n) {
+        const base = n ? `/api/session?n=${n}` : '/api/session';
+        return peekToken ? `${base}${n ? '&' : '?'}peek=${encodeURIComponent(peekToken)}` : base;
+    }
+
+    function escapeHTML(s) {
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function renderInlineMarkdown(text) {
+        // Minimal markdown: **bold**, *italic*, `code`
+        return escapeHTML(text)
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.+?)\*/g, '<em>$1</em>')
+            .replace(/`(.+?)`/g, '<code style="background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:0.88em;">$1</code>');
+    }
+
+    function renderBullets(items) {
+        if (!items || items.length === 0) return '';
+        return '<ul>' + items.map(i => `<li>${renderInlineMarkdown(i)}</li>`).join('') + '</ul>';
+    }
+
+    function renderTrack(track) {
+        if (!track.steps || track.steps.length === 0) return '';
+        return `
+            <div class="track-box">
+                ${track.title ? `<div class="track-title">${escapeHTML(track.title)}</div>` : ''}
+                <ol>${track.steps.map(s => `<li>${renderInlineMarkdown(s)}</li>`).join('')}</ol>
+            </div>
+        `;
+    }
+
+    function renderPrompt(p, idx, sessionNum) {
+        const id = `prompt-${sessionNum}-${idx}`;
+        return `
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <span class="prompt-label">${escapeHTML(p.label)}</span>
+                    <button class="copy-btn" data-target="${id}">Kopier</button>
+                </div>
+                <pre id="${id}">${escapeHTML(p.text)}</pre>
+            </div>
+        `;
+    }
+
+    function renderDemo(demo, sessionNum) {
+        if (!demo || !demo.length) return '';
+        return demo.map((item, i) => {
+            if (typeof item === 'string') {
+                return `<div class="demo-step"><div class="demo-step-body">${renderInlineMarkdown(item)}</div></div>`;
+            }
+            const promptId = `demo-${sessionNum}-${i}`;
+            const promptHTML = item.prompt ? `
+                <div class="demo-step-label">Kopier ind i Claude</div>
+                <div class="prompt-card">
+                    <div class="prompt-header">
+                        <span class="prompt-label">${escapeHTML(item.promptLabel || 'Prompt')}</span>
+                        <button class="copy-btn" data-target="${promptId}">Kopier</button>
+                    </div>
+                    <pre id="${promptId}">${escapeHTML(item.prompt)}</pre>
+                </div>
+            ` : '';
+            const expectedHTML = item.expected ? `
+                <div class="demo-step-expected"><strong>Forventet resultat:</strong> ${renderInlineMarkdown(item.expected)}</div>
+            ` : '';
+            const sayHTML = item.say ? `
+                <div class="demo-step-label">Sig dette</div>
+                <div style="font-style:italic;color:var(--muted);font-size:0.92rem;padding:0.5rem 0.75rem;background:#f8fafc;border-radius:6px;">"${renderInlineMarkdown(item.say)}"</div>
+            ` : '';
+            return `
+                <div class="demo-step">
+                    <div class="demo-step-header">
+                        <div class="demo-step-num">${i + 1}</div>
+                        <div class="demo-step-heading">${escapeHTML(item.heading || '')}</div>
+                    </div>
+                    ${item.body ? `<div class="demo-step-body">${renderInlineMarkdown(item.body)}</div>` : ''}
+                    ${sayHTML}
+                    ${promptHTML}
+                    ${expectedHTML}
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderSchedule(schedule) {
+        if (!schedule || schedule.length === 0) return '';
+        return `
+            <table class="schedule-table">
+                <tbody>
+                    ${schedule.map(s => `<tr><td>${escapeHTML(s.t)}</td><td>${escapeHTML(s.what)}</td></tr>`).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+
+    function renderHandout(h) {
+        if (!h) return '';
+        const lines = h.content.map(line => {
+            if (!line) return '<p>&nbsp;</p>';
+            return `<p>${renderInlineMarkdown(line)}</p>`;
+        }).join('');
+        return `
+            <div class="handout-card">
+                <div class="handout-title">📄 ${escapeHTML(h.title)}</div>
+                ${lines}
+            </div>
+        `;
+    }
+
+    function renderSessionContent(session) {
+        const aSpor = session.handsOn && session.handsOn.aSpor;
+        const bSpor = session.handsOn && session.handsOn.bSpor;
+        const handsOnHTML = [aSpor, bSpor]
+            .filter(t => t && t.steps && t.steps.length > 0)
+            .map(renderTrack)
+            .join('');
+
+        return `
+            ${session.schedule && session.schedule.length ? `
+                <div class="section-block">
+                    <div class="section-label">Tidsplan (60 min)</div>
+                    ${renderSchedule(session.schedule)}
+                </div>
+            ` : ''}
+
+            ${session.foredrag && session.foredrag.length ? `
+                <div class="section-block">
+                    <div class="section-label">Foredrag — kernepointer</div>
+                    ${renderBullets(session.foredrag)}
+                </div>
+            ` : ''}
+
+            ${session.demo && session.demo.length ? `
+                <div class="section-block">
+                    <div class="section-label">Live demo — trin for trin</div>
+                    ${renderDemo(session.demo, session.number)}
+                </div>
+            ` : ''}
+
+            ${handsOnHTML ? `
+                <div class="section-block">
+                    <div class="section-label">Hands-on</div>
+                    ${handsOnHTML}
+                </div>
+            ` : ''}
+
+            ${session.prompts && session.prompts.length ? `
+                <div class="section-block">
+                    <div class="section-label">Prompts — kopier direkte</div>
+                    ${session.prompts.map((p, i) => renderPrompt(p, i, session.number)).join('')}
+                </div>
+            ` : ''}
+
+            ${session.handout ? `
+                <div class="section-block">
+                    <div class="section-label">Handout (tag med hjem)</div>
+                    ${renderHandout(session.handout)}
+                </div>
+            ` : ''}
+
+            ${session.hjemmeopgave && session.hjemmeopgave.length ? `
+                <div class="section-block">
+                    <div class="section-label">Hjemmeopgave til næste session</div>
+                    <div class="hjemmeopgave">${renderBullets(session.hjemmeopgave)}</div>
+                </div>
+            ` : ''}
+        `;
+    }
+
+    function renderLockedPanel(data) {
+        const m = data.meta;
+        return `
+            <div class="session-panel locked" id="session-${m.number}">
+                <div class="session-panel-header">
+                    <div class="session-panel-meta">
+                        <div class="session-number-lg">${m.number}</div>
+                        <span class="session-day">${escapeHTML(m.day)}</span>
+                        <span class="theme-pill">${escapeHTML(m.theme)}</span>
+                    </div>
+                    <div class="session-title">${escapeHTML(m.title)}</div>
+                    <div class="session-subtitle">${escapeHTML(m.subtitle)}</div>
+                </div>
+                <div class="session-panel-body">
+                    <div class="locked-icon">🔒</div>
+                    <div><strong>Denne session åbner ${escapeHTML(data.unlockAtFormatted)}</strong></div>
+                    <div class="countdown" data-unlock="${data.unlockAt}">Beregner nedtælling…</div>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderOpenPanel(data) {
+        const s = data.session;
+        return `
+            <div class="session-panel" id="session-${s.number}">
+                <div class="session-panel-header">
+                    <div class="session-panel-meta">
+                        <div class="session-number-lg">${s.number}</div>
+                        <span class="session-day">${escapeHTML(s.day)}</span>
+                        <span class="theme-pill">${escapeHTML(s.theme)}</span>
+                    </div>
+                    <div class="session-title">${escapeHTML(s.title)}</div>
+                    <div class="session-subtitle">${escapeHTML(s.subtitle)}</div>
+                </div>
+                <div class="session-panel-body">
+                    ${renderSessionContent(s)}
+                </div>
+            </div>
+        `;
+    }
+
+    function renderOverviewCard(s) {
+        const isLocked = s.locked;
+        const lockIcon = isLocked ? '🔒' : '✅';
+        const statusText = isLocked ? 'Låst' : 'Åben';
+        const tagClass = isLocked ? 'locked' : 'open';
+        const tag = isLocked ? 'div' : 'a';
+        const attrs = isLocked ? '' : `href="#session-${s.number}"`;
+
+        return `
+            <${tag} class="overview-card ${tagClass}" ${attrs}>
+                <div class="overview-card-top">
+                    <span class="session-number-sm">Session ${s.number}</span>
+                    <span class="status-badge ${tagClass}">${lockIcon} ${statusText}</span>
+                </div>
+                <div class="overview-card-title">${escapeHTML(s.title)}</div>
+                <div class="overview-card-day">${escapeHTML(s.day)} · ${escapeHTML(s.unlockAtFormatted.split(' kl. ')[1] || '')}</div>
+            </${tag}>
+        `;
+    }
+
+    function formatCountdown(ms) {
+        if (ms <= 0) return 'Åbner nu — refresh siden';
+        const totalSec = Math.floor(ms / 1000);
+        const days = Math.floor(totalSec / 86400);
+        const hours = Math.floor((totalSec % 86400) / 3600);
+        const mins = Math.floor((totalSec % 3600) / 60);
+        const secs = totalSec % 60;
+
+        if (days > 0) return `Åbner om ${days} d ${hours} t ${mins} m`;
+        if (hours > 0) return `Åbner om ${hours} t ${mins} m ${secs} s`;
+        return `Åbner om ${mins} m ${secs} s`;
+    }
+
+    function tickCountdowns() {
+        document.querySelectorAll('[data-unlock]').forEach(el => {
+            const unlock = parseInt(el.getAttribute('data-unlock'), 10);
+            const diff = unlock - Date.now();
+            el.textContent = formatCountdown(diff);
+            if (diff <= 0) {
+                el.textContent = 'Åben — opdater siden';
+            }
+        });
+    }
+
+    async function init() {
+        try {
+            const overviewResp = await fetchJSON(apiUrl());
+            const overview = overviewResp.overview;
+
+            // Overview grid
+            document.getElementById('overviewGrid').innerHTML =
+                overview.map(renderOverviewCard).join('');
+
+            // Stacked panels — fetch each session in parallel
+            const stack = document.getElementById('sessionsStack');
+            stack.innerHTML = overview.map(o =>
+                `<div class="session-panel" id="placeholder-${o.number}"><div class="loading-state"><span class="spinner"></span> Henter session ${o.number}…</div></div>`
+            ).join('');
+
+            const results = await Promise.all(overview.map(o => fetchJSON(apiUrl(o.number))));
+
+            results.forEach((data, i) => {
+                const n = overview[i].number;
+                const placeholder = document.getElementById(`placeholder-${n}`);
+                const html = data.locked ? renderLockedPanel(data) : renderOpenPanel(data);
+                placeholder.outerHTML = html;
+            });
+
+            // Copy buttons
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const target = document.getElementById(btn.getAttribute('data-target'));
+                    if (!target) return;
+                    try {
+                        await navigator.clipboard.writeText(target.textContent);
+                        btn.textContent = '✓ Kopieret';
+                        btn.classList.add('copied');
+                        setTimeout(() => {
+                            btn.textContent = 'Kopier';
+                            btn.classList.remove('copied');
+                        }, 1500);
+                    } catch {
+                        btn.textContent = 'Kunne ikke kopiere';
+                        setTimeout(() => { btn.textContent = 'Kopier'; }, 1500);
+                    }
+                });
+            });
+
+            // Start countdown ticker
+            tickCountdowns();
+            setInterval(tickCountdowns, 1000);
+
+            // Jump to anchor if present
+            if (location.hash) {
+                const el = document.querySelector(location.hash);
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }
+        } catch (err) {
+            document.getElementById('overviewGrid').innerHTML =
+                `<div style="grid-column:1/-1;padding:2rem;text-align:left;color:var(--edc-red);font-family:ui-monospace,monospace;font-size:0.85rem;white-space:pre-wrap;">Kunne ikke hente workshop-indhold:
+
+${err.message || err}
+
+Tjek:
+1. Kører du på /workshop via 'vercel dev' eller et deployet Vercel-domæne?
+2. Hvis localhost: prøv direkte /api/session i browseren og se hvad der kommer.</div>`;
+            console.error(err);
+        }
+    }
+
+    init();
+</script>
+
+</body>
+</html>

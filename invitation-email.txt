@@ -1,0 +1,17 @@
+Emne: Claude Code Workshops — vi starter snart, giv mig 90 sekunder
+
+Hej alle,
+
+Som nævnt starter Michael og jeg workshop-serie om Claude Code for alle udviklere på tværs af udviklingsafdelingen.
+
+Format: 10 sessioner á 1 time over 5 uger (tirsdag + torsdag). Vi starter helt basic og bygger op — ingen forudsætninger udover at du har Claude Code installeret.
+
+Inden vi går i gang må i godt hver især bruge 90 sekunder på at udfylde et kort spørgeskema. Det hjælper mig med at ramme jeres niveau og interesser, så sessionerne faktisk giver mening — og ikke bliver enten for basale eller for nørdede.
+
+Link: https://edc-x-claude-workshops.vercel.app/
+
+Der er ingen forkerte svar — jeg vil bare møde jer i øjenhøjde. 
+Skriv til mig hvis der er spørgsmål eller er i tvivl om noget.
+
+
+/Matias
