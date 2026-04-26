@@ -20,6 +20,38 @@
             --code-bg: #0f172a;
             --code-text: #e2e8f0;
             --radius: 12px;
+
+            /* Theme colors per session group */
+            --theme-fundamentet: #0066cc;
+            --theme-fundamentet-bg: #eff6ff;
+            --theme-prompting: #7c3aed;
+            --theme-prompting-bg: #f5f3ff;
+            --theme-workflows: #059669;
+            --theme-workflows-bg: #ecfdf5;
+            --theme-avancerede: #0d9488;
+            --theme-avancerede-bg: #f0fdfa;
+            --theme-mester: #ea580c;
+            --theme-mester-bg: #fff7ed;
+
+            /* Sub-section identity colors (global, not theme-bound) */
+            --sub-schedule: #475569;
+            --sub-schedule-bg: #f1f5f9;
+            --sub-foredrag: #0066cc;
+            --sub-foredrag-bg: #eff6ff;
+            --sub-demo: #ea580c;
+            --sub-demo-bg: #fff7ed;
+            --sub-handson: #059669;
+            --sub-handson-bg: #ecfdf5;
+            --sub-prompts: #7c3aed;
+            --sub-prompts-bg: #f5f3ff;
+            --sub-handout: #d97706;
+            --sub-handout-bg: #fffbeb;
+            --sub-hjemme: #0891b2;
+            --sub-hjemme-bg: #ecfeff;
+            --sub-share: #db2777;
+            --sub-share-bg: #fdf2f8;
+            --sub-gallery: #9333ea;
+            --sub-gallery-bg: #faf5ff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -143,7 +175,7 @@
             color: var(--muted);
         }
 
-        .sessions-stack { display: flex; flex-direction: column; gap: 1.5rem; }
+        .sessions-stack { display: flex; flex-direction: column; gap: 4rem; }
 
         .session-panel {
             background: var(--card);
@@ -151,11 +183,72 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.08);
             overflow: hidden;
             scroll-margin-top: 1rem;
+            border-left: 5px solid var(--edc-accent);
+            --theme-color: var(--edc-accent);
+            --theme-bg: var(--edc-light);
+        }
+
+        .session-panel[data-theme="fundamentet"] {
+            border-left-color: var(--theme-fundamentet);
+            --theme-color: var(--theme-fundamentet);
+            --theme-bg: var(--theme-fundamentet-bg);
+        }
+        .session-panel[data-theme="prompting"] {
+            border-left-color: var(--theme-prompting);
+            --theme-color: var(--theme-prompting);
+            --theme-bg: var(--theme-prompting-bg);
+        }
+        .session-panel[data-theme="workflows"] {
+            border-left-color: var(--theme-workflows);
+            --theme-color: var(--theme-workflows);
+            --theme-bg: var(--theme-workflows-bg);
+        }
+        .session-panel[data-theme="avancerede"] {
+            border-left-color: var(--theme-avancerede);
+            --theme-color: var(--theme-avancerede);
+            --theme-bg: var(--theme-avancerede-bg);
+        }
+        .session-panel[data-theme="mester"] {
+            border-left-color: var(--theme-mester);
+            --theme-color: var(--theme-mester);
+            --theme-bg: var(--theme-mester-bg);
+        }
+
+        .overview-card[data-theme="fundamentet"] { border-top: 4px solid var(--theme-fundamentet); }
+        .overview-card[data-theme="prompting"] { border-top: 4px solid var(--theme-prompting); }
+        .overview-card[data-theme="workflows"] { border-top: 4px solid var(--theme-workflows); }
+        .overview-card[data-theme="avancerede"] { border-top: 4px solid var(--theme-avancerede); }
+        .overview-card[data-theme="mester"] { border-top: 4px solid var(--theme-mester); }
+
+        .session-divider {
+            text-align: center;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--muted);
+            margin: -1rem 0 -1rem;
+            position: relative;
+        }
+
+        .session-divider::before,
+        .session-divider::after {
+            content: '';
+            display: inline-block;
+            width: 60px;
+            height: 1px;
+            background: var(--border);
+            vertical-align: middle;
+            margin: 0 0.75rem;
         }
 
         .session-panel-header {
             padding: 1.5rem 2rem 1rem;
             border-bottom: 1px solid var(--border);
+            background: var(--theme-bg);
+            position: sticky;
+            top: 0;
+            z-index: 5;
         }
 
         .session-panel-meta {
@@ -167,7 +260,7 @@
         }
 
         .session-number-lg {
-            background: var(--edc-blue);
+            background: var(--theme-color);
             color: white;
             width: 32px; height: 32px;
             border-radius: 50%;
@@ -216,7 +309,15 @@
             margin-top: 0.5rem;
         }
 
-        .section-block { margin-bottom: 1.75rem; }
+        .section-block {
+            margin-bottom: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+        .section-block:first-child {
+            padding-top: 0;
+            border-top: none;
+        }
         .section-block:last-child { margin-bottom: 0; }
 
         .section-label {
@@ -227,6 +328,42 @@
             color: var(--edc-accent);
             margin-bottom: 0.6rem;
         }
+
+        .section-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            padding: 0.45rem 0.85rem;
+            border-radius: 8px;
+            margin-bottom: 0.9rem;
+            background: var(--chip-bg, var(--edc-light));
+            color: var(--chip-color, var(--edc-blue));
+            line-height: 1.2;
+        }
+
+        .section-chip-emoji { font-size: 1rem; line-height: 1; }
+        .section-chip-suffix {
+            margin-left: 0.5rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.1rem 0.5rem;
+            border-radius: 100px;
+            background: rgba(255,255,255,0.6);
+            color: var(--chip-color, var(--edc-blue));
+        }
+
+        .section-block[data-sub="schedule"] { --chip-bg: var(--sub-schedule-bg); --chip-color: var(--sub-schedule); }
+        .section-block[data-sub="foredrag"] { --chip-bg: var(--sub-foredrag-bg); --chip-color: var(--sub-foredrag); }
+        .section-block[data-sub="demo"]     { --chip-bg: var(--sub-demo-bg); --chip-color: var(--sub-demo); }
+        .section-block[data-sub="handson"]  { --chip-bg: var(--sub-handson-bg); --chip-color: var(--sub-handson); }
+        .section-block[data-sub="prompts"]  { --chip-bg: var(--sub-prompts-bg); --chip-color: var(--sub-prompts); }
+        .section-block[data-sub="handout"]  { --chip-bg: var(--sub-handout-bg); --chip-color: var(--sub-handout); }
+        .section-block[data-sub="hjemme"]   { --chip-bg: var(--sub-hjemme-bg); --chip-color: var(--sub-hjemme); }
+        .section-block[data-sub="share"]    { --chip-bg: var(--sub-share-bg); --chip-color: var(--sub-share); }
+        .section-block[data-sub="gallery"]  { --chip-bg: var(--sub-gallery-bg); --chip-color: var(--sub-gallery); }
 
         .section-block ul {
             list-style: none;
@@ -449,6 +586,319 @@
             font-weight: 600;
         }
 
+        /* Upload form */
+        .share-card {
+            background: var(--sub-share-bg);
+            border: 1.5px solid #fbcfe8;
+            border-radius: 10px;
+            padding: 1.1rem 1.25rem;
+        }
+
+        .share-card p.share-desc {
+            color: var(--text);
+            font-size: 0.93rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .share-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+
+        .share-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .share-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--sub-share);
+            letter-spacing: 0.02em;
+        }
+
+        .share-file-input { display: none; }
+
+        .share-file-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--sub-share);
+            color: white;
+            border: none;
+            padding: 0.55rem 1rem;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+            font-family: inherit;
+            align-self: flex-start;
+        }
+
+        .share-file-button:hover { background: #be185d; }
+
+        .share-preview {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.6rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #fbcfe8;
+            margin-top: 0.25rem;
+        }
+
+        .share-preview img {
+            max-width: 200px;
+            max-height: 140px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .share-preview-meta {
+            flex: 1;
+            font-size: 0.85rem;
+            color: var(--muted);
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            min-width: 0;
+            word-break: break-all;
+        }
+
+        .share-remove-btn {
+            background: transparent;
+            color: var(--edc-red);
+            border: 1px solid #fecaca;
+            padding: 0.3rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            align-self: flex-start;
+        }
+
+        .share-remove-btn:hover { background: #fee2e2; }
+
+        .share-input,
+        .share-textarea {
+            border: 1.5px solid #fbcfe8;
+            background: white;
+            border-radius: 8px;
+            padding: 0.55rem 0.75rem;
+            font-family: inherit;
+            font-size: 0.92rem;
+            color: var(--text);
+            width: 100%;
+            resize: vertical;
+        }
+
+        .share-textarea { min-height: 70px; }
+
+        .share-input:focus,
+        .share-textarea:focus {
+            outline: none;
+            border-color: var(--sub-share);
+        }
+
+        .share-counter {
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-align: right;
+        }
+
+        .share-submit {
+            background: var(--sub-share);
+            color: white;
+            border: none;
+            padding: 0.65rem 1.1rem;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.15s;
+        }
+
+        .share-submit:hover:not(:disabled) { background: #be185d; }
+
+        .share-submit:disabled {
+            background: #d1d5db;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+
+        .share-status {
+            padding: 0.85rem 1rem;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            font-weight: 500;
+        }
+
+        .share-status.success {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .share-status.error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .share-again-btn {
+            background: transparent;
+            border: 1.5px solid var(--sub-share);
+            color: var(--sub-share);
+            padding: 0.45rem 0.95rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 0.6rem;
+        }
+
+        .share-again-btn:hover { background: white; }
+
+        /* Gallery */
+        .gallery-toolbar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 0.75rem;
+        }
+
+        .gallery-refresh-btn {
+            background: white;
+            border: 1.5px solid var(--sub-gallery);
+            color: var(--sub-gallery);
+            padding: 0.4rem 0.85rem;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .gallery-refresh-btn:hover { background: var(--sub-gallery-bg); }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.85rem;
+        }
+
+        .gallery-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gallery-thumb {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            cursor: zoom-in;
+            background: #f1f5f9;
+            display: block;
+        }
+
+        .gallery-meta {
+            padding: 0.65rem 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .gallery-name {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .gallery-time {
+            font-size: 0.74rem;
+            color: var(--muted);
+        }
+
+        .gallery-note {
+            font-size: 0.85rem;
+            color: var(--text);
+            margin-top: 0.25rem;
+            line-height: 1.4;
+        }
+
+        .gallery-empty {
+            font-size: 0.9rem;
+            color: var(--muted);
+            font-style: italic;
+        }
+
+        .gallery-loading,
+        .gallery-error {
+            font-size: 0.88rem;
+            color: var(--muted);
+            padding: 0.5rem 0;
+        }
+
+        .gallery-error { color: var(--edc-red); }
+
+        /* Lightbox */
+        .lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.92);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1.5rem;
+            cursor: zoom-out;
+        }
+
+        .lightbox-overlay img {
+            max-width: 95vw;
+            max-height: 95vh;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            cursor: default;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-close:hover { background: rgba(255,255,255,0.25); }
+
         .spinner {
             display: inline-block;
             width: 16px; height: 16px;
@@ -476,10 +926,18 @@
         .footer a { color: var(--edc-accent); text-decoration: none; }
         .footer a:hover { text-decoration: underline; }
 
+        @media (max-width: 900px) {
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
         @media (max-width: 600px) {
             .header { padding: 2rem 1rem 1.5rem; }
             .header h1 { font-size: 1.5rem; }
             .session-panel-body, .session-panel-header { padding-left: 1.25rem; padding-right: 1.25rem; }
+            .sessions-stack { gap: 3rem; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .share-preview { flex-direction: column; }
+            .share-preview img { max-width: 100%; }
         }
     </style>
 </head>
@@ -537,7 +995,44 @@
     }
 
     function escapeHTML(s) {
-        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function themeSlug(theme) {
+        const t = String(theme || '').toLowerCase();
+        if (t.includes('fundament')) return 'fundamentet';
+        if (t.includes('prompting') || t.includes('superkraft')) return 'prompting';
+        if (t.includes('workflow')) return 'workflows';
+        if (t.includes('avanceret') || t.includes('avancerede')) return 'avancerede';
+        if (t.includes('mester') || t.includes('begynder') || t.includes('mastery') || t.includes('deling')) return 'mester';
+        return 'fundamentet';
+    }
+
+    function sectionChip(emoji, label, suffix) {
+        const suffixHTML = suffix ? `<span class="section-chip-suffix">${escapeHTML(suffix)}</span>` : '';
+        return `<div class="section-chip"><span class="section-chip-emoji">${emoji}</span><span>${escapeHTML(label)}</span>${suffixHTML}</div>`;
+    }
+
+    function formatRelativeTime(iso) {
+        if (!iso) return '';
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return '';
+        const diff = Date.now() - d.getTime();
+        const sec = Math.floor(diff / 1000);
+        if (sec < 60) return 'lige nu';
+        const min = Math.floor(sec / 60);
+        if (min < 60) return `${min} min siden`;
+        const hr = Math.floor(min / 60);
+        if (hr < 24) return `${hr} t siden`;
+        const days = Math.floor(hr / 24);
+        return `${days} d siden`;
+    }
+
+    function formatAbsoluteTime(iso) {
+        if (!iso) return '';
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return '';
+        return d.toLocaleString('da-DK', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
     }
 
     function renderInlineMarkdown(text) {
@@ -640,6 +1135,58 @@
         `;
     }
 
+    function renderShareBlock(sessionNum) {
+        return `
+            <div class="section-block" data-sub="share">
+                ${sectionChip('📸', 'Del dit arbejde inden næste session')}
+                <div class="share-card" data-share-root="${sessionNum}">
+                    <p class="share-desc">Tag et screenshot af noget du prøvede — Matias viser højdepunkter i starten af næste workshop. Helt frivilligt.</p>
+                    <div data-share-form>
+                        <form class="share-form" data-share-session="${sessionNum}">
+                            <div class="share-row">
+                                <label class="share-file-button" for="share-file-${sessionNum}">
+                                    <span>📎</span><span>Vælg billede</span>
+                                </label>
+                                <input class="share-file-input" type="file" accept="image/*" id="share-file-${sessionNum}" data-share-file>
+                                <div data-share-preview style="display:none;"></div>
+                            </div>
+                            <div class="share-row">
+                                <label class="share-label" for="share-name-${sessionNum}">Dit navn (valgfri)</label>
+                                <input class="share-input" type="text" id="share-name-${sessionNum}" maxlength="60" data-share-name placeholder="Fx Anna fra team 2">
+                            </div>
+                            <div class="share-row">
+                                <label class="share-label" for="share-note-${sessionNum}">Kort kommentar (valgfri)</label>
+                                <textarea class="share-textarea" id="share-note-${sessionNum}" maxlength="280" data-share-note placeholder="Hvad prøvede du? Hvad gik godt eller skidt?"></textarea>
+                                <div class="share-counter"><span data-share-counter>0</span> / 280</div>
+                            </div>
+                            <button type="submit" class="share-submit" data-share-submit disabled>
+                                <span data-share-submit-label>Send til Matias</span>
+                            </button>
+                        </form>
+                    </div>
+                    <div data-share-status style="display:none;"></div>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderGalleryBlock(sessionNum) {
+        if (!peekToken) return '';
+        return `
+            <div class="section-block" data-sub="gallery" data-gallery-root="${sessionNum}">
+                <div data-gallery-chip>${sectionChip('🖼️', 'Indsendelser fra deltagere')}</div>
+                <div class="gallery-toolbar">
+                    <button class="gallery-refresh-btn" data-gallery-refresh="${sessionNum}">
+                        <span>🔄</span><span>Hent nye</span>
+                    </button>
+                </div>
+                <div data-gallery-content="${sessionNum}">
+                    <div class="gallery-loading"><span class="spinner"></span> Henter indsendelser…</div>
+                </div>
+            </div>
+        `;
+    }
+
     function renderSessionContent(session) {
         const aSpor = session.handsOn && session.handsOn.aSpor;
         const bSpor = session.handsOn && session.handsOn.bSpor;
@@ -650,60 +1197,65 @@
 
         return `
             ${session.schedule && session.schedule.length ? `
-                <div class="section-block">
-                    <div class="section-label">Tidsplan (60 min)</div>
+                <div class="section-block" data-sub="schedule">
+                    ${sectionChip('⏱️', 'Tidsplan (60 min)')}
                     ${renderSchedule(session.schedule)}
                 </div>
             ` : ''}
 
             ${session.foredrag && session.foredrag.length ? `
-                <div class="section-block">
-                    <div class="section-label">Foredrag — kernepointer</div>
+                <div class="section-block" data-sub="foredrag">
+                    ${sectionChip('📚', 'Foredrag — kernepointer')}
                     ${renderBullets(session.foredrag)}
                 </div>
             ` : ''}
 
             ${session.demo && session.demo.length ? `
-                <div class="section-block">
-                    <div class="section-label">Live demo — trin for trin</div>
+                <div class="section-block" data-sub="demo">
+                    ${sectionChip('🎬', 'Live demo — trin for trin')}
                     ${renderDemo(session.demo, session.number)}
                 </div>
             ` : ''}
 
             ${handsOnHTML ? `
-                <div class="section-block">
-                    <div class="section-label">Hands-on</div>
+                <div class="section-block" data-sub="handson">
+                    ${sectionChip('✋', 'Hands-on')}
                     ${handsOnHTML}
                 </div>
             ` : ''}
 
             ${session.prompts && session.prompts.length ? `
-                <div class="section-block">
-                    <div class="section-label">Prompts — kopier direkte</div>
+                <div class="section-block" data-sub="prompts">
+                    ${sectionChip('💬', 'Prompts — kopier direkte')}
                     ${session.prompts.map((p, i) => renderPrompt(p, i, session.number)).join('')}
                 </div>
             ` : ''}
 
             ${session.handout ? `
-                <div class="section-block">
-                    <div class="section-label">Handout (tag med hjem)</div>
+                <div class="section-block" data-sub="handout">
+                    ${sectionChip('📄', 'Handout (tag med hjem)')}
                     ${renderHandout(session.handout)}
                 </div>
             ` : ''}
 
             ${session.hjemmeopgave && session.hjemmeopgave.length ? `
-                <div class="section-block">
-                    <div class="section-label">Hjemmeopgave til næste session</div>
+                <div class="section-block" data-sub="hjemme">
+                    ${sectionChip('🎯', 'Hjemmeopgave til næste session')}
                     <div class="hjemmeopgave">${renderBullets(session.hjemmeopgave)}</div>
                 </div>
             ` : ''}
+
+            ${renderShareBlock(session.number)}
+
+            ${renderGalleryBlock(session.number)}
         `;
     }
 
     function renderLockedPanel(data) {
         const m = data.meta;
+        const slug = themeSlug(m.theme);
         return `
-            <div class="session-panel locked" id="session-${m.number}">
+            <div class="session-panel locked" id="session-${m.number}" data-theme="${slug}">
                 <div class="session-panel-header">
                     <div class="session-panel-meta">
                         <div class="session-number-lg">${m.number}</div>
@@ -724,8 +1276,9 @@
 
     function renderOpenPanel(data) {
         const s = data.session;
+        const slug = themeSlug(s.theme);
         return `
-            <div class="session-panel" id="session-${s.number}">
+            <div class="session-panel" id="session-${s.number}" data-theme="${slug}">
                 <div class="session-panel-header">
                     <div class="session-panel-meta">
                         <div class="session-number-lg">${s.number}</div>
@@ -749,9 +1302,10 @@
         const tagClass = isLocked ? 'locked' : 'open';
         const tag = isLocked ? 'div' : 'a';
         const attrs = isLocked ? '' : `href="#session-${s.number}"`;
+        const slug = themeSlug(s.theme);
 
         return `
-            <${tag} class="overview-card ${tagClass}" ${attrs}>
+            <${tag} class="overview-card ${tagClass}" data-theme="${slug}" ${attrs}>
                 <div class="overview-card-top">
                     <span class="session-number-sm">Session ${s.number}</span>
                     <span class="status-badge ${tagClass}">${lockIcon} ${statusText}</span>
@@ -786,6 +1340,276 @@
         });
     }
 
+    // === Image resize helper ===
+    async function resizeImageIfNeeded(file) {
+        const MAX_WIDTH = 1920;
+        const SIZE_THRESHOLD = 1024 * 1024; // 1MB
+
+        // Read as data URL to check dimensions
+        const dataUrl = await new Promise((resolve, reject) => {
+            const r = new FileReader();
+            r.onload = () => resolve(r.result);
+            r.onerror = reject;
+            r.readAsDataURL(file);
+        });
+
+        const img = await new Promise((resolve, reject) => {
+            const i = new Image();
+            i.onload = () => resolve(i);
+            i.onerror = reject;
+            i.src = dataUrl;
+        });
+
+        const tooWide = img.width > MAX_WIDTH;
+        const tooBig = file.size > SIZE_THRESHOLD;
+
+        if (!tooWide && !tooBig) {
+            // Use original — strip data URL prefix
+            const base64 = String(dataUrl).split(',')[1] || '';
+            return { base64, contentType: file.type || 'image/jpeg', filename: file.name };
+        }
+
+        const scale = tooWide ? (MAX_WIDTH / img.width) : 1;
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        const outDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        const base64 = outDataUrl.split(',')[1] || '';
+        return { base64, contentType: 'image/jpeg', filename: file.name.replace(/\.(png|webp|gif|bmp|tiff?)$/i, '.jpg') };
+    }
+
+    function uploadApiUrl() {
+        const base = '/api/upload';
+        return peekToken ? `${base}?peek=${encodeURIComponent(peekToken)}` : base;
+    }
+
+    function submissionsApiUrl(n) {
+        const base = `/api/submissions?session=${n}`;
+        return peekToken ? `${base}&peek=${encodeURIComponent(peekToken)}` : base;
+    }
+
+    // === Share form wiring ===
+    function wireShareForm(root) {
+        const sessionNum = parseInt(root.getAttribute('data-share-root'), 10);
+        const formWrap = root.querySelector('[data-share-form]');
+        const form = root.querySelector('form[data-share-session]');
+        if (!form) return;
+        const fileInput = form.querySelector('[data-share-file]');
+        const previewWrap = form.querySelector('[data-share-preview]');
+        const nameInput = form.querySelector('[data-share-name]');
+        const noteInput = form.querySelector('[data-share-note]');
+        const counter = form.querySelector('[data-share-counter]');
+        const submitBtn = form.querySelector('[data-share-submit]');
+        const submitLabel = form.querySelector('[data-share-submit-label]');
+        const statusEl = root.querySelector('[data-share-status]');
+
+        let chosenFile = null;
+
+        const renderPreview = () => {
+            if (!chosenFile) {
+                previewWrap.style.display = 'none';
+                previewWrap.innerHTML = '';
+                submitBtn.disabled = true;
+                return;
+            }
+            const url = URL.createObjectURL(chosenFile);
+            const sizeKB = Math.round(chosenFile.size / 1024);
+            previewWrap.style.display = 'block';
+            previewWrap.innerHTML = `
+                <div class="share-preview">
+                    <img src="${url}" alt="preview">
+                    <div class="share-preview-meta">
+                        <div><strong>${escapeHTML(chosenFile.name)}</strong></div>
+                        <div>${sizeKB} KB</div>
+                        <button type="button" class="share-remove-btn" data-share-remove>Fjern</button>
+                    </div>
+                </div>
+            `;
+            previewWrap.querySelector('[data-share-remove]').addEventListener('click', () => {
+                chosenFile = null;
+                fileInput.value = '';
+                URL.revokeObjectURL(url);
+                renderPreview();
+            });
+            submitBtn.disabled = false;
+        };
+
+        fileInput.addEventListener('change', () => {
+            const f = fileInput.files && fileInput.files[0];
+            chosenFile = f || null;
+            renderPreview();
+        });
+
+        noteInput.addEventListener('input', () => {
+            counter.textContent = String(noteInput.value.length);
+        });
+
+        const showStatus = (kind, html) => {
+            statusEl.style.display = 'block';
+            statusEl.className = `share-status ${kind}`;
+            statusEl.innerHTML = html;
+        };
+
+        const resetForm = () => {
+            chosenFile = null;
+            form.reset();
+            counter.textContent = '0';
+            renderPreview();
+            statusEl.style.display = 'none';
+            statusEl.innerHTML = '';
+            formWrap.style.display = 'block';
+            submitBtn.disabled = true;
+        };
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!chosenFile) return;
+            submitBtn.disabled = true;
+            submitLabel.innerHTML = '<span class="spinner" style="vertical-align:middle;"></span> Uploader…';
+            try {
+                const { base64, contentType, filename } = await resizeImageIfNeeded(chosenFile);
+                const body = {
+                    session: sessionNum,
+                    name: nameInput.value.trim(),
+                    note: noteInput.value.trim(),
+                    filename,
+                    contentType,
+                    data: base64
+                };
+                const r = await fetch(uploadApiUrl(), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                if (!r.ok) {
+                    const txt = await r.text().catch(() => '');
+                    throw new Error(`HTTP ${r.status} ${txt.slice(0, 120)}`);
+                }
+                formWrap.style.display = 'none';
+                showStatus('success', `
+                    <div>✅ Tak! Vi viser højdepunkter ved næste session start.</div>
+                    <button type="button" class="share-again-btn" data-share-again>Send et til</button>
+                `);
+                statusEl.querySelector('[data-share-again]').addEventListener('click', resetForm);
+                // If facilitator-mode, refresh gallery
+                if (peekToken) loadGallery(sessionNum);
+            } catch (err) {
+                console.error('Upload failed', err);
+                showStatus('error', `⚠️ Upload fejlede — prøv igen. <small style="opacity:0.7;">(${escapeHTML(err.message || 'ukendt fejl')})</small>`);
+                submitBtn.disabled = false;
+                submitLabel.textContent = 'Send til Matias';
+            }
+        });
+    }
+
+    // === Gallery wiring ===
+    async function loadGallery(sessionNum) {
+        if (!peekToken) return;
+        const container = document.querySelector(`[data-gallery-content="${sessionNum}"]`);
+        const chipWrap = document.querySelector(`[data-gallery-root="${sessionNum}"] [data-gallery-chip]`);
+        if (!container) return;
+        container.innerHTML = '<div class="gallery-loading"><span class="spinner"></span> Henter indsendelser…</div>';
+        try {
+            const data = await fetchJSON(submissionsApiUrl(sessionNum));
+            const items = (data && (data.items || data.submissions)) || [];
+            if (chipWrap) chipWrap.innerHTML = sectionChip('🖼️', 'Indsendelser fra deltagere', `${items.length} indsendelser`);
+            if (items.length === 0) {
+                container.innerHTML = '<div class="gallery-empty">Ingen indsendelser endnu.</div>';
+                return;
+            }
+            container.innerHTML = `
+                <div class="gallery-grid">
+                    ${items.map(s => renderGalleryCard(s)).join('')}
+                </div>
+            `;
+            container.querySelectorAll('[data-gallery-thumb]').forEach(el => {
+                el.addEventListener('click', () => openLightbox(el.getAttribute('data-full-url') || el.getAttribute('src')));
+            });
+        } catch (err) {
+            console.error('Gallery load failed', err);
+            container.innerHTML = `<div class="gallery-error">Kunne ikke hente indsendelser: ${escapeHTML(err.message || '')}</div>`;
+        }
+    }
+
+    function renderGalleryCard(s) {
+        const name = (s.name && s.name.trim()) ? s.name : 'Anonym';
+        const thumbUrl = s.thumbUrl || s.imageUrl || s.url || '';
+        const fullUrl = s.imageUrl || s.url || thumbUrl;
+        const ts = s.uploadedAt || s.createdAt || s.timestamp;
+        const rel = formatRelativeTime(ts);
+        const abs = formatAbsoluteTime(ts);
+        const note = s.note ? `<div class="gallery-note">${renderInlineMarkdown(s.note)}</div>` : '';
+        return `
+            <div class="gallery-card">
+                <img class="gallery-thumb" src="${escapeHTML(thumbUrl)}" data-full-url="${escapeHTML(fullUrl)}" data-gallery-thumb alt="${escapeHTML(name)}" loading="lazy">
+                <div class="gallery-meta">
+                    <div class="gallery-name">${escapeHTML(name)}</div>
+                    <div class="gallery-time" title="${escapeHTML(abs)}">${escapeHTML(rel)} · ${escapeHTML(abs)}</div>
+                    ${note}
+                </div>
+            </div>
+        `;
+    }
+
+    // === Lightbox ===
+    let lightboxKeyHandler = null;
+    function openLightbox(src) {
+        if (!src) return;
+        closeLightbox();
+        const overlay = document.createElement('div');
+        overlay.className = 'lightbox-overlay';
+        overlay.innerHTML = `
+            <button class="lightbox-close" aria-label="Luk">✕</button>
+            <img src="${escapeHTML(src)}" alt="">
+        `;
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay || e.target.classList.contains('lightbox-close')) {
+                closeLightbox();
+            }
+        });
+        overlay.querySelector('img').addEventListener('click', (e) => e.stopPropagation());
+        document.body.appendChild(overlay);
+        lightboxKeyHandler = (e) => { if (e.key === 'Escape') closeLightbox(); };
+        document.addEventListener('keydown', lightboxKeyHandler);
+    }
+
+    function closeLightbox() {
+        const existing = document.querySelector('.lightbox-overlay');
+        if (existing) existing.remove();
+        if (lightboxKeyHandler) {
+            document.removeEventListener('keydown', lightboxKeyHandler);
+            lightboxKeyHandler = null;
+        }
+    }
+
+    // === Wire up copy buttons within a root element ===
+    function wireCopyButtons(root) {
+        root.querySelectorAll('.copy-btn').forEach(btn => {
+            if (btn.dataset.wired) return;
+            btn.dataset.wired = '1';
+            btn.addEventListener('click', async () => {
+                const target = document.getElementById(btn.getAttribute('data-target'));
+                if (!target) return;
+                try {
+                    await navigator.clipboard.writeText(target.textContent);
+                    btn.textContent = '✓ Kopieret';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.textContent = 'Kopier';
+                        btn.classList.remove('copied');
+                    }, 1500);
+                } catch {
+                    btn.textContent = 'Kunne ikke kopiere';
+                    setTimeout(() => { btn.textContent = 'Kopier'; }, 1500);
+                }
+            });
+        });
+    }
+
     async function init() {
         try {
             const overviewResp = await fetchJSON(apiUrl());
@@ -797,9 +1621,11 @@
 
             // Stacked panels — fetch each session in parallel
             const stack = document.getElementById('sessionsStack');
-            stack.innerHTML = overview.map(o =>
-                `<div class="session-panel" id="placeholder-${o.number}"><div class="loading-state"><span class="spinner"></span> Henter session ${o.number}…</div></div>`
-            ).join('');
+            stack.innerHTML = overview.map((o, idx) => {
+                const placeholder = `<div class="session-panel" id="placeholder-${o.number}"><div class="loading-state"><span class="spinner"></span> Henter session ${o.number}…</div></div>`;
+                if (idx === 0) return placeholder;
+                return `<div class="session-divider">Næste session</div>${placeholder}`;
+            }).join('');
 
             const results = await Promise.all(overview.map(o => fetchJSON(apiUrl(o.number))));
 
@@ -810,25 +1636,21 @@
                 placeholder.outerHTML = html;
             });
 
-            // Copy buttons
-            document.querySelectorAll('.copy-btn').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    const target = document.getElementById(btn.getAttribute('data-target'));
-                    if (!target) return;
-                    try {
-                        await navigator.clipboard.writeText(target.textContent);
-                        btn.textContent = '✓ Kopieret';
-                        btn.classList.add('copied');
-                        setTimeout(() => {
-                            btn.textContent = 'Kopier';
-                            btn.classList.remove('copied');
-                        }, 1500);
-                    } catch {
-                        btn.textContent = 'Kunne ikke kopiere';
-                        setTimeout(() => { btn.textContent = 'Kopier'; }, 1500);
-                    }
+            // Copy buttons (global)
+            wireCopyButtons(document);
+
+            // Wire share forms for every open session
+            document.querySelectorAll('[data-share-root]').forEach(root => wireShareForm(root));
+
+            // Load galleries (peek-only) in parallel
+            if (peekToken) {
+                document.querySelectorAll('[data-gallery-root]').forEach(root => {
+                    const n = parseInt(root.getAttribute('data-gallery-root'), 10);
+                    loadGallery(n);
+                    const refreshBtn = root.querySelector(`[data-gallery-refresh="${n}"]`);
+                    if (refreshBtn) refreshBtn.addEventListener('click', () => loadGallery(n));
                 });
-            });
+            }
 
             // Start countdown ticker
             tickCountdowns();

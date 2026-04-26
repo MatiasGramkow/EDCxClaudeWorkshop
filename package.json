@@ -5,6 +5,7 @@
         "node": ">=22"
     },
     "dependencies": {
+        "@vercel/blob": "^2.3.3",
         "nodemailer": "^6.9.0"
     }
 }

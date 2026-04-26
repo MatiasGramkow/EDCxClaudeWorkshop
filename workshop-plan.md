@@ -25,6 +25,42 @@
 
 ---
 
+## 🔌 Power-ups mapping (v2.190+)
+
+Claude Code v2.190+ har en `/powerup` slash-command der lærer 10 features. Vi har vævet dem ind i de eksisterende sessioner som additive lag — IKKE erstatninger. Eksisterende fokus er bevaret; power-ups er fundament eller closer hvor de passer.
+
+| # | Power-up | Hvor i CLI |
+|---|---|---|
+| 1 | Talk to your codebase | `@filnavn`, `@file#L20-40`, `@mappe/` |
+| 2 | Steer with modes | `Shift+Tab`, plan / acceptEdits / auto / bypassPermissions |
+| 3 | Undo anything | `/rewind`, `Esc Esc` |
+| 4 | Run in the background | `Ctrl+B`, `/tasks`, `Ctrl+T` |
+| 5 | Teach Claude your rules | `CLAUDE.md`, `/memory`, `.claude/rules/*.md` |
+| 6 | Extend with tools | MCP, `/mcp` |
+| 7 | Automate your workflow | Skills (`.claude/skills/<navn>/SKILL.md`), hooks (`.claude/settings.json`) |
+| 8 | Multiply yourself | Subagents, `/agents` |
+| 9 | Code from anywhere | `/remote-control`, `/teleport`, `/mobile`, claude.ai/code |
+| 10 | Dial the model | `/model`, `/effort` (low/medium/high/xhigh/max), `Option+P`/`Alt+P` |
+
+### Mapping pr. session
+
+| Session | Eksisterende fokus | Power-up tilføjelse |
+|---|---|---|
+| 1 — Kickoff + dårlig vs. god prompt | Foredrag + dårlig/god prompt-demos + 4 byggeklodser | **Power-up 3:** `Esc Esc` rewind som confidence-builder + tease af `@`-syntaks |
+| 2 — Plan mode | Plan vs. ikke-plan, settings.json baseline, context-hygiejne | **Power-up 2:** udvidet til hele mode-cyklen (Shift+Tab) — acceptEdits, auto, bypassPermissions, startup-flag |
+| 3 — Kontekst er konge | 4 slags kontekst, 3 runders demo, par-øvelse | **Power-up 1:** `@filnavn`, `@file#L20-40`, `@mappe/` som hovedemne. Anti-pattern: copy-paste hele filen vist eksplicit |
+| 4 — Avanceret prompting / debug | Scope-lock, chains, debug-pattern, TDD-loop | **Power-up 3 (deep):** `/rewind` med 4-valgs menu. **Power-up 4:** `Ctrl+B` background tasks + `/tasks` + `Ctrl+T` |
+| 5 — CLAUDE.md | CLAUDE.md før/efter, do & don't, C# + React skabeloner | **Power-up 5:** `.claude/rules/*.md` med `paths`-frontmatter, `/init`, `/memory`, auto-memory-folder |
+| 6 — Git/commit/review | `/commit`, `/review`, manuel review-prompt, custom /commit | (Ingen ny power-up — fokus bevaret) |
+| 7 — **Skills, agents og model-tuning** *(omdøbt fra "Slash commands")* | Custom commands, /pr-description, /explain-endpoint, headless mode | **Power-up 7 (skills-delen):** `.claude/skills/<navn>/SKILL.md` med tools-restriction og paths. **Power-up 8:** subagents, `/agents`-picker. **Power-up 10:** `/model`, `/effort`, `Option+P`/`Alt+P`, `opusplan`-alias |
+| 8 — MCP, hooks, automatisering | GitHub MCP, PreToolUse blocker, Stop test, PostToolUse format | **Power-up 6:** `/mcp` picker, `.mcp.json` projekt-niveau. **Power-up 7 (hooks-delen):** PostToolUse `dotnet format`, Stop `dotnet test` |
+| 9 — Best practices / faldgruber | Top 10 faldgruber, AI-kode med skjulte bugs, anti-hallucination prompt | (Recap — ingen ny tilføjelse) |
+| 10 — Show & Tell | Show & Tell, EDC-fælles CLAUDE.md, 3-måneders forpligtelse | **Power-up 9:** `/remote-control`, `/teleport`, `/mobile`, `claude --remote-control` som glansfuld closer ("tag det med dig") |
+
+**Designprincip:** Power-ups er additive lag, ikke nye sessioner. Hver tilføjelse skal kunne kopieres direkte (kommando, settings.json-snippet, skill-frontmatter, etc.) via copy-buttons på workshop-siden.
+
+---
+
 ## Hvad fortæller survey'en os?
 
 Baseret på de første svar (6 stk, ~20 forventet):
