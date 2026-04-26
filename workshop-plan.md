@@ -3,7 +3,7 @@
 **Varighed:** 5 uger · tirsdag + torsdag · 1 time pr. session = 10 sessioner
 **Målgruppe:** Udviklere fra edc.dk, Operational, Erhverv (C# hele vejen rundt, React på edc.dk)
 **Format:** Kort foredrag (10–15 min) → live demo (10–15 min) → hands-on (25–30 min) → take-home (5 min)
-**Facilitator:** Matias Gramkow
+**Facilitatorer:** Matias Gramkow & Michael
 
 ---
 
@@ -117,7 +117,7 @@ Baseret på de første svar (6 stk, ~20 forventet):
 
 ## Session 1 (tirsdag) — Kickoff + "Hvad er en god prompt?"
 
-**Matias' intro til forløbet + første emne** (som du foreslog).
+**Facilitatorernes intro til forløbet + første emne** (som du foreslog).
 
 **Foredrag (15 min):**
 - Sådan foregår de næste 5 uger (tirsdag/torsdag, 2 spor, hjemmeopgaver, handouts)
@@ -352,7 +352,7 @@ Baseret på de første svar (6 stk, ~20 forventet):
 - Gennemgå hvordan man fanger den — uden at læse hver linje
 
 **Hands-on (25 min) — GRUPPE-ØVELSE:**
-- Matias deler et stykke AI-genereret C#-kode med 3 skjulte fejl
+- Vi deler et stykke AI-genereret C#-kode med 3 skjulte fejl
 - Grupper på 3–4 finder fejlene. Brug Claude til at hjælpe.
 - Fælles gennemgang af hvad der blev fundet.
 
@@ -413,7 +413,7 @@ Hver handout er en kort markdown-fil (1–2 sider), printvenlig, som deltagerne 
 
 **Sessions 9–10:** Ét hold. Det er deling og refleksion.
 
-**Hvis gruppen bliver stor (~20):** Split fysisk i rummet fra session 3. A-spor i den ene ende (Matias patruljerer), B-spor i den anden (eventuelt en advanced deltager som "buddy").
+**Hvis gruppen bliver stor (~20):** Split fysisk i rummet fra session 3. A-spor i den ene ende (én facilitator patruljerer), B-spor i den anden (den anden facilitator + eventuelt en advanced deltager som "buddy").
 
 ---
 
@@ -424,7 +424,7 @@ Hver handout er en kort markdown-fil (1–2 sider), printvenlig, som deltagerne 
 | Survey udfyldt | Deltagere | Inden session 1 |
 | Claude Code installeret + kørende | Deltagere | Inden session 1 |
 | En lille backlog-opgave med | Deltagere | Hver session |
-| Handout printet/delt | Matias | Dagen inden |
+| Handout printet/delt | Facilitatorer | Dagen inden |
 | Hjemmeopgave tjekket ind | Deltagere | Før næste session |
 
 ---

@@ -970,7 +970,7 @@
 </div>
 
 <div class="footer">
-    <p>EDC x Claude Code workshop-serie · Facilitator: Matias Gramkow</p>
+    <p>EDC x Claude Code workshop-serie · Facilitatorer: Matias &amp; Michael</p>
     <p style="margin-top:0.5rem;"><a href="/">← Tilbage til survey</a></p>
 </div>
 
@@ -1140,7 +1140,7 @@
             <div class="section-block" data-sub="share">
                 ${sectionChip('📸', 'Del dit arbejde inden næste session')}
                 <div class="share-card" data-share-root="${sessionNum}">
-                    <p class="share-desc">Tag et screenshot af noget du prøvede — Matias viser højdepunkter i starten af næste workshop. Helt frivilligt.</p>
+                    <p class="share-desc">Tag et screenshot af noget du prøvede — vi viser højdepunkter i starten af næste workshop. Helt frivilligt.</p>
                     <div data-share-form>
                         <form class="share-form" data-share-session="${sessionNum}">
                             <div class="share-row">
@@ -1160,7 +1160,7 @@
                                 <div class="share-counter"><span data-share-counter>0</span> / 280</div>
                             </div>
                             <button type="submit" class="share-submit" data-share-submit disabled>
-                                <span data-share-submit-label>Send til Matias</span>
+                                <span data-share-submit-label>Send til facilitatorerne</span>
                             </button>
                         </form>
                     </div>
@@ -1501,7 +1501,7 @@
                 console.error('Upload failed', err);
                 showStatus('error', `⚠️ Upload fejlede — prøv igen. <small style="opacity:0.7;">(${escapeHTML(err.message || 'ukendt fejl')})</small>`);
                 submitBtn.disabled = false;
-                submitLabel.textContent = 'Send til Matias';
+                submitLabel.textContent = 'Send til facilitatorerne';
             }
         });
     }

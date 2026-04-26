@@ -1,5 +1,5 @@
 // Workshop session API — gates content until session start time.
-// Matias: rediger START_DATE og session-indholdet nedenfor.
+// Facilitatorer: rediger START_DATE og session-indholdet nedenfor.
 // Facilitator-preview: sæt WORKSHOP_PEEK_TOKEN som Vercel env var, og kald /api/session?n=X&peek=<token>
 
 // Første tirsdag kl 09:00 dansk tid. Ret denne hvis datoen flytter sig.
@@ -51,7 +51,7 @@ const SESSIONS = [
         foredrag: [
             '5 uger · tirsdag + torsdag · 1 time pr. session',
             'Fast format: recap → foredrag → demo → hands-on → take-home',
-            '**Min rolle: facilitator, ikke guru.** Jeg er ikke Claude-eksperten — vi finder strukturen sammen. Spar med hinanden, del prompts der virker (og dem der ikke gør), spørg højt. Workshoppen bliver kun så god som det vi sammen lægger i den.',
+            '**Vores rolle: facilitatorer, ikke guruer.** Vi er ikke Claude-eksperterne — vi finder strukturen sammen. Spar med hinanden, del prompts der virker (og dem der ikke gør), spørg højt. Workshoppen bliver kun så god som det vi sammen lægger i den.',
             'Handout + hjemmeopgave pr. session så I tager noget med videre',
             'Dagens kerne: en dårlig prompt giver generisk kode. En god prompt giver produktionsklar kode.',
             'De 4 byggeklodser: [Kontekst] + [Opgave] + [Begrænsninger] + [Forventet output]',
@@ -2702,7 +2702,7 @@ Svar med linjenumre. Kast ingen kode væk — bare liste hvad du fandt.`,
             aSpor: {
                 title: 'Gruppe-øvelse (alle, 3-4 pr. gruppe)',
                 steps: [
-                    'Matias deler et stykke AI-genereret C#-kode med 3 skjulte bugs',
+                    'Vi deler et stykke AI-genereret C#-kode med 3 skjulte bugs',
                     'Gruppen finder dem (Claude må gerne hjælpe)',
                     'Skriv én-sætnings beskrivelse af hver bug',
                     'Fælles opsamling: hvilken bug var nemmest/sværest?'
@@ -2942,7 +2942,7 @@ alias claude-go="claude --remote-control"`
                 '- Månedligt Show & Tell (30 min, frivilligt)',
                 '- Fælles EDC CLAUDE.md-standard (i org-repo)',
                 '',
-                '**Kontakt:** Matias Gramkow for spørgsmål og bidrag til standard'
+                '**Kontakt:** Matias eller Michael for spørgsmål og bidrag til standard'
             ]
         },
         hjemmeopgave: [
