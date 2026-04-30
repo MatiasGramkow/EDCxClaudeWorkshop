@@ -1673,7 +1673,12 @@
             renderDeckCurrent(sessionNum, data && data.current);
         } catch (err) {
             console.error('Deck load failed', err);
-            root.innerHTML = `<div class="deck-empty" style="color:var(--edc-red);">Kunne ikke hente deck: ${escapeHTML(err.message || '')}</div>`;
+            const msg = String(err && err.message || '');
+            const is403 = /\b403\b/.test(msg);
+            const html = is403
+                ? `🔒 Peek-tokenet er forkert eller udløbet. Tjek URL'en — den skal være <code>?peek=DET-RIGTIGE-TOKEN</code>, ikke en placeholder.`
+                : `Kunne ikke hente deck: ${escapeHTML(msg)}`;
+            root.innerHTML = `<div class="deck-empty" style="color:var(--edc-red);">${html}</div>`;
         }
     }
 
