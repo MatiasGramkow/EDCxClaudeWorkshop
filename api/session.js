@@ -41,6 +41,8 @@ const SESSIONS = [
         subtitle: 'Sådan foregår de næste 5 uger — og hvorfor en prompt er alt',
         theme: 'Fundamentet',
         day: 'Tirsdag · Uge 1',
+        presenters: ['Matias', 'Michael'],
+        prework: { videoUrl: '', note: '' },
         schedule: [
             { t: '0:00–0:05', what: 'Velkomst + runde: hvem er I, hvad bruger I Claude til i dag?' },
             { t: '0:05–0:20', what: 'Foredrag: sådan foregår forløbet + hvorfor prompten er alt' },
@@ -237,6 +239,8 @@ Svar i punktform. Rør ikke koden.`
         subtitle: 'Hvornår skal Claude tænke før den koder? — og hele mode-cyklen (Shift+Tab)',
         theme: 'Fundamentet',
         day: 'Torsdag · Uge 1',
+        presenters: [],
+        prework: { videoUrl: '', note: '' },
         schedule: [
             { t: '0:00–0:05', what: 'Recap: del jeres "den der virkede" og "den der ikke virkede"' },
             { t: '0:05–0:20', what: 'Foredrag: plan mode + permissions' },
@@ -498,6 +502,8 @@ alias claude-yolo="claude --permission-mode bypassPermissions"  # kun i sandbox`
         subtitle: 'Hvorfor Claude hallucinerer — og hvordan du stopper det',
         theme: 'Prompting er en superkraft',
         day: 'Tirsdag · Uge 2',
+        presenters: [],
+        prework: { videoUrl: '', note: '' },
         schedule: [
             { t: '0:00–0:05', what: 'Recap: hvem brugte plan mode? Hvad fandt I?' },
             { t: '0:05–0:20', what: 'Foredrag: de 4 slags kontekst' },
@@ -802,6 +808,8 @@ Forventet output: opdateret komponent + test for "klik toggler favorit".`
         subtitle: 'Prompt-patterns der virker igen og igen',
         theme: 'Prompting er en superkraft',
         day: 'Torsdag · Uge 2',
+        presenters: [],
+        prework: { videoUrl: '', note: '' },
         schedule: [
             { t: '0:00–0:05', what: 'Recap: del 1 prompt fra jeres log der overraskede jer' },
             { t: '0:05–0:20', what: 'Foredrag: scope, chains, debug-pattern, anti-patterns' },
@@ -1088,6 +1096,8 @@ npm run dev`
         subtitle: 'Gør Claude klogere på lige præcis jeres kode',
         theme: 'Workflows der virker',
         day: 'Tirsdag · Uge 3',
+        presenters: [],
+        prework: { videoUrl: '', note: '' },
         schedule: [
             { t: '0:00–0:05', what: 'Recap: prompt-patterns I har brugt' },
             { t: '0:05–0:20', what: 'Foredrag: hvad CLAUDE.md er (og ikke er) + memory-systemet' },
@@ -1538,6 +1548,8 @@ Aktiveres kun når Claude rører frontend-filer.
         subtitle: 'Claude i dit daglige Git-flow — og hvornår du ikke skal stole på den',
         theme: 'Workflows der virker',
         day: 'Torsdag · Uge 3',
+        presenters: [],
+        prework: { videoUrl: '', note: '' },
         schedule: [
             { t: '0:00–0:05', what: 'Recap: før/efter CLAUDE.md' },
             { t: '0:05–0:20', what: 'Foredrag: /commit, /review, hvad Claude fanger og ikke fanger' },
@@ -1724,6 +1736,8 @@ Vis beskeden. Spørg om den skal committes.`
         subtitle: 'Automatisér dine gentagne workflows — skills, subagents, slash commands og model-/effort-tuning',
         theme: 'Avancerede features',
         day: 'Tirsdag · Uge 4',
+        presenters: [],
+        prework: { videoUrl: '', note: '' },
         schedule: [
             { t: '0:00–0:05', what: 'Recap: hvad /review fangede hos jer' },
             { t: '0:05–0:20', what: 'Foredrag: built-in + custom slash commands + model-valg' },
@@ -2213,6 +2227,8 @@ Når du får [input], gør du:
         subtitle: 'Skalér Claude — isolerede agenter, eksterne værktøjer, automatiske handlinger',
         theme: 'Avancerede features',
         day: 'Torsdag · Uge 4',
+        presenters: [],
+        prework: { videoUrl: '', note: '' },
         schedule: [
             { t: '0:00–0:05', what: 'Recap: commands vi har bygget' },
             { t: '0:05–0:20', what: 'Foredrag: subagents + MCP + hooks' },
@@ -2605,6 +2621,8 @@ Brug ikke C#-specifik terminologi — forklar så en projektleder også forstår
         subtitle: 'Det vi har lært — og det vi IKKE skal gøre',
         theme: 'Mastery og deling',
         day: 'Tirsdag · Uge 5',
+        presenters: [],
+        prework: { videoUrl: '', note: '' },
         schedule: [
             { t: '0:00–0:05', what: 'Recap: hooks/MCP oplevelser' },
             { t: '0:05–0:20', what: 'Foredrag: top 10 faldgruber' },
@@ -2785,6 +2803,8 @@ Svar med linjenumre. Kast ikke kode væk — bare liste.`
         subtitle: 'Del hvad I har bygget — og planlæg de næste 3 måneder',
         theme: 'Mastery og deling',
         day: 'Torsdag · Uge 5',
+        presenters: [],
+        prework: { videoUrl: '', note: '' },
         schedule: [
             { t: '0:00–0:10', what: 'Recap af hele forløbet + største aha-oplevelser' },
             { t: '0:10–0:40', what: 'Show & Tell — 3 min pr. person/team' },
@@ -3001,6 +3021,7 @@ module.exports = async function handler(req, res) {
                     subtitle: s.subtitle,
                     theme: s.theme,
                     day: s.day,
+                    presenters: Array.isArray(s.presenters) ? s.presenters : [],
                     unlockAt,
                     unlockAtFormatted: formatDanish(unlockAt),
                     locked: !canPeek && Date.now() < unlockAt
@@ -3027,7 +3048,9 @@ module.exports = async function handler(req, res) {
                     title: session.title,
                     subtitle: session.subtitle,
                     theme: session.theme,
-                    day: session.day
+                    day: session.day,
+                    presenters: Array.isArray(session.presenters) ? session.presenters : [],
+                    prework: session.prework || { videoUrl: '', note: '' }
                 }
             });
         }

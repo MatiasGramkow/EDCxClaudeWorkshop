@@ -52,6 +52,10 @@
             --sub-share-bg: #fdf2f8;
             --sub-gallery: #9333ea;
             --sub-gallery-bg: #faf5ff;
+            --sub-deck: #be185d;
+            --sub-deck-bg: #fdf2f8;
+            --sub-prework: #1d4ed8;
+            --sub-prework-bg: #eff6ff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -364,6 +368,8 @@
         .section-block[data-sub="hjemme"]   { --chip-bg: var(--sub-hjemme-bg); --chip-color: var(--sub-hjemme); }
         .section-block[data-sub="share"]    { --chip-bg: var(--sub-share-bg); --chip-color: var(--sub-share); }
         .section-block[data-sub="gallery"]  { --chip-bg: var(--sub-gallery-bg); --chip-color: var(--sub-gallery); }
+        .section-block[data-sub="deck"]     { --chip-bg: var(--sub-deck-bg); --chip-color: var(--sub-deck); }
+        .section-block[data-sub="prework"]  { --chip-bg: var(--sub-prework-bg); --chip-color: var(--sub-prework); }
 
         .section-block ul {
             list-style: none;
@@ -574,6 +580,152 @@
             color: var(--edc-blue);
             border-radius: 100px;
             letter-spacing: 0.02em;
+        }
+
+        .presenter-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.15rem 0.55rem 0.15rem 0.45rem;
+            background: var(--sub-deck-bg);
+            color: var(--sub-deck);
+            border: 1px solid #fbcfe8;
+            border-radius: 100px;
+            letter-spacing: 0.02em;
+        }
+        .presenter-pill.tbd {
+            background: #f1f5f9;
+            color: var(--edc-gray);
+            border-color: var(--border);
+        }
+        .presenter-pill .presenter-dot { font-size: 0.7rem; line-height: 1; }
+
+        .overview-card-presenters {
+            font-size: 0.72rem;
+            color: var(--sub-deck);
+            font-weight: 600;
+            margin-top: 0.15rem;
+        }
+        .overview-card-presenters.tbd { color: var(--edc-gray); font-weight: 500; }
+
+        /* Deck (PowerPoint) block */
+        .deck-card {
+            background: white;
+            border: 1.5px solid #fbcfe8;
+            border-radius: 10px;
+            padding: 1rem 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+        .deck-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .deck-meta {
+            flex: 1;
+            min-width: 200px;
+            font-size: 0.88rem;
+        }
+        .deck-meta-name {
+            font-weight: 600;
+            color: var(--text);
+            word-break: break-all;
+        }
+        .deck-meta-time {
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-top: 0.15rem;
+        }
+        .deck-empty {
+            color: var(--muted);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+        .deck-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: inherit;
+            text-decoration: none;
+            cursor: pointer;
+            border: 1.5px solid var(--sub-deck);
+            background: white;
+            color: var(--sub-deck);
+            transition: all 0.15s;
+        }
+        .deck-btn:hover { background: var(--sub-deck-bg); }
+        .deck-btn.primary {
+            background: var(--sub-deck);
+            color: white;
+        }
+        .deck-btn.primary:hover { opacity: 0.9; }
+        .deck-btn.danger {
+            border-color: #fecaca;
+            color: #b91c1c;
+        }
+        .deck-btn.danger:hover { background: #fef2f2; }
+        .deck-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .deck-upload-zone {
+            border: 1.5px dashed #fbcfe8;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            background: #fefcfd;
+        }
+        .deck-upload-zone .deck-file-input { display: none; }
+        .deck-upload-zone label {
+            font-weight: 500;
+            color: var(--muted);
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+        .deck-status {
+            margin-top: 0.6rem;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+        .deck-status.error { color: var(--edc-red); }
+        .deck-status.success { color: var(--edc-green); }
+        .deck-progress {
+            height: 6px;
+            border-radius: 100px;
+            background: #fce7f3;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        .deck-progress-bar {
+            height: 100%;
+            background: var(--sub-deck);
+            transition: width 0.2s;
+        }
+
+        .prework-card {
+            background: white;
+            border: 1.5px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            font-size: 0.9rem;
+        }
+        .prework-card a {
+            color: var(--sub-prework);
+            font-weight: 600;
+            text-decoration: none;
+            word-break: break-all;
+        }
+        .prework-card a:hover { text-decoration: underline; }
+        .prework-empty {
+            color: var(--muted);
+            font-size: 0.88rem;
+            font-style: italic;
         }
 
         .peek-banner {
@@ -948,14 +1100,14 @@
 </div>
 
 <div class="header">
-    <h1>EDC x Claude Code — Workshop-materiale</h1>
-    <p>Alt fra de 10 sessioner samlet ét sted. Hver session låses op når vi mødes.</p>
+    <h1>EDC x Claude Code — Facilitator-arbejdsside</h1>
+    <p>Vores fælles arbejdsdokument: hvem præsenterer, forarbejde-video, og PowerPoint pr. session. Indhold + prompts er noter til os, ikke deltager-materiale.</p>
 </div>
 
 <div class="container">
 
     <div class="intro-card">
-        <p><strong>Sådan fungerer siden:</strong> Hver session åbner automatisk når timen starter. Klik på et kort i oversigten for at hoppe direkte til sessionen. Alle prompts kan kopieres med ét klik — så du kan følge med uden at skrive af.</p>
+        <p><strong>Sådan bruger vi siden:</strong> Den er kun til Matias &amp; Michael. Hver session viser hvem der præsenterer, en forarbejde-video, og pladsen til den PowerPoint vi bygger sammen. Resten af session-panelet (foredrag/demo/prompts) er reference-noter vi kan trække fra når vi laver slides — det vises ikke til deltagerne. Vi beslutter til sidst i hver session hvem der præsenterer næste gang.</p>
     </div>
 
     <div class="overview-heading">Oversigt — 10 sessioner</div>
@@ -1187,6 +1339,53 @@
         `;
     }
 
+    function renderPresenterPill(presenters) {
+        const arr = Array.isArray(presenters) ? presenters.filter(Boolean) : [];
+        if (arr.length === 0) {
+            return `<span class="presenter-pill tbd"><span class="presenter-dot">🎤</span><span>Præsentant: ikke besluttet</span></span>`;
+        }
+        const names = arr.map(escapeHTML).join(' &amp; ');
+        return `<span class="presenter-pill"><span class="presenter-dot">🎤</span><span>${names}</span></span>`;
+    }
+
+    function renderPreworkBlock(prework) {
+        const url = prework && typeof prework.videoUrl === 'string' ? prework.videoUrl.trim() : '';
+        const note = prework && typeof prework.note === 'string' ? prework.note.trim() : '';
+        const inner = url
+            ? `<a href="${escapeHTML(url)}" target="_blank" rel="noopener">▶ ${escapeHTML(url)}</a>${note ? `<div style="color:var(--muted);margin-top:0.4rem;">${renderInlineMarkdown(note)}</div>` : ''}`
+            : `<div class="prework-empty">Ingen forarbejde-video sat endnu. Tilføj en URL i <code>api/session.js</code> → <code>prework.videoUrl</code>.</div>`;
+        return `
+            <div class="section-block" data-sub="prework">
+                ${sectionChip('🎬', 'Forarbejde — video til deltagere')}
+                <div class="prework-card">${inner}</div>
+            </div>
+        `;
+    }
+
+    function renderDeckBlock(sessionNum) {
+        return `
+            <div class="section-block" data-sub="deck" data-deck-root="${sessionNum}">
+                ${sectionChip('🪧', 'PowerPoint — agenda + slides til sessionen')}
+                <div class="deck-card" data-deck-current="${sessionNum}">
+                    <div class="deck-empty">Indlæser…</div>
+                </div>
+                ${peekToken ? `
+                <div class="deck-upload-zone">
+                    <label for="deck-file-${sessionNum}">Upload .pptx eller .pdf — facilitator-only.</label>
+                    <input type="file" id="deck-file-${sessionNum}" class="deck-file-input" data-deck-file="${sessionNum}" accept=".pptx,.pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/pdf">
+                    <button type="button" class="deck-btn primary" data-deck-pick="${sessionNum}">📎 Vælg fil og upload</button>
+                    <div class="deck-status" data-deck-status="${sessionNum}" style="display:none;"></div>
+                    <div class="deck-progress" data-deck-progress-wrap="${sessionNum}" style="display:none;">
+                        <div class="deck-progress-bar" data-deck-progress="${sessionNum}" style="width:0%"></div>
+                    </div>
+                </div>` : `
+                <div class="deck-status" style="font-size:0.85rem;color:var(--muted);">
+                    🔒 Tilføj <code>?peek=&lt;token&gt;</code> for at uploade slides.
+                </div>`}
+            </div>
+        `;
+    }
+
     function renderSessionContent(session) {
         const aSpor = session.handsOn && session.handsOn.aSpor;
         const bSpor = session.handsOn && session.handsOn.bSpor;
@@ -1196,6 +1395,10 @@
             .join('');
 
         return `
+            ${renderPreworkBlock(session.prework)}
+
+            ${renderDeckBlock(session.number)}
+
             ${session.schedule && session.schedule.length ? `
                 <div class="section-block" data-sub="schedule">
                     ${sectionChip('⏱️', 'Tidsplan (60 min)')}
@@ -1261,6 +1464,7 @@
                         <div class="session-number-lg">${m.number}</div>
                         <span class="session-day">${escapeHTML(m.day)}</span>
                         <span class="theme-pill">${escapeHTML(m.theme)}</span>
+                        ${renderPresenterPill(m.presenters)}
                     </div>
                     <div class="session-title">${escapeHTML(m.title)}</div>
                     <div class="session-subtitle">${escapeHTML(m.subtitle)}</div>
@@ -1269,6 +1473,10 @@
                     <div class="locked-icon">🔒</div>
                     <div><strong>Denne session åbner ${escapeHTML(data.unlockAtFormatted)}</strong></div>
                     <div class="countdown" data-unlock="${data.unlockAt}">Beregner nedtælling…</div>
+                    <div style="margin-top:1.5rem; text-align:left;">
+                        ${renderPreworkBlock(m.prework)}
+                        ${renderDeckBlock(m.number)}
+                    </div>
                 </div>
             </div>
         `;
@@ -1284,6 +1492,7 @@
                         <div class="session-number-lg">${s.number}</div>
                         <span class="session-day">${escapeHTML(s.day)}</span>
                         <span class="theme-pill">${escapeHTML(s.theme)}</span>
+                        ${renderPresenterPill(s.presenters)}
                     </div>
                     <div class="session-title">${escapeHTML(s.title)}</div>
                     <div class="session-subtitle">${escapeHTML(s.subtitle)}</div>
@@ -1303,6 +1512,10 @@
         const tag = isLocked ? 'div' : 'a';
         const attrs = isLocked ? '' : `href="#session-${s.number}"`;
         const slug = themeSlug(s.theme);
+        const presenters = Array.isArray(s.presenters) ? s.presenters.filter(Boolean) : [];
+        const presentersLine = presenters.length
+            ? `<div class="overview-card-presenters">🎤 ${escapeHTML(presenters.join(' & '))}</div>`
+            : `<div class="overview-card-presenters tbd">🎤 Præsentant: ikke besluttet</div>`;
 
         return `
             <${tag} class="overview-card ${tagClass}" data-theme="${slug}" ${attrs}>
@@ -1312,6 +1525,7 @@
                 </div>
                 <div class="overview-card-title">${escapeHTML(s.title)}</div>
                 <div class="overview-card-day">${escapeHTML(s.day)} · ${escapeHTML(s.unlockAtFormatted.split(' kl. ')[1] || '')}</div>
+                ${presentersLine}
             </${tag}>
         `;
     }
@@ -1390,6 +1604,180 @@
     function submissionsApiUrl(n) {
         const base = `/api/submissions?session=${n}`;
         return peekToken ? `${base}&peek=${encodeURIComponent(peekToken)}` : base;
+    }
+
+    function deckApiUrl(params) {
+        const qs = new URLSearchParams(params || {});
+        if (peekToken) qs.set('peek', peekToken);
+        const s = qs.toString();
+        return s ? `/api/deck?${s}` : '/api/deck';
+    }
+
+    // --- Deck (PowerPoint) wiring ---
+    let _blobUploadFnPromise = null;
+    function loadBlobUpload() {
+        if (!_blobUploadFnPromise) {
+            // Loaded lazily — only needed when facilitator uploads a deck.
+            _blobUploadFnPromise = import('https://esm.sh/@vercel/blob@2.3.3/client')
+                .then(mod => mod.upload);
+        }
+        return _blobUploadFnPromise;
+    }
+
+    function formatBytes(n) {
+        if (!Number.isFinite(n) || n <= 0) return '';
+        if (n < 1024) return `${n} B`;
+        if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
+        return `${(n / (1024 * 1024)).toFixed(1)} MB`;
+    }
+
+    function renderDeckCurrent(sessionNum, current) {
+        const root = document.querySelector(`[data-deck-current="${sessionNum}"]`);
+        if (!root) return;
+        if (!current) {
+            root.innerHTML = `<div class="deck-empty">Ingen PowerPoint uploadet endnu for denne session.</div>`;
+            return;
+        }
+        const name = current.filename || current.pathname || 'deck';
+        const time = formatAbsoluteTime(current.uploadedAt) || '';
+        const rel = formatRelativeTime(current.uploadedAt) || '';
+        const downloadUrl = current.downloadUrl || current.url;
+        const deleteBtn = peekToken
+            ? `<button type="button" class="deck-btn danger" data-deck-delete="${sessionNum}" data-deck-id="${escapeHTML(current.id || '')}">🗑 Fjern</button>`
+            : '';
+        root.innerHTML = `
+            <div class="deck-row">
+                <div class="deck-meta">
+                    <div class="deck-meta-name">📊 ${escapeHTML(name)}</div>
+                    <div class="deck-meta-time">${escapeHTML(rel)}${time ? ` · ${escapeHTML(time)}` : ''}</div>
+                </div>
+                <a class="deck-btn primary" href="${escapeHTML(downloadUrl)}" target="_blank" rel="noopener" download>⬇ Hent</a>
+                ${deleteBtn}
+            </div>
+        `;
+        const delBtn = root.querySelector('[data-deck-delete]');
+        if (delBtn) {
+            delBtn.addEventListener('click', () => deleteDeck(sessionNum, delBtn.getAttribute('data-deck-id')));
+        }
+    }
+
+    async function loadDeck(sessionNum) {
+        const root = document.querySelector(`[data-deck-current="${sessionNum}"]`);
+        if (!root) return;
+        if (!peekToken) {
+            root.innerHTML = `<div class="deck-empty">Slides vises kun for facilitatorer (peek-token mangler).</div>`;
+            return;
+        }
+        try {
+            const data = await fetchJSON(deckApiUrl({ session: sessionNum }));
+            renderDeckCurrent(sessionNum, data && data.current);
+        } catch (err) {
+            console.error('Deck load failed', err);
+            root.innerHTML = `<div class="deck-empty" style="color:var(--edc-red);">Kunne ikke hente deck: ${escapeHTML(err.message || '')}</div>`;
+        }
+    }
+
+    function setDeckStatus(sessionNum, kind, message) {
+        const el = document.querySelector(`[data-deck-status="${sessionNum}"]`);
+        if (!el) return;
+        if (!message) {
+            el.style.display = 'none';
+            el.textContent = '';
+            return;
+        }
+        el.style.display = 'block';
+        el.className = 'deck-status' + (kind ? ` ${kind}` : '');
+        el.innerHTML = message;
+    }
+
+    function setDeckProgress(sessionNum, pct) {
+        const wrap = document.querySelector(`[data-deck-progress-wrap="${sessionNum}"]`);
+        const bar = document.querySelector(`[data-deck-progress="${sessionNum}"]`);
+        if (!wrap || !bar) return;
+        if (pct == null) {
+            wrap.style.display = 'none';
+            bar.style.width = '0%';
+            return;
+        }
+        wrap.style.display = 'block';
+        bar.style.width = `${Math.max(0, Math.min(100, pct))}%`;
+    }
+
+    async function uploadDeck(sessionNum, file) {
+        if (!peekToken) return;
+        if (!file) return;
+        const lower = (file.name || '').toLowerCase();
+        const okExt = lower.endsWith('.pptx') || lower.endsWith('.pdf');
+        if (!okExt) {
+            setDeckStatus(sessionNum, 'error', '⚠️ Kun .pptx eller .pdf understøttes.');
+            return;
+        }
+        setDeckStatus(sessionNum, '', `<span class="spinner" style="vertical-align:middle;"></span> Forbereder upload…`);
+        setDeckProgress(sessionNum, 0);
+
+        try {
+            const upload = await loadBlobUpload();
+            const ext = lower.endsWith('.pdf') ? 'pdf' : 'pptx';
+            const id = (crypto.randomUUID ? crypto.randomUUID().replace(/-/g, '') : Math.random().toString(36).slice(2)).slice(0, 16);
+            const pathname = `decks/session-${sessionNum}/${id}.${ext}`;
+
+            const blob = await upload(pathname, file, {
+                access: 'public',
+                handleUploadUrl: deckApiUrl(),
+                clientPayload: JSON.stringify({
+                    session: sessionNum,
+                    filename: file.name,
+                    peek: peekToken
+                }),
+                onUploadProgress: (ev) => {
+                    if (ev && typeof ev.percentage === 'number') {
+                        setDeckProgress(sessionNum, ev.percentage);
+                    }
+                }
+            });
+
+            setDeckProgress(sessionNum, 100);
+            setDeckStatus(sessionNum, 'success', `✅ Uploadet: ${escapeHTML(file.name)}`);
+            setTimeout(() => setDeckProgress(sessionNum, null), 600);
+            // Server-side onUploadCompleted writes the sidecar — give it a beat, then refresh.
+            setTimeout(() => loadDeck(sessionNum), 500);
+        } catch (err) {
+            console.error('Deck upload failed', err);
+            setDeckStatus(sessionNum, 'error', `⚠️ Upload fejlede: ${escapeHTML(err.message || 'ukendt')}`);
+            setDeckProgress(sessionNum, null);
+        }
+    }
+
+    async function deleteDeck(sessionNum, id) {
+        if (!peekToken || !id) return;
+        if (!window.confirm('Fjern dette deck?')) return;
+        try {
+            const r = await fetch(deckApiUrl({ session: sessionNum, id }), { method: 'DELETE' });
+            if (!r.ok) {
+                const t = await r.text().catch(() => '');
+                throw new Error(`HTTP ${r.status} ${t.slice(0, 120)}`);
+            }
+            await loadDeck(sessionNum);
+        } catch (err) {
+            console.error('Deck delete failed', err);
+            setDeckStatus(sessionNum, 'error', `⚠️ Kunne ikke fjerne: ${escapeHTML(err.message || '')}`);
+        }
+    }
+
+    function wireDeckBlock(root) {
+        const sessionNum = parseInt(root.getAttribute('data-deck-root'), 10);
+        if (!Number.isInteger(sessionNum)) return;
+        const fileInput = root.querySelector(`[data-deck-file="${sessionNum}"]`);
+        const pickBtn = root.querySelector(`[data-deck-pick="${sessionNum}"]`);
+        if (pickBtn && fileInput) {
+            pickBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', () => {
+                const f = fileInput.files && fileInput.files[0];
+                if (f) uploadDeck(sessionNum, f);
+                fileInput.value = '';
+            });
+        }
+        loadDeck(sessionNum);
     }
 
     // === Share form wiring ===
@@ -1641,6 +2029,9 @@
 
             // Wire share forms for every open session
             document.querySelectorAll('[data-share-root]').forEach(root => wireShareForm(root));
+
+            // Wire deck blocks (load current + bind upload form when peek-mode)
+            document.querySelectorAll('[data-deck-root]').forEach(root => wireDeckBlock(root));
 
             // Load galleries (peek-only) in parallel
             if (peekToken) {

@@ -7,14 +7,26 @@
 
 ---
 
-## 📍 Status pr. 2026-04-23
+## 📍 Status pr. 2026-04-30
 
+- **Format-skifte (2026-04-30):** Workshoppen kører på **PowerPoint pr. session** — vi (Matias + Michael) bygger en PowerPoint sammen med Claude før hver session, og 1–2 personer præsenterer den live. Vi beslutter til sidst i hver session hvem der præsenterer næste gang.
+- **Hjemmesiden er KUN til os.** `/workshop?peek=<token>` er facilitator-arbejdsdokument, ikke deltager-facing. Den viser:
+  1. Hvem præsenterer (presenter-pill pr. session)
+  2. Forarbejde-video (URL pr. session — vi sender ud til deltagerne før hver gang)
+  3. PowerPoint-deck (upload via `/api/deck`, gemmes i Vercel Blob)
+  4. Reference-noter (foredrag/demo/prompts) som vi trækker fra når vi bygger slides
 - **Live site:** `/workshop` på Vercel (edc-x-claude-workshops) — 10 sessioner med server-side gating pr. dato
 - **Start-dato:** Tirsdag 2026-05-05 kl. 09:00 (sat i `api/session.js` → `START_DATE_ISO`)
 - **Facilitator peek:** URL `/workshop?peek=<WORKSHOP_PEEK_TOKEN>` (env var på Vercel). På localhost: hvilken som helst `?peek=anything` virker.
-- **Indhold:** leveres fra `api/session.js` (ikke længere fra denne md-fil). Alt kopierbart via copy-buttons på siden.
+- **Indhold:** leveres fra `api/session.js` (ikke længere fra denne md-fil). Per session: `presenters: []` + `prework: { videoUrl, note }`.
 - **Survey:** afsluttet. GitHub-integration i `api/submit.js` fjernet.
+- **Endpoints:**
+  - `GET /api/session?n=N&peek=...` — session-data + presenters + prework
+  - `GET /api/deck?session=N&peek=...` — list uploaded decks
+  - `POST /api/deck?peek=...` — Vercel Blob client-upload-protokol (handleUpload)
+  - `DELETE /api/deck?session=N&id=...&peek=...` — fjern et deck
 - **Ændringer siden v1-planen nedenfor:**
+  - **2026-04-30:** Skift til PowerPoint-format + presenter-rotation. Hjemmesiden refrramet til facilitator-only.
   - Session 1 reframed til **kollaborativ** (ingen A/B-spor; "facilitator, ikke guru")
   - Session 2: tilføjet context-hygiejne (`/clear`, `/compact`, `/context`)
   - Session 4: tilføjet TDD-loop pattern
@@ -95,9 +107,31 @@ Baseret på de første svar (6 stk, ~20 forventet):
 ## Pædagogiske principper
 
 - **"Det du tager hjem" > "det jeg viste"**. Hver session ender med noget konkret i hånden.
-- **Skriv det ned, test det live**. Ingen PowerPoint-teori uden terminal bagefter.
+- **Skriv det ned, test det live**. PowerPoint-agendaen sætter rammen — terminalen bagefter er hvor det lærer.
 - **Dumme spørgsmål først**. Start hver session med 2 min "hvad gik galt i hjemmeopgaven?".
 - **Psykologisk sikkerhed**. Sessions 1–2: man arbejder kun på egen kode, ikke kolleger. Fra session 3: par på tværs af teams.
+
+---
+
+## Operativt flow pr. session (PowerPoint-format)
+
+1. **Forberedelse (mellem sessioner):**
+   - Vi (Matias + Michael) bygger PowerPoint sammen med Claude — agenda + slides for det/de emner.
+   - Den der præsenterer fører pennen; den anden reviewer.
+   - Pre-work-video lægges som URL i `api/session.js` → `prework.videoUrl` og deles med deltagerne.
+   - Slides uploades på `/workshop?peek=<token>` under den relevante session-blok (gemt som .pptx eller .pdf i Vercel Blob).
+2. **Live (60 min):**
+   - 1–2 personer præsenterer fra deck'et.
+   - Reference-noter (foredrag/demo/prompts) på `/workshop` er backstage — bruges til at bygge slides og som spørge-buffer.
+3. **Afslutning af session:**
+   - Beslut hvem der præsenterer næste gang — opdater `presenters: []` i `api/session.js` og redeploy (eller lad mig opdatere det).
+
+### Presenter-rotation
+
+| Session | Præsentant(er) |
+|---|---|
+| 1 | Matias & Michael (kickoff) |
+| 2–10 | Besluttes ved afslutning af forrige session |
 
 ---
 
