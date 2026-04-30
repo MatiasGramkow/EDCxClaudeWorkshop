@@ -714,6 +714,7 @@
             border-radius: 10px;
             padding: 0.85rem 1rem;
             font-size: 0.9rem;
+            margin-bottom: 0.6rem;
         }
         .prework-card a {
             color: var(--sub-prework);
@@ -727,6 +728,107 @@
             font-size: 0.88rem;
             font-style: italic;
         }
+        .prework-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .prework-item {
+            background: white;
+            border: 1.5px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 0.7rem 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .prework-item-body { flex: 1; min-width: 0; }
+        .prework-item-label {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.92rem;
+            margin-bottom: 0.1rem;
+        }
+        .prework-item-url {
+            color: var(--sub-prework);
+            font-size: 0.85rem;
+            text-decoration: none;
+            word-break: break-all;
+            display: inline-block;
+        }
+        .prework-item-url:hover { text-decoration: underline; }
+        .prework-item-meta {
+            font-size: 0.72rem;
+            color: var(--muted);
+            margin-top: 0.15rem;
+        }
+        .prework-item-remove {
+            background: white;
+            border: 1.5px solid #fecaca;
+            color: #b91c1c;
+            border-radius: 8px;
+            padding: 0.35rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            flex-shrink: 0;
+        }
+        .prework-item-remove:hover { background: #fef2f2; }
+
+        .prework-add {
+            border: 1.5px dashed #bfdbfe;
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            background: #f8fafc;
+        }
+        .prework-add-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        .prework-add-row input {
+            width: 100%;
+            padding: 0.55rem 0.75rem;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            background: white;
+        }
+        .prework-add-row input:focus {
+            outline: none;
+            border-color: var(--sub-prework);
+            box-shadow: 0 0 0 3px rgba(29,78,216,0.12);
+        }
+        .prework-add-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 0.55rem;
+        }
+        .prework-add-btn {
+            background: var(--sub-prework);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 0.95rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .prework-add-btn:hover { opacity: 0.9; }
+        .prework-add-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .prework-status {
+            font-size: 0.82rem;
+            color: var(--muted);
+            margin-top: 0.5rem;
+            display: none;
+        }
+        .prework-status.error { color: var(--edc-red); display: block; }
+        .prework-status.success { color: var(--edc-green); display: block; }
 
         .peek-banner {
             background: #fef3c7;
@@ -1348,16 +1450,30 @@
         return `<span class="presenter-pill"><span class="presenter-dot">🎤</span><span>${names}</span></span>`;
     }
 
-    function renderPreworkBlock(prework) {
-        const url = prework && typeof prework.videoUrl === 'string' ? prework.videoUrl.trim() : '';
-        const note = prework && typeof prework.note === 'string' ? prework.note.trim() : '';
-        const inner = url
-            ? `<a href="${escapeHTML(url)}" target="_blank" rel="noopener">▶ ${escapeHTML(url)}</a>${note ? `<div style="color:var(--muted);margin-top:0.4rem;">${renderInlineMarkdown(note)}</div>` : ''}`
-            : `<div class="prework-empty">Ingen forarbejde-video sat endnu. Tilføj en URL i <code>api/session.js</code> → <code>prework.videoUrl</code>.</div>`;
+    function renderPreworkBlock(sessionNum) {
+        const addForm = peekToken ? `
+            <div class="prework-add">
+                <div class="prework-add-row">
+                    <input type="url" placeholder="https://… (YouTube, Loom, Vimeo eller hvad som helst)"
+                        data-prework-url="${sessionNum}" maxlength="800" required>
+                    <input type="text" placeholder="Kort label (valgfri) — fx 'Intro til Claude Code (5 min)'"
+                        data-prework-label="${sessionNum}" maxlength="120">
+                </div>
+                <div class="prework-add-actions">
+                    <button type="button" class="prework-add-btn" data-prework-add="${sessionNum}" disabled>
+                        + Tilføj video
+                    </button>
+                </div>
+                <div class="prework-status" data-prework-status="${sessionNum}"></div>
+            </div>
+        ` : '';
         return `
-            <div class="section-block" data-sub="prework">
+            <div class="section-block" data-sub="prework" data-prework-root="${sessionNum}">
                 ${sectionChip('🎬', 'Forarbejde — video til deltagere')}
-                <div class="prework-card">${inner}</div>
+                <div class="prework-list" data-prework-list="${sessionNum}">
+                    <div class="prework-empty">Indlæser…</div>
+                </div>
+                ${addForm}
             </div>
         `;
     }
@@ -1395,7 +1511,7 @@
             .join('');
 
         return `
-            ${renderPreworkBlock(session.prework)}
+            ${renderPreworkBlock(session.number)}
 
             ${renderDeckBlock(session.number)}
 
@@ -1474,7 +1590,7 @@
                     <div><strong>Denne session åbner ${escapeHTML(data.unlockAtFormatted)}</strong></div>
                     <div class="countdown" data-unlock="${data.unlockAt}">Beregner nedtælling…</div>
                     <div style="margin-top:1.5rem; text-align:left;">
-                        ${renderPreworkBlock(m.prework)}
+                        ${renderPreworkBlock(m.number)}
                         ${renderDeckBlock(m.number)}
                     </div>
                 </div>
@@ -1611,6 +1727,178 @@
         if (peekToken) qs.set('peek', peekToken);
         const s = qs.toString();
         return s ? `/api/deck?${s}` : '/api/deck';
+    }
+
+    function preworkApiUrl(params) {
+        const qs = new URLSearchParams(params || {});
+        if (peekToken) qs.set('peek', peekToken);
+        const s = qs.toString();
+        return s ? `/api/prework?${s}` : '/api/prework';
+    }
+
+    // --- Pre-work videoer ---
+    function preworkHostnameLabel(url) {
+        try {
+            const u = new URL(url);
+            return u.hostname.replace(/^www\./, '');
+        } catch {
+            return '';
+        }
+    }
+
+    function renderPreworkItems(sessionNum, items) {
+        const list = document.querySelector(`[data-prework-list="${sessionNum}"]`);
+        if (!list) return;
+        if (!items || items.length === 0) {
+            list.innerHTML = `<div class="prework-empty">Ingen videoer endnu. ${peekToken ? 'Tilføj en URL nedenfor.' : ''}</div>`;
+            return;
+        }
+        list.innerHTML = items.map(item => {
+            const label = (item.label && item.label.trim()) || preworkHostnameLabel(item.url) || 'Video';
+            const addedBy = item.addedBy && item.addedBy.trim() ? `· ${escapeHTML(item.addedBy)}` : '';
+            const when = formatRelativeTime(item.addedAt) || '';
+            const removeBtn = peekToken
+                ? `<button type="button" class="prework-item-remove" data-prework-remove="${sessionNum}" data-prework-id="${escapeHTML(item.id || '')}">Fjern</button>`
+                : '';
+            return `
+                <div class="prework-item">
+                    <div class="prework-item-body">
+                        <div class="prework-item-label">▶ ${escapeHTML(label)}</div>
+                        <a class="prework-item-url" href="${escapeHTML(item.url)}" target="_blank" rel="noopener">${escapeHTML(item.url)}</a>
+                        <div class="prework-item-meta">${escapeHTML(when)} ${addedBy}</div>
+                    </div>
+                    ${removeBtn}
+                </div>
+            `;
+        }).join('');
+
+        list.querySelectorAll('[data-prework-remove]').forEach(btn => {
+            btn.addEventListener('click', () => removePrework(sessionNum, btn.getAttribute('data-prework-id')));
+        });
+    }
+
+    async function loadPrework(sessionNum) {
+        const list = document.querySelector(`[data-prework-list="${sessionNum}"]`);
+        if (!list) return;
+        if (!peekToken) {
+            list.innerHTML = `<div class="prework-empty">Videoer vises kun for facilitatorer (peek-token mangler).</div>`;
+            return;
+        }
+        try {
+            const data = await fetchJSON(preworkApiUrl({ session: sessionNum }));
+            renderPreworkItems(sessionNum, data && data.items);
+        } catch (err) {
+            console.error('Prework load failed', err);
+            const msg = String(err && err.message || '');
+            const is403 = /\b403\b/.test(msg);
+            list.innerHTML = `<div class="prework-empty" style="color:var(--edc-red);">${is403 ? '🔒 Peek-tokenet er forkert eller udløbet.' : `Kunne ikke hente videoer: ${escapeHTML(msg)}`}</div>`;
+        }
+    }
+
+    function setPreworkStatus(sessionNum, kind, message) {
+        const el = document.querySelector(`[data-prework-status="${sessionNum}"]`);
+        if (!el) return;
+        if (!message) {
+            el.style.display = 'none';
+            el.textContent = '';
+            return;
+        }
+        el.className = 'prework-status' + (kind ? ` ${kind}` : '');
+        el.style.display = 'block';
+        el.innerHTML = message;
+    }
+
+    async function addPrework(sessionNum) {
+        if (!peekToken) return;
+        const urlInput = document.querySelector(`[data-prework-url="${sessionNum}"]`);
+        const labelInput = document.querySelector(`[data-prework-label="${sessionNum}"]`);
+        const addBtn = document.querySelector(`[data-prework-add="${sessionNum}"]`);
+        if (!urlInput) return;
+        const url = (urlInput.value || '').trim();
+        const label = ((labelInput && labelInput.value) || '').trim();
+        if (!url) return;
+        let valid = false;
+        try {
+            const u = new URL(url);
+            valid = u.protocol === 'http:' || u.protocol === 'https:';
+        } catch {}
+        if (!valid) {
+            setPreworkStatus(sessionNum, 'error', '⚠️ Ikke en gyldig http(s)-URL.');
+            return;
+        }
+        addBtn.disabled = true;
+        setPreworkStatus(sessionNum, '', '<span class="spinner" style="vertical-align:middle;"></span> Gemmer…');
+        try {
+            const r = await fetch(preworkApiUrl(), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ session: sessionNum, url, label })
+            });
+            const data = await r.json().catch(() => ({}));
+            if (!r.ok || !data.ok) {
+                throw new Error(data.error || `HTTP ${r.status}`);
+            }
+            urlInput.value = '';
+            if (labelInput) labelInput.value = '';
+            setPreworkStatus(sessionNum, 'success', '✅ Tilføjet.');
+            setTimeout(() => setPreworkStatus(sessionNum, '', ''), 2000);
+            await loadPrework(sessionNum);
+        } catch (err) {
+            console.error('Prework add failed', err);
+            setPreworkStatus(sessionNum, 'error', `⚠️ Kunne ikke gemme: ${escapeHTML(err.message || '')}`);
+        } finally {
+            updatePreworkAddBtn(sessionNum);
+        }
+    }
+
+    async function removePrework(sessionNum, id) {
+        if (!peekToken || !id) return;
+        if (!window.confirm('Fjern denne video?')) return;
+        try {
+            const r = await fetch(preworkApiUrl({ session: sessionNum, id }), { method: 'DELETE' });
+            if (!r.ok) {
+                const t = await r.text().catch(() => '');
+                throw new Error(`HTTP ${r.status} ${t.slice(0, 120)}`);
+            }
+            await loadPrework(sessionNum);
+        } catch (err) {
+            console.error('Prework delete failed', err);
+            setPreworkStatus(sessionNum, 'error', `⚠️ Kunne ikke fjerne: ${escapeHTML(err.message || '')}`);
+        }
+    }
+
+    function updatePreworkAddBtn(sessionNum) {
+        const urlInput = document.querySelector(`[data-prework-url="${sessionNum}"]`);
+        const addBtn = document.querySelector(`[data-prework-add="${sessionNum}"]`);
+        if (!urlInput || !addBtn) return;
+        addBtn.disabled = !urlInput.value.trim();
+    }
+
+    function wirePreworkBlock(root) {
+        const sessionNum = parseInt(root.getAttribute('data-prework-root'), 10);
+        if (!Number.isInteger(sessionNum)) return;
+        const urlInput = root.querySelector(`[data-prework-url="${sessionNum}"]`);
+        const labelInput = root.querySelector(`[data-prework-label="${sessionNum}"]`);
+        const addBtn = root.querySelector(`[data-prework-add="${sessionNum}"]`);
+        if (urlInput && addBtn) {
+            urlInput.addEventListener('input', () => updatePreworkAddBtn(sessionNum));
+            urlInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (!addBtn.disabled) addPrework(sessionNum);
+                }
+            });
+            if (labelInput) {
+                labelInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (!addBtn.disabled) addPrework(sessionNum);
+                    }
+                });
+            }
+            addBtn.addEventListener('click', () => addPrework(sessionNum));
+        }
+        loadPrework(sessionNum);
     }
 
     // --- Deck (PowerPoint) wiring ---
@@ -2037,6 +2325,9 @@
 
             // Wire deck blocks (load current + bind upload form when peek-mode)
             document.querySelectorAll('[data-deck-root]').forEach(root => wireDeckBlock(root));
+
+            // Wire prework blocks (load videos + bind add form when peek-mode)
+            document.querySelectorAll('[data-prework-root]').forEach(root => wirePreworkBlock(root));
 
             // Load galleries (peek-only) in parallel
             if (peekToken) {
