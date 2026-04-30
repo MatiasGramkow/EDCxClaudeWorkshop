@@ -1,5 +1,7 @@
 {
     "rewrites": [
-        { "source": "/workshop", "destination": "/workshop.html" }
+        { "source": "/workshop", "destination": "/workshop.html" },
+        { "source": "/demo", "destination": "https://edcxclaudeworkshop-demo.vercel.app/demo" },
+        { "source": "/demo/:path*", "destination": "https://edcxclaudeworkshop-demo.vercel.app/demo/:path*" }
     ]
 }
