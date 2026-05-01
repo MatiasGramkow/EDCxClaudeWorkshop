@@ -61,37 +61,37 @@ const SESSIONS = [
         ],
         demo: [
             {
-                heading: 'Setup — forklar scenariet (1 min)',
-                say: 'I vores UserService har vi en metode GetUser(string email). Min kollega siger den returnerer null når email er tom — det burde jo kaste en fejl. Lad os få Claude til at fixe det.',
-                body: 'Åbn terminalen med Claude Code kørende i et C#-projekt. Åbn også UserService.cs i IDE\'en side om side så deltagerne kan se filen. Sørg for clean git status.'
+                heading: 'Setup — kør demoen mod vores eget demo-projekt (1 min)',
+                say: 'Vi har lavet et lille bolig-website (samme repo som denne side, undermappe `demo/`). Det er der vi prompter — så ingen rigtig produktionskode kommer i klemme. I kan se det live på /demo.',
+                body: '**Setup-trin (forventer at facilitator har gjort dette inden):**\n\n1. `git clone https://github.com/MatiasGramkow/EDCxClaudeWorkshop.git`\n2. `cd EDCxClaudeWorkshop/demo && npm install`\n3. `claude` — start Claude Code i `demo/`-mappen\n4. Åbn `lib/userService.ts` i IDE\'en side om side, så deltagerne kan se filen\n5. Sørg for clean git status — vi skal kunne `git checkout .` mellem runder'
             },
             {
                 heading: 'Dårlig prompt — "realistisk dårlig" (2 min)',
-                body: 'Forklar: "det her ligner en prompt de fleste skriver på autopilot — med lidt kontekst, men uden detaljer". Dette er pointen: det er IKKE en stråmand, det er hverdag.',
+                body: 'Forklar: "det her ligner en prompt de fleste skriver på autopilot — med lidt kontekst, men uden detaljer". Det er IKKE en stråmand, det er hverdag.',
                 promptLabel: 'Dårlig prompt — kopier til Claude',
-                prompt: 'Fix buggen i UserService.cs hvor GetUser returnerer null',
-                expected: 'Claude læser filen, gætter på hvad "bug" betyder, og laver *en* ændring — måske returnerer den default User, måske kaster ArgumentNullException, måske ændrer den noget helt andet. Du får kode, men ikke nødvendigvis den du ville have. Mangler: HVORNÅR sker det? HVAD skal der ske i stedet? Må andre filer røres? Skal der tests med?'
+                prompt: 'Fix buggen i userService.ts hvor getUser returnerer null',
+                expected: 'Claude læser filen, gætter på hvad "bug" betyder, og laver *en* ændring — måske returnerer en default-User, måske kaster en TypeError, måske ændrer den noget helt andet. Du får kode, men ikke nødvendigvis den du ville have. Mangler: HVORNÅR sker det? HVAD skal der ske i stedet? Må andre filer røres? Skal der tests med?'
             },
             {
                 heading: 'God prompt — samme opgave, med kontekst (3 min)',
                 say: 'Nu gør vi det igen — men vi giver Claude alt det den ikke har.',
-                body: 'Kør `/clear` først så Claude starter forfra.',
+                body: 'Først: `git checkout .` for at rulle den dårlige ændring tilbage. Så `/clear` så Claude starter forfra.',
                 promptLabel: 'God prompt — kopier til Claude',
-                prompt: `Læs UserService.cs.
+                prompt: `Læs lib/userService.ts.
 
-Metoden GetUser returnerer null når email-parameteren er tom eller whitespace. Det bør i stedet kaste en ArgumentException med besked "email må ikke være tom".
+Metoden getUser returnerer null når email-parameteren er tom eller whitespace. Det bør i stedet kaste en Error med besked "email må ikke være tom" — så kalderen tvinges til at validere input før den kalder.
 
 Opgave:
-1. Tilføj en guard clause øverst i metoden
-2. Skriv en xUnit-test i UserServiceTests.cs der dækker det
-3. Rør IKKE resten af klassen
+1. Erstat den eksisterende guard clause med et throw
+2. Skriv en test i lib/userService.test.ts (ny fil) der dækker både den nye fejl-case OG at en gyldig email stadig returnerer null hvis brugeren ikke findes
+3. Rør IKKE resten af filen, og rør IKKE registerUser eller addFavorite
 
-Brug samme test-stil som de eksisterende tests i filen.`,
-                expected: 'Claude læser filen, laver præcis guard clause, tilføjer en matchende test. Ingen scope creep. Klar til review.'
+Brug Node test runner (node --test) eller vitest — vælg det der passer bedst til projektets dependencies. Tjek package.json først.`,
+                expected: 'Claude læser filen, ser der ikke er test-runner installeret endnu, foreslår en (typisk vitest) eller bruger Node\'s indbyggede. Den erstatter guard clause med throw. Skriver matchende test. Ingen scope creep. Klar til review.'
             },
             {
                 heading: 'Pointe — hvad ændrede sig? (1 min)',
-                say: 'Fire ting Claude havde denne gang som den ikke havde før: hvilken fil, hvilken metode, præcis hvad er galt, og hvad den IKKE må røre.',
+                say: 'Fem ting Claude havde denne gang som den ikke havde før: hvilken fil, hvilken metode, præcis hvad er galt, hvad den skal gøre i stedet, OG hvilke filer den ikke må røre. Plus en hint om at læse package.json først.',
                 body: 'Dette er mønstret vi træner de næste 4 sessioner: **[Fil] + [Opgave] + [Begrænsninger] + [Forventet output]**.'
             },
             {
@@ -99,42 +99,48 @@ Brug samme test-stil som de eksisterende tests i filen.`,
                 say: 'Samme pointe, anden type opgave. Igen: det her er hvad folk skriver når de har travlt.',
                 body: 'Kør `/clear`. Prøv først denne:',
                 promptLabel: 'Dårlig performance-prompt',
-                prompt: 'GetAll-metoden i PropertyController er langsom. Kan du optimere den?',
-                expected: 'Claude læser filen, foreslår et par generiske optimeringer (tilføj caching, lav paginering, brug AsNoTracking) og går måske i gang med at ændre kode. Problem: vi ved ikke hvad der er flaskehalsen, hvor langsom den er, hvilke trade-offs der er ok, eller hvilke ændringer vi vil have. Claude gætter — og du får en løsning på et problem du ikke er sikker på er DET problem.'
+                prompt: 'getAll i propertyService.ts er langsom. Kan du optimere den?',
+                expected: 'Claude læser filen, foreslår generiske optimeringer (memoize, paginering, brug `for`-loop i stedet for `.map`) og går måske i gang. Problem: vi ved ikke om det reelt er langsomt, hvor flaskehalsen er, eller hvilke trade-offs der er ok. Claude gætter — og du får en "løsning" på et problem du ikke er sikker på er DET problem.'
             },
             {
                 heading: 'God performance-prompt (2 min)',
-                body: 'Kør `/clear` igen.',
+                body: '`git checkout .` + `/clear` igen.',
                 promptLabel: 'God prompt — analyse først',
-                prompt: `Læs PropertyController.cs.
+                prompt: `Læs lib/propertyService.ts.
 
-Metoden GetAll (linje 45-60) kalder _repo.GetAll() og mapper med LINQ. På datasæt > 50k rows tager det ~3s. Profiler viser at mapperen er flaskehalsen.
+Funktionen getAll laver flere passes over arrayet (filter → map → sort → map). Det er fint på 5 boliger, men hvis listen vokser til 50k+ er det N gange flere iterations end nødvendigt.
 
 Opgave:
-1. Foreslå 2-3 konkrete ændringer — ranger dem efter forventet effekt
-2. Forklar fordele/ulemper for hver
-3. Rør INGEN kode endnu — jeg vælger hvilken ændring vi laver først`,
+1. Foreslå 2-3 konkrete ændringer — ranger dem efter forventet effekt på store datasæt
+2. Forklar fordele/ulemper for hver (læsbarhed vs. allocations vs. CPU)
+3. Rør INGEN kode endnu — jeg vælger hvilken ændring vi laver først
+
+Tag højde for at filen også eksporterer findById og formatPrice — de skal stadig virke.`,
                 expected: 'Claude læser filen, giver 2-3 rankede forslag med pros/cons. Du vælger. Pointe: analyse-først undgår at Claude kører af sted og skriver kode du ikke vil have.'
             },
             {
                 heading: 'Vis @-tricket (2 min)',
-                say: 'I stedet for at copy-paste filer eller beskrive dem, brug @-syntaks.',
+                say: 'I stedet for at copy-paste filer eller beskrive dem, brug @-syntaks. Claude læser filen automatisk.',
                 promptLabel: 'Prompt med @-reference',
-                prompt: 'Forklar @UserService.cs:GetUser i 3 bullets. Ingen kode.',
-                expected: 'Claude læser filen automatisk via @-referencen og svarer præcist. Deltagerne ser at de ikke skal kopiere kode ind — bare pege på filer.'
+                prompt: 'Forklar @lib/userService.ts i 3 bullets. Ingen kode.',
+                expected: 'Claude læser filen automatisk via @-referencen og svarer præcist (registrering, opslag, favorit-håndtering). Deltagerne ser at de ikke skal kopiere kode ind — bare pege på filer.'
             },
             {
                 heading: 'React-variant — for edc.dk-folkene (2 min)',
-                say: 'Samme princip, andet stack.',
+                say: 'Samme princip, andet stack — vi tilføjer en favorit-knap til boligkortet.',
                 promptLabel: 'God prompt — React',
-                prompt: `Læs @PropertyCard.tsx og @property-card.test.tsx.
+                prompt: `Læs @components/PropertyCard.tsx.
 
-Tilføj en "favorit"-knap øverst til højre i komponenten med en onToggle-prop (default false). Brug lucide-react's Heart-ikon. Rør ikke eksisterende markup — læg knappen som nyt søskende-element øverst i card-containeren.
+Tilføj en "favorit"-knap øverst til højre i kortet:
+- Brug lucide-react's Heart-ikon (den er allerede en dependency)
+- Knappen tager en onToggle-callback og isFavorite-prop (default false)
+- Når isFavorite er true skal hjertet være fyldt (fill="currentColor")
+- Klik på knappen må ikke navigere — kortet wrapper hele card'et i et <Link>, så stop event propagation
 
-Skriv også en test der verificerer at klik kalder onToggle.
+Lav også en lille test-fil components/PropertyCard.test.tsx der verificerer at klik kalder onToggle uden at navigere.
 
-Rør IKKE andre komponenter. Ingen nye dependencies.`,
-                expected: 'Præcis én komponent opdateret + matchende test. Pointe: mønsteret [Fil + Opgave + Begrænsninger + Output] er universelt — C#, React, hvad som helst.'
+Rør IKKE Header, SearchBar eller andre komponenter. Ingen nye dependencies — lucide-react er nok.`,
+                expected: 'Præcis én komponent opdateret + matchende test. Pointe: mønsteret [Fil + Opgave + Begrænsninger + Output] er universelt — TS, React, hvad som helst.'
             },
             {
                 heading: 'Bonus — `Esc Esc` undo (1 min)',
@@ -150,9 +156,11 @@ Rør IKKE andre komponenter. Ingen nye dependencies.`,
                 title: 'Fælles hands-on — par op 2 og 2',
                 steps: [
                     'Par jer op med sidemanden — gerne på tværs af teams',
-                    'Åbn Claude Code i et af JERES egne projekter (skift gerne imellem)',
-                    'Vælg en konkret opgave I begge kender: en bug, en lille refactor, eller "forklar denne metode"',
+                    '`git clone https://github.com/MatiasGramkow/EDCxClaudeWorkshop.git && cd EDCxClaudeWorkshop/demo && npm install` (én af jer)',
+                    '`claude` i `demo/`-mappen',
+                    'Vælg én af de tre opgaver fra demoen (userService-bug, propertyService-performance, eller PropertyCard-favorit)',
                     'Skriv først en **hurtig prompt** — som I ville skrive på en travl dag',
+                    'Kør `git checkout .` for at rulle tilbage. Kør `/clear` så Claude starter forfra',
                     'Skriv så en **prompt med de 4 byggeklodser** ([Fil] + [Opgave] + [Begrænsninger] + [Forventet output])',
                     'Sammenlign: hvad var forskellen på svarene? Hvilken ville I stole nok på til at committe?',
                     'Del én indsigt højt med rummet — den der overraskede jer mest'
@@ -162,43 +170,68 @@ Rør IKKE andre komponenter. Ingen nye dependencies.`,
         },
         prompts: [
             {
-                label: 'Dårlig prompt — eksempel 1 ("realistisk dårlig")',
-                language: 'text',
-                text: 'Fix buggen i UserService.cs hvor GetUser returnerer null'
+                label: 'Setup — kør først dette i terminalen',
+                language: 'bash',
+                text: `git clone https://github.com/MatiasGramkow/EDCxClaudeWorkshop.git
+cd EDCxClaudeWorkshop/demo
+npm install
+claude`
             },
             {
-                label: 'God prompt — samme opgave',
+                label: 'Dårlig prompt — eksempel 1 ("realistisk dårlig")',
                 language: 'text',
-                text: `Læs UserService.cs.
+                text: 'Fix buggen i userService.ts hvor getUser returnerer null'
+            },
+            {
+                label: 'God prompt — samme opgave (efter `git checkout . && /clear`)',
+                language: 'text',
+                text: `Læs lib/userService.ts.
 
-Metoden GetUser returnerer null når email-parameteren er tom eller whitespace. Det bør i stedet kaste en ArgumentException med besked "email må ikke være tom".
+Metoden getUser returnerer null når email-parameteren er tom eller whitespace. Det bør i stedet kaste en Error med besked "email må ikke være tom" — så kalderen tvinges til at validere input før den kalder.
 
 Opgave:
-1. Tilføj en guard clause øverst i metoden
-2. Skriv en xUnit-test i UserServiceTests.cs der dækker det
-3. Rør IKKE resten af klassen
+1. Erstat den eksisterende guard clause med et throw
+2. Skriv en test i lib/userService.test.ts (ny fil) der dækker både den nye fejl-case OG at en gyldig email stadig returnerer null hvis brugeren ikke findes
+3. Rør IKKE resten af filen, og rør IKKE registerUser eller addFavorite
 
-Brug samme test-stil som de eksisterende tests i filen.`
+Brug Node test runner (node --test) eller vitest — vælg det der passer bedst til projektets dependencies. Tjek package.json først.`
             },
             {
                 label: 'Dårlig prompt — eksempel 2 ("realistisk dårlig")',
                 language: 'text',
-                text: 'GetAll-metoden i PropertyController er langsom. Kan du optimere den?'
+                text: 'getAll i propertyService.ts er langsom. Kan du optimere den?'
             },
             {
                 label: 'God prompt — samme opgave',
                 language: 'text',
-                text: `Læs PropertyController.cs.
+                text: `Læs lib/propertyService.ts.
 
-Metoden GetAll (linje 45-60) kalder _repo.GetAll() og mapper med LINQ. På datasæt > 50k rows tager det ~3s. Profiler viser at mapperen er flaskehalsen.
+Funktionen getAll laver flere passes over arrayet (filter → map → sort → map). Det er fint på 5 boliger, men hvis listen vokser til 50k+ er det N gange flere iterations end nødvendigt.
 
 Opgave:
-1. Foreslå 2-3 konkrete ændringer — ranger dem efter forventet effekt
-2. Forklar fordele/ulemper for hver
-3. Rør INGEN kode endnu — jeg vælger hvilken ændring vi laver først`
+1. Foreslå 2-3 konkrete ændringer — ranger dem efter forventet effekt på store datasæt
+2. Forklar fordele/ulemper for hver (læsbarhed vs. allocations vs. CPU)
+3. Rør INGEN kode endnu — jeg vælger hvilken ændring vi laver først
+
+Tag højde for at filen også eksporterer findById og formatPrice — de skal stadig virke.`
             },
             {
-                label: 'Hands-on A — skabelon til dine 3 spørgsmål',
+                label: 'Bonus — React favorit-knap',
+                language: 'text',
+                text: `Læs @components/PropertyCard.tsx.
+
+Tilføj en "favorit"-knap øverst til højre i kortet:
+- Brug lucide-react's Heart-ikon (den er allerede en dependency)
+- Knappen tager en onToggle-callback og isFavorite-prop (default false)
+- Når isFavorite er true skal hjertet være fyldt (fill="currentColor")
+- Klik på knappen må ikke navigere — kortet wrapper hele card'et i et <Link>, så stop event propagation
+
+Lav også en lille test-fil components/PropertyCard.test.tsx der verificerer at klik kalder onToggle uden at navigere.
+
+Rør IKKE Header, SearchBar eller andre komponenter. Ingen nye dependencies — lucide-react er nok.`
+            },
+            {
+                label: 'Hands-on — skabelon til dine 3 spørgsmål',
                 language: 'text',
                 text: `Læs [filnavn].
 
