@@ -61,37 +61,30 @@ const SESSIONS = [
         ],
         demo: [
             {
-                heading: 'Setup — kør demoen mod vores eget demo-projekt (1 min)',
-                say: 'Vi har lavet et lille bolig-website (samme repo som denne side, undermappe `demo/`). Det er der vi prompter — så ingen rigtig produktionskode kommer i klemme. I kan se det live på /demo.',
-                body: '**Setup-trin (forventer at facilitator har gjort dette inden):**\n\n1. `git clone https://github.com/MatiasGramkow/EDCxClaudeWorkshop.git`\n2. `cd EDCxClaudeWorkshop/demo && npm install`\n3. `claude` — start Claude Code i `demo/`-mappen\n4. Åbn `lib/userService.ts` i IDE\'en side om side, så deltagerne kan se filen\n5. Sørg for clean git status — vi skal kunne `git checkout .` mellem runder'
+                heading: 'Setup — vis den synlige bug på /demo (1 min)',
+                say: 'På vores demo-side ligger der en widget "Hent mine favoritter". Den har en bug — lad os se den live, og bagefter får Claude lov at fixe den.',
+                body: '**Setup-trin (gør dette inden mødet):**\n\n1. `git clone https://github.com/MatiasGramkow/EDCxClaudeWorkshop.git`\n2. `cd EDCxClaudeWorkshop/demo && npm install`\n3. `claude` — start Claude Code i `demo/`-mappen\n4. Åbn `/demo` i browseren så deltagerne kan se den live\n\n**Vis bug\'en live:** Tryk "Hent" UDEN at skrive en email. Resultat: "Ingen favoritter endnu" — som om alt er fint. Det er bug\'en: tom input behandles som "ingen favoritter", ikke som en fejl.'
             },
             {
                 heading: 'Dårlig prompt — "realistisk dårlig" (2 min)',
                 body: 'Forklar: "det her ligner en prompt de fleste skriver på autopilot — med lidt kontekst, men uden detaljer". Det er IKKE en stråmand, det er hverdag.',
                 promptLabel: 'Dårlig prompt — kopier til Claude',
-                prompt: 'Fix buggen i userService.ts hvor getUser returnerer null',
-                expected: 'Claude læser filen, gætter på hvad "bug" betyder, og laver *en* ændring — måske returnerer en default-User, måske kaster en TypeError, måske ændrer den noget helt andet. Du får kode, men ikke nødvendigvis den du ville have. Mangler: HVORNÅR sker det? HVAD skal der ske i stedet? Må andre filer røres? Skal der tests med?'
+                prompt: 'På /demo: hvis man trykker "Hent" uden email får man bare "Ingen favoritter endnu". Det er forvirrende. Fix det.',
+                expected: 'Claude læser måske filen, måske ikke. Den kan fortolke fix\'et 4-5 måder: tilføj `required` på input, disable knappen når tom, tilføj frontend-validering, ret beskeden i UI\'et til "Skriv din email", eller noget i backend. Du får kode — men ikke nødvendigvis dér hvor problemet egentlig hører hjemme (i userService).'
             },
             {
                 heading: 'God prompt — samme opgave, med kontekst (3 min)',
-                say: 'Nu gør vi det igen — men vi giver Claude alt det den ikke har.',
+                say: 'Nu gør vi det igen — men vi siger præcis hvor og hvad.',
                 body: 'Først: `git checkout .` for at rulle den dårlige ændring tilbage. Så `/clear` så Claude starter forfra.',
                 promptLabel: 'God prompt — kopier til Claude',
-                prompt: `Læs lib/userService.ts.
+                prompt: `I lib/userService.ts: når email er tom eller whitespace skal getUser kaste en Error ("email må ikke være tom") i stedet for at returnere null.
 
-Metoden getUser returnerer null når email-parameteren er tom eller whitespace. Det bør i stedet kaste en Error med besked "email må ikke være tom" — så kalderen tvinges til at validere input før den kalder.
-
-Opgave:
-1. Erstat den eksisterende guard clause med et throw
-2. Skriv en test i lib/userService.test.ts (ny fil) der dækker både den nye fejl-case OG at en gyldig email stadig returnerer null hvis brugeren ikke findes
-3. Rør IKKE resten af filen, og rør IKKE registerUser eller addFavorite
-
-Brug Node test runner (node --test) eller vitest — vælg det der passer bedst til projektets dependencies. Tjek package.json først.`,
-                expected: 'Claude læser filen, ser der ikke er test-runner installeret endnu, foreslår en (typisk vitest) eller bruger Node\'s indbyggede. Den erstatter guard clause med throw. Skriver matchende test. Ingen scope creep. Klar til review.'
+Rør kun den check — lad resten af filen være.`,
+                expected: 'Claude læser præcis den ene fil, erstatter guard clause med throw, og stopper. Når I refresher /demo og trykker "Hent" uden email, ser I nu en rigtig fejlbesked i stedet for "Ingen favoritter endnu". Bug\'en er fixet ét sted — i serveren — og resten af appen vinder uden at blive ændret.'
             },
             {
                 heading: 'Pointe — hvad ændrede sig? (1 min)',
-                say: 'Fem ting Claude havde denne gang som den ikke havde før: hvilken fil, hvilken metode, præcis hvad er galt, hvad den skal gøre i stedet, OG hvilke filer den ikke må røre. Plus en hint om at læse package.json først.',
+                say: 'Fire ting Claude havde denne gang som den ikke havde før: hvilken fil, hvilken funktion, præcis hvilken edge-case, OG hvad den IKKE må røre. Det fjernede alle de andre måder Claude kunne have "fixet" det.',
                 body: 'Dette er mønstret vi træner de næste 4 sessioner: **[Fil] + [Opgave] + [Begrænsninger] + [Forventet output]**.'
             },
             {
@@ -180,21 +173,14 @@ claude`
             {
                 label: 'Dårlig prompt — eksempel 1 ("realistisk dårlig")',
                 language: 'text',
-                text: 'Fix buggen i userService.ts hvor getUser returnerer null'
+                text: 'På /demo: hvis man trykker "Hent" uden email får man bare "Ingen favoritter endnu". Det er forvirrende. Fix det.'
             },
             {
                 label: 'God prompt — samme opgave (efter `git checkout . && /clear`)',
                 language: 'text',
-                text: `Læs lib/userService.ts.
+                text: `I lib/userService.ts: når email er tom eller whitespace skal getUser kaste en Error ("email må ikke være tom") i stedet for at returnere null.
 
-Metoden getUser returnerer null når email-parameteren er tom eller whitespace. Det bør i stedet kaste en Error med besked "email må ikke være tom" — så kalderen tvinges til at validere input før den kalder.
-
-Opgave:
-1. Erstat den eksisterende guard clause med et throw
-2. Skriv en test i lib/userService.test.ts (ny fil) der dækker både den nye fejl-case OG at en gyldig email stadig returnerer null hvis brugeren ikke findes
-3. Rør IKKE resten af filen, og rør IKKE registerUser eller addFavorite
-
-Brug Node test runner (node --test) eller vitest — vælg det der passer bedst til projektets dependencies. Tjek package.json først.`
+Rør kun den check — lad resten af filen være.`
             },
             {
                 label: 'Dårlig prompt — eksempel 2 ("realistisk dårlig")',

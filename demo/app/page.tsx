@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import SearchBar from '@/components/SearchBar';
 import PropertyCard from '@/components/PropertyCard';
+import FavoritesLookup from '@/components/FavoritesLookup';
 import { properties } from '@/lib/properties';
 
 export default function HomePage() {
@@ -29,6 +30,8 @@ export default function HomePage() {
           {properties.length} boliger til salg lige nu
         </p>
       </div>
+
+      <FavoritesLookup />
 
       <SearchBar onSearch={setQuery} />
 

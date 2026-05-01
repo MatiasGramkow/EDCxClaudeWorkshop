@@ -1,8 +1,5 @@
-// User service — håndterer registrering og opslag af brugere på demo-siden.
-//
-// (Demo-projekt for EDC × Claude Code workshop. Bemærk: getUser har en
-// "realistisk dårlig" bug der bliver brugt som demo i session 1 — fix den
-// gerne sammen med Claude.)
+// User service — håndterer registrering, opslag og favoritter for
+// brugere på demo-siden.
 
 export interface User {
   id: string;
@@ -13,6 +10,14 @@ export interface User {
 
 const users = new Map<string, User>();
 
+// Pre-seedet demo-bruger så favorit-widget'en på forsiden har noget at vise.
+users.set('demo@edc.dk', {
+  id: 'demo-user',
+  email: 'demo@edc.dk',
+  name: 'Demo Bruger',
+  favorites: ['strandvejen-12', 'hovedgaden-24']
+});
+
 export function registerUser(email: string, name: string): User {
   const id = crypto.randomUUID();
   const user: User = { id, email, name, favorites: [] };
@@ -21,8 +26,6 @@ export function registerUser(email: string, name: string): User {
 }
 
 export function getUser(email: string): User | null {
-  // Returns null silently when email is empty/whitespace — caller can't tell
-  // if the user just doesn't exist or if input was invalid.
   if (!email || email.trim() === '') {
     return null;
   }
