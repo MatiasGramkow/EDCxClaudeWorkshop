@@ -1,36 +1,40 @@
 'use client';
 
 import { useState } from 'react';
-import { Heart } from 'lucide-react';
+import { Heart, CheckCircle2 } from 'lucide-react';
 import type { Property } from '@/types/property';
 import PropertyCard from '@/components/PropertyCard';
 
+interface FavoritesResponse {
+  ok: boolean;
+  user: { name: string; email: string } | null;
+  count: number;
+  favorites: Property[];
+}
+
 export default function FavoritesLookup() {
   const [email, setEmail] = useState('');
-  const [favorites, setFavorites] = useState<Property[] | null>(null);
+  const [data, setData] = useState<FavoritesResponse | null>(null);
   const [loading, setLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setErrorMsg(null);
+    setData(null);
     try {
       const res = await fetch(
         `/demo/api/users/favorites?email=${encodeURIComponent(email)}`
       );
-      const data = await res.json();
+      const body = await res.json();
       if (!res.ok) {
-        setErrorMsg(data.message || 'Noget gik galt');
-        setFavorites(null);
+        setErrorMsg(body.message || 'Noget gik galt');
       } else {
-        setFavorites(data.favorites ?? []);
+        setData(body as FavoritesResponse);
       }
-      setHasSearched(true);
     } catch {
       setErrorMsg('Kunne ikke kontakte serveren');
-      setFavorites(null);
     } finally {
       setLoading(false);
     }
@@ -70,23 +74,40 @@ export default function FavoritesLookup() {
         </button>
       </form>
 
-      {hasSearched && (
-        <div className="mt-5">
-          {errorMsg ? (
-            <div className="text-sm text-rose-600 bg-rose-50 border border-rose-200 rounded-lg px-3 py-2">
-              ⚠️ {errorMsg}
+      {errorMsg && (
+        <div className="mt-5 text-sm text-rose-700 bg-rose-50 border border-rose-200 rounded-lg px-3 py-2">
+          ⚠️ {errorMsg}
+        </div>
+      )}
+
+      {data && (
+        <div className="mt-5 space-y-4">
+          <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2 text-sm text-emerald-800">
+            <CheckCircle2 size={16} />
+            <span className="font-semibold">Profil fundet</span>
+          </div>
+
+          <div>
+            <div className="text-lg font-semibold text-edc-blue">
+              Velkommen tilbage, {data.user?.name ?? ''}!
             </div>
-          ) : favorites && favorites.length === 0 ? (
-            <div className="text-sm text-slate-500 italic">
-              Ingen favoritter endnu.
+            <div className="text-sm text-slate-500">
+              {data.user?.email ?? ''} · {data.count}{' '}
+              {data.count === 1 ? 'favorit' : 'favoritter'}
             </div>
-          ) : favorites && favorites.length > 0 ? (
+          </div>
+
+          {data.favorites.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {favorites.map((p) => (
+              {data.favorites.map((p) => (
                 <PropertyCard key={p.id} property={p} />
               ))}
             </div>
-          ) : null}
+          ) : (
+            <div className="text-sm text-slate-500 italic">
+              Ingen favoritter endnu.
+            </div>
+          )}
         </div>
       )}
     </section>

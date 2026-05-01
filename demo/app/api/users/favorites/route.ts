@@ -14,6 +14,7 @@ export async function GET(request: Request) {
       .filter((p) => p !== null);
     return NextResponse.json({
       ok: true,
+      user: user ? { name: user.name, email: user.email } : null,
       count: favorites.length,
       favorites
     });

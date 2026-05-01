@@ -62,15 +62,15 @@ const SESSIONS = [
         demo: [
             {
                 heading: 'Setup — vis den synlige bug på /demo (1 min)',
-                say: 'På vores demo-side ligger der en widget "Hent mine favoritter". Den har en bug — lad os se den live, og bagefter får Claude lov at fixe den.',
-                body: '**Setup-trin (gør dette inden mødet):**\n\n1. `git clone https://github.com/MatiasGramkow/EDCxClaudeWorkshop.git`\n2. `cd EDCxClaudeWorkshop/demo && npm install`\n3. `claude` — start Claude Code i `demo/`-mappen\n4. Åbn `/demo` i browseren så deltagerne kan se den live\n\n**Vis bug\'en live:** Tryk "Hent" UDEN at skrive en email. Resultat: "Ingen favoritter endnu" — som om alt er fint. Det er bug\'en: tom input behandles som "ingen favoritter", ikke som en fejl.'
+                say: 'På vores demo-side ligger der en widget "Hent mine favoritter". Den har en bug. Lad os først se den live, og bagefter får Claude lov at fixe den.',
+                body: '**Setup-trin (gør dette inden mødet):**\n\n1. `git clone https://github.com/MatiasGramkow/EDCxClaudeWorkshop.git`\n2. `cd EDCxClaudeWorkshop/demo && npm install`\n3. `claude` — start Claude Code i `demo/`-mappen\n4. Åbn `/demo` i browseren så deltagerne kan se den live\n\n**Vis bug\'en — i denne rækkefølge:**\n\n1. Skriv `demo@edc.dk` + tryk **Hent**. Widget\'en viser "✓ Profil fundet · Velkommen tilbage, Demo Bruger! · demo@edc.dk · 2 favoritter" + 2 boligkort. Alt fint.\n2. Slet emailen. Tryk **Hent** uden at skrive noget.\n3. Resultat: **stadig grønt "✓ Profil fundet"-banner**, men hilsenen siger "Velkommen tilbage, !" med tomt navn og tom email. UI\'et fortæller os at der er fundet en profil — men der findes ingen profil, og der blev ikke engang søgt på en email. **Det er bug\'en**: en grøn check og en tom velkomst, fordi `getUser("")` returnerer null lydløst.'
             },
             {
                 heading: 'Dårlig prompt — "realistisk dårlig" (2 min)',
                 body: 'Forklar: "det her ligner en prompt de fleste skriver på autopilot — med lidt kontekst, men uden detaljer". Det er IKKE en stråmand, det er hverdag.',
                 promptLabel: 'Dårlig prompt — kopier til Claude',
-                prompt: 'På /demo: hvis man trykker "Hent" uden email får man bare "Ingen favoritter endnu". Det er forvirrende. Fix det.',
-                expected: 'Claude læser måske filen, måske ikke. Den kan fortolke fix\'et 4-5 måder: tilføj `required` på input, disable knappen når tom, tilføj frontend-validering, ret beskeden i UI\'et til "Skriv din email", eller noget i backend. Du får kode — men ikke nødvendigvis dér hvor problemet egentlig hører hjemme (i userService).'
+                prompt: 'På /demo: når man trykker "Hent" uden email viser den stadig grøn "Profil fundet" og "Velkommen tilbage, !" med tomt navn. Fix det.',
+                expected: 'Claude læser måske filen, måske ikke. Den kan fortolke fix\'et 4-5 måder: tilføje `required` på input, disable knappen når tom, skjule banneret når user er null, ændre teksten i UI\'et, eller noget i backend. Du får kode — men ikke nødvendigvis dér hvor problemet egentlig hører hjemme (i userService, hvor det ene silent return null sker).'
             },
             {
                 heading: 'God prompt — samme opgave, med kontekst (3 min)',
@@ -173,7 +173,7 @@ claude`
             {
                 label: 'Dårlig prompt — eksempel 1 ("realistisk dårlig")',
                 language: 'text',
-                text: 'På /demo: hvis man trykker "Hent" uden email får man bare "Ingen favoritter endnu". Det er forvirrende. Fix det.'
+                text: 'På /demo: når man trykker "Hent" uden email viser den stadig grøn "Profil fundet" og "Velkommen tilbage, !" med tomt navn. Fix det.'
             },
             {
                 label: 'God prompt — samme opgave (efter `git checkout . && /clear`)',
