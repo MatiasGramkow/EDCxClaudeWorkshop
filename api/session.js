@@ -62,30 +62,32 @@ const SESSIONS = [
         demo: [
             {
                 heading: 'Setup — vis den synlige bug på /demo (1 min)',
-                say: 'På vores demo-side ligger der en widget "Hent mine favoritter". Den har en bug. Lad os først se den live, og bagefter får Claude lov at fixe den.',
-                body: '**Setup-trin (gør dette inden mødet):**\n\n1. `git clone https://github.com/MatiasGramkow/EDCxClaudeWorkshop.git`\n2. `cd EDCxClaudeWorkshop/demo && npm install`\n3. `claude` — start Claude Code i `demo/`-mappen\n4. Åbn `/demo` i browseren så deltagerne kan se den live\n\n**Vis bug\'en — i denne rækkefølge:**\n\n1. Skriv `demo@edc.dk` + tryk **Hent**. Widget\'en viser "✓ Profil fundet · Velkommen tilbage, Demo Bruger! · demo@edc.dk · 2 favoritter" + 2 boligkort. Alt fint.\n2. Slet emailen. Tryk **Hent** uden at skrive noget.\n3. Resultat: **stadig grønt "✓ Profil fundet"-banner**, men hilsenen siger "Velkommen tilbage, !" med tomt navn og tom email. UI\'et fortæller os at der er fundet en profil — men der findes ingen profil, og der blev ikke engang søgt på en email. **Det er bug\'en**: en grøn check og en tom velkomst, fordi `getUser("")` returnerer null lydløst.'
+                say: 'Åbn /demo. Alle priser er i amerikanske dollars med cents — "$8,500,000.00" — på en dansk bolig-side. Det er bug\'en. Lad Claude fixe den.',
+                body: '**Setup-trin (gør dette inden mødet):**\n\n1. `git clone https://github.com/MatiasGramkow/EDCxClaudeWorkshop.git`\n2. `cd EDCxClaudeWorkshop/demo && npm install`\n3. `claude --dangerously-skip-permissions` — start Claude Code i `demo/`-mappen\n4. Åbn `/demo` i browseren ved siden af så deltagerne kan se den live\n\n**Vis bug\'en:** Bare scroll ned ad forsiden. Hver eneste pris vises som "$8,500,000.00" i stedet for "8.500.000 kr." Klik på en bolig — samme problem på detaljesiden. Søg `demo@edc.dk` i favorit-widget\'en — favoritterne har også USD-priser. Hele sitet er i stykker visuelt.'
             },
             {
                 heading: 'Dårlig prompt — "realistisk dårlig" (2 min)',
-                body: 'Forklar: "det her ligner en prompt de fleste skriver på autopilot — med lidt kontekst, men uden detaljer". Det er IKKE en stråmand, det er hverdag.',
+                body: 'Forklar: "det her ligner en prompt de fleste skriver på autopilot — vi nævner symptomet, men ikke hvor i koden det skal fixes". Det er IKKE en stråmand, det er hverdag.',
                 promptLabel: 'Dårlig prompt — kopier til Claude',
-                prompt: 'På /demo: når man trykker "Hent" uden email viser den stadig grøn "Profil fundet" og "Velkommen tilbage, !" med tomt navn. Fix det. Ingen commit eller push.',
-                expected: 'Claude læser måske filen, måske ikke. Den kan fortolke fix\'et 4-5 måder: tilføje `required` på input, disable knappen når tom, skjule banneret når user er null, ændre teksten i UI\'et, eller noget i backend. Du får kode — men ikke nødvendigvis dér hvor problemet egentlig hører hjemme (i userService, hvor det ene silent return null sker).'
+                prompt: 'Priserne på /demo vises som amerikanske dollars ("$8,500,000.00") overalt. Det er en dansk side. Fix det. Ingen commit eller push.',
+                expected: 'Claude kan vælge MANGE veje: rette én linje i formatPrice, lave en valuta-context/provider, tilføje en hook, søg-erstat "$" → "kr." i UI-strings, eller patche hver komponent for sig. Du får måske et fix der virker, men det kan være spredt over 3+ filer eller introducere et nyt abstraktionslag du ikke bad om.'
             },
             {
                 heading: 'God prompt — samme opgave, med kontekst (3 min)',
-                say: 'Nu gør vi det igen — men vi siger præcis hvor og hvad.',
+                say: 'Nu siger vi præcis hvor og hvad.',
                 body: 'Først: `git checkout .` for at rulle den dårlige ændring tilbage. Så `/clear` så Claude starter forfra.',
                 promptLabel: 'God prompt — kopier til Claude',
-                prompt: `I lib/userService.ts: når email er tom eller whitespace skal getUser kaste en Error ("email må ikke være tom") i stedet for at returnere null.
+                prompt: `I lib/propertyService.ts: funktionen formatPrice bruger Intl.NumberFormat med 'en-US' og 'USD'. Det er en dansk side.
 
-Rør kun den check — lad resten af filen være. Ingen commit eller push.`,
-                expected: 'Claude læser præcis den ene fil, erstatter guard clause med throw, og stopper. Når I refresher /demo og trykker "Hent" uden email, ser I nu en rigtig fejlbesked i stedet for "Ingen favoritter endnu". Bug\'en er fixet ét sted — i serveren — og resten af appen vinder uden at blive ændret.'
+Ret 'en-US' til 'da-DK', 'USD' til 'DKK', og maximumFractionDigits fra 2 til 0.
+
+Rør intet andet. Ingen commit eller push.`,
+                expected: 'Claude læser præcis den ene fil, ændrer 3 værdier (én linje hver), og stopper. Refresh /demo: alle priser overalt på siden skifter samtidig fra "$8,500,000.00" til "8.500.000 kr." — fordi al pris-formatering går gennem den ene funktion.'
             },
             {
                 heading: 'Pointe — hvad ændrede sig? (1 min)',
-                say: 'Fire ting Claude havde denne gang som den ikke havde før: hvilken fil, hvilken funktion, præcis hvilken edge-case, OG hvad den IKKE må røre. Det fjernede alle de andre måder Claude kunne have "fixet" det.',
-                body: 'Dette er mønstret vi træner de næste 4 sessioner: **[Fil] + [Opgave] + [Begrænsninger] + [Forventet output]**.'
+                say: 'Den dårlige prompt nævnte symptomet ("priser vises som dollars"). Den gode prompt sagde HVOR i koden ("formatPrice i lib/propertyService.ts") og HVAD ("3 værdier ændres"). Det fjernede alle de andre måder Claude kunne have "fixet" det.',
+                body: 'Dette er mønstret vi træner de næste 4 sessioner: **[Fil] + [Opgave] + [Begrænsninger] + [Forventet output]**. Når Claude ved hvilken funktion og hvilken linje, kan den ikke gætte på et større fix end nødvendigt.'
             },
             {
                 heading: 'Bonus — performance-prompt (2 min)',
@@ -173,14 +175,16 @@ claude`
             {
                 label: 'Dårlig prompt — eksempel 1 ("realistisk dårlig")',
                 language: 'text',
-                text: 'På /demo: når man trykker "Hent" uden email viser den stadig grøn "Profil fundet" og "Velkommen tilbage, !" med tomt navn. Fix det. Ingen commit eller push.'
+                text: 'Priserne på /demo vises som amerikanske dollars ("$8,500,000.00") overalt. Det er en dansk side. Fix det. Ingen commit eller push.'
             },
             {
                 label: 'God prompt — samme opgave (efter `git checkout . && /clear`)',
                 language: 'text',
-                text: `I lib/userService.ts: når email er tom eller whitespace skal getUser kaste en Error ("email må ikke være tom") i stedet for at returnere null.
+                text: `I lib/propertyService.ts: funktionen formatPrice bruger Intl.NumberFormat med 'en-US' og 'USD'. Det er en dansk side.
 
-Rør kun den check — lad resten af filen være. Ingen commit eller push.`
+Ret 'en-US' til 'da-DK', 'USD' til 'DKK', og maximumFractionDigits fra 2 til 0.
+
+Rør intet andet. Ingen commit eller push.`
             },
             {
                 label: 'Dårlig prompt — eksempel 2 ("realistisk dårlig")',

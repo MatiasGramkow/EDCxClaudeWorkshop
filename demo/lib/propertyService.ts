@@ -48,10 +48,10 @@ export function findById(id: string): Property | null {
   return properties.find(p => p.id === id) ?? null;
 }
 
-function formatPrice(price: number): string {
-  return new Intl.NumberFormat('da-DK', {
+export function formatPrice(price: number): string {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'DKK',
-    maximumFractionDigits: 0
+    currency: 'USD',
+    maximumFractionDigits: 2
   }).format(price);
 }

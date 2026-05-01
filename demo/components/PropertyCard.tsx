@@ -1,16 +1,13 @@
 import Link from 'next/link';
 import type { Property } from '@/types/property';
+import { formatPrice } from '@/lib/propertyService';
 
 interface PropertyCardProps {
   property: Property;
 }
 
 export default function PropertyCard({ property }: PropertyCardProps) {
-  const formattedPrice = new Intl.NumberFormat('da-DK', {
-    style: 'currency',
-    currency: 'DKK',
-    maximumFractionDigits: 0
-  }).format(property.price);
+  const formattedPrice = formatPrice(property.price);
 
   return (
     <Link
