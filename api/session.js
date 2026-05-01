@@ -69,7 +69,7 @@ const SESSIONS = [
                 heading: 'Dårlig prompt — "realistisk dårlig" (2 min)',
                 body: 'Forklar: "det her ligner en prompt de fleste skriver på autopilot — med lidt kontekst, men uden detaljer". Det er IKKE en stråmand, det er hverdag.',
                 promptLabel: 'Dårlig prompt — kopier til Claude',
-                prompt: 'På /demo: når man trykker "Hent" uden email viser den stadig grøn "Profil fundet" og "Velkommen tilbage, !" med tomt navn. Fix det.',
+                prompt: 'På /demo: når man trykker "Hent" uden email viser den stadig grøn "Profil fundet" og "Velkommen tilbage, !" med tomt navn. Fix det. Ingen commit eller push.',
                 expected: 'Claude læser måske filen, måske ikke. Den kan fortolke fix\'et 4-5 måder: tilføje `required` på input, disable knappen når tom, skjule banneret når user er null, ændre teksten i UI\'et, eller noget i backend. Du får kode — men ikke nødvendigvis dér hvor problemet egentlig hører hjemme (i userService, hvor det ene silent return null sker).'
             },
             {
@@ -79,7 +79,7 @@ const SESSIONS = [
                 promptLabel: 'God prompt — kopier til Claude',
                 prompt: `I lib/userService.ts: når email er tom eller whitespace skal getUser kaste en Error ("email må ikke være tom") i stedet for at returnere null.
 
-Rør kun den check — lad resten af filen være.`,
+Rør kun den check — lad resten af filen være. Ingen commit eller push.`,
                 expected: 'Claude læser præcis den ene fil, erstatter guard clause med throw, og stopper. Når I refresher /demo og trykker "Hent" uden email, ser I nu en rigtig fejlbesked i stedet for "Ingen favoritter endnu". Bug\'en er fixet ét sted — i serveren — og resten af appen vinder uden at blive ændret.'
             },
             {
@@ -92,7 +92,7 @@ Rør kun den check — lad resten af filen være.`,
                 say: 'Samme pointe, anden type opgave. Igen: det her er hvad folk skriver når de har travlt.',
                 body: 'Kør `/clear`. Prøv først denne:',
                 promptLabel: 'Dårlig performance-prompt',
-                prompt: 'getAll i propertyService.ts er langsom. Kan du optimere den?',
+                prompt: 'getAll i propertyService.ts er langsom. Kan du optimere den? Ingen commit eller push.',
                 expected: 'Claude læser filen, foreslår generiske optimeringer (memoize, paginering, brug `for`-loop i stedet for `.map`) og går måske i gang. Problem: vi ved ikke om det reelt er langsomt, hvor flaskehalsen er, eller hvilke trade-offs der er ok. Claude gætter — og du får en "løsning" på et problem du ikke er sikker på er DET problem.'
             },
             {
@@ -108,7 +108,7 @@ Opgave:
 2. Forklar fordele/ulemper for hver (læsbarhed vs. allocations vs. CPU)
 3. Rør INGEN kode endnu — jeg vælger hvilken ændring vi laver først
 
-Tag højde for at filen også eksporterer findById og formatPrice — de skal stadig virke.`,
+Tag højde for at filen også eksporterer findById og formatPrice — de skal stadig virke. Ingen commit eller push.`,
                 expected: 'Claude læser filen, giver 2-3 rankede forslag med pros/cons. Du vælger. Pointe: analyse-først undgår at Claude kører af sted og skriver kode du ikke vil have.'
             },
             {
@@ -132,7 +132,7 @@ Tilføj en "favorit"-knap øverst til højre i kortet:
 
 Lav også en lille test-fil components/PropertyCard.test.tsx der verificerer at klik kalder onToggle uden at navigere.
 
-Rør IKKE Header, SearchBar eller andre komponenter. Ingen nye dependencies — lucide-react er nok.`,
+Rør IKKE Header, SearchBar eller andre komponenter. Ingen nye dependencies — lucide-react er nok. Ingen commit eller push.`,
                 expected: 'Præcis én komponent opdateret + matchende test. Pointe: mønsteret [Fil + Opgave + Begrænsninger + Output] er universelt — TS, React, hvad som helst.'
             },
             {
@@ -173,19 +173,19 @@ claude`
             {
                 label: 'Dårlig prompt — eksempel 1 ("realistisk dårlig")',
                 language: 'text',
-                text: 'På /demo: når man trykker "Hent" uden email viser den stadig grøn "Profil fundet" og "Velkommen tilbage, !" med tomt navn. Fix det.'
+                text: 'På /demo: når man trykker "Hent" uden email viser den stadig grøn "Profil fundet" og "Velkommen tilbage, !" med tomt navn. Fix det. Ingen commit eller push.'
             },
             {
                 label: 'God prompt — samme opgave (efter `git checkout . && /clear`)',
                 language: 'text',
                 text: `I lib/userService.ts: når email er tom eller whitespace skal getUser kaste en Error ("email må ikke være tom") i stedet for at returnere null.
 
-Rør kun den check — lad resten af filen være.`
+Rør kun den check — lad resten af filen være. Ingen commit eller push.`
             },
             {
                 label: 'Dårlig prompt — eksempel 2 ("realistisk dårlig")',
                 language: 'text',
-                text: 'getAll i propertyService.ts er langsom. Kan du optimere den?'
+                text: 'getAll i propertyService.ts er langsom. Kan du optimere den? Ingen commit eller push.'
             },
             {
                 label: 'God prompt — samme opgave',
@@ -199,7 +199,7 @@ Opgave:
 2. Forklar fordele/ulemper for hver (læsbarhed vs. allocations vs. CPU)
 3. Rør INGEN kode endnu — jeg vælger hvilken ændring vi laver først
 
-Tag højde for at filen også eksporterer findById og formatPrice — de skal stadig virke.`
+Tag højde for at filen også eksporterer findById og formatPrice — de skal stadig virke. Ingen commit eller push.`
             },
             {
                 label: 'Bonus — React favorit-knap',
@@ -214,7 +214,7 @@ Tilføj en "favorit"-knap øverst til højre i kortet:
 
 Lav også en lille test-fil components/PropertyCard.test.tsx der verificerer at klik kalder onToggle uden at navigere.
 
-Rør IKKE Header, SearchBar eller andre komponenter. Ingen nye dependencies — lucide-react er nok.`
+Rør IKKE Header, SearchBar eller andre komponenter. Ingen nye dependencies — lucide-react er nok. Ingen commit eller push.`
             },
             {
                 label: 'Hands-on — skabelon til dine 3 spørgsmål',
