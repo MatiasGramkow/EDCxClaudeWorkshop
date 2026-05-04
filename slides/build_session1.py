@@ -689,30 +689,112 @@ def s_caveat(s):
     ], size=16, line_spacing=1.7)
 
 
-# --- 11. Section divider: Hands-on ---
+# --- 11. Hands-on (sidste slide — bliver stående mens de arbejder) ---
 @slide
-def s_divider_handson(s):
-    fill_bg(s, EDC_NAVY)
-    if os.path.exists(LOGO_PATH):
-        logo_w = Inches(1.6)
-        s.shapes.add_picture(LOGO_PATH,
-                             (SLIDE_W - logo_w) / 2, Inches(1.8),
-                             width=logo_w, height=logo_w)
-    add_text(s, Inches(0), Inches(4.0), SLIDE_W, Inches(0.6),
-             'Punkt 3', size=22, color=EDC_YELLOW,
-             align=PP_ALIGN.CENTER, font='Menlo')
-    add_text(s, Inches(0), Inches(4.7), SLIDE_W, Inches(1.0),
-             'Hands-on', size=44, bold=True, color=WHITE,
-             align=PP_ALIGN.CENTER)
-    add_text(s, Inches(0), Inches(5.5), SLIDE_W, Inches(0.6),
-             '20 minutter · solo på din egen maskine',
-             size=18, color=RGBColor(0xC8, 0xD4, 0xE8),
-             align=PP_ALIGN.CENTER)
-    bot = s.shapes.add_shape(MSO_SHAPE.RECTANGLE,
-                             0, Inches(7.32), SLIDE_W, Inches(0.18))
-    bot.fill.solid()
-    bot.fill.fore_color.rgb = EDC_YELLOW
-    bot.line.fill.background()
+def s_handson(s):
+    fill_bg(s, WHITE)
+    add_title(s, 'Hands-on', 'Solo · 20 min — brug strukturen og prøv begge prompt-typer')
+
+    # 4-block compact reminder (more compact than slide 6)
+    blocks = [
+        ('1', 'Kontekst', 'Hvilke filer\nskal Claude læse?'),
+        ('2', 'Opgave', 'Hvad vil du\nhave gjort?'),
+        ('3', 'Begrænsninger', 'Hvad må Claude\nIKKE røre?'),
+        ('4', 'Forventet output', 'Hvad ser "done"\nud som?'),
+    ]
+    box_w = Inches(2.95)
+    box_h = Inches(1.55)
+    gap = Inches(0.13)
+    start_x = Inches(0.65)
+    top = Inches(2.0)
+    for i, (num, head, body) in enumerate(blocks):
+        x = start_x + (box_w + gap) * i
+        b = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, x, top, box_w, box_h)
+        b.fill.solid()
+        b.fill.fore_color.rgb = EDC_LIGHT_BG
+        b.line.fill.background()
+        # number circle
+        circle = s.shapes.add_shape(MSO_SHAPE.OVAL,
+                                    x + Inches(0.25), top + Inches(0.25),
+                                    Inches(0.42), Inches(0.42))
+        circle.fill.solid()
+        circle.fill.fore_color.rgb = EDC_NAVY
+        circle.line.fill.background()
+        ct = circle.text_frame
+        ct.margin_left = 0
+        ct.margin_right = 0
+        ct.margin_top = 0
+        ct.margin_bottom = 0
+        ct.vertical_anchor = MSO_ANCHOR.MIDDLE
+        cp = ct.paragraphs[0]
+        cp.alignment = PP_ALIGN.CENTER
+        cr = cp.add_run()
+        cr.text = num
+        cr.font.name = 'Helvetica'
+        cr.font.size = Pt(13)
+        cr.font.bold = True
+        cr.font.color.rgb = WHITE
+        # heading next to number
+        add_text(s, x + Inches(0.78), top + Inches(0.27),
+                 box_w - Inches(1.0), Inches(0.4),
+                 head, size=14, bold=True, color=EDC_NAVY)
+        # body below
+        add_text(s, x + Inches(0.25), top + Inches(0.85),
+                 box_w - Inches(0.5), Inches(0.7),
+                 body, size=11, color=INK, line_spacing=1.3)
+
+    # Example label
+    add_text(s, Inches(0.65), Inches(3.85), Inches(12), Inches(0.4),
+             'EKSEMPEL — sådan kunne en god prompt se ud:',
+             size=13, bold=True, color=EDC_YELLOW, font='Menlo')
+
+    # Example box (annotated with [1] [2] [3] [4])
+    ex_box = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
+                                Inches(0.65), Inches(4.3),
+                                Inches(12.05), Inches(2.55))
+    ex_box.adjustments[0] = 0.04
+    ex_box.fill.solid()
+    ex_box.fill.fore_color.rgb = CODE_BG
+    ex_box.line.fill.background()
+
+    # Build example with [N] markers in yellow
+    ex_tx = s.shapes.add_textbox(Inches(0.95), Inches(4.45),
+                                 Inches(11.45), Inches(2.3))
+    ex_tf = ex_tx.text_frame
+    ex_tf.word_wrap = True
+    ex_tf.margin_left = 0
+    ex_tf.margin_right = 0
+    ex_tf.margin_top = 0
+    ex_tf.margin_bottom = 0
+
+    def ex_line(p, marker, text):
+        p.line_spacing = 1.4
+        p.space_after = Pt(8)
+        m = p.add_run()
+        m.text = f'[{marker}] '
+        m.font.name = 'Menlo'
+        m.font.size = Pt(13)
+        m.font.bold = True
+        m.font.color.rgb = EDC_YELLOW
+        t = p.add_run()
+        t.text = text
+        t.font.name = 'Menlo'
+        t.font.size = Pt(13)
+        t.font.color.rgb = CODE_INK
+
+    p = ex_tf.paragraphs[0]
+    ex_line(p, '1', 'Læs lib/propertyService.ts.')
+    ex_line(ex_tf.add_paragraph(), '2',
+            'Tilføj findByCity(city: string) der returnerer alle boliger i en given by.')
+    ex_line(ex_tf.add_paragraph(), '3',
+            'Rør ikke getAll eller findById. Ingen commit.')
+    ex_line(ex_tf.add_paragraph(), '4',
+            'Forventet: findByCity("Hellerup") returnerer 1 bolig.')
+
+    # Bottom hint
+    add_text(s, Inches(0.65), Inches(7.0), Inches(12), Inches(0.3),
+             'Skriv først en hurtig prompt — så git checkout . + /clear — så samme opgave med strukturen.',
+             size=11, italic=True, color=MUTED, align=PP_ALIGN.CENTER)
 
 
 # ---------- Speaker notes -------------------------------------------------
@@ -842,9 +924,9 @@ NOTES = [
 
 # ---------- Build deck ----------------------------------------------------
 total = len(SLIDES)
-# Cover (0), demo-divider (7), hands-on-divider (10), outro (last)
-# har egen chrome — resten får navy-stripes + logo + sidetal
-DIVIDER_INDEXES = {0, 7, 10, total - 1}
+# Cover (0) og demo-divider (7) har egen navy-baggrund — ingen chrome.
+# Resten af slides får navy-stripes + logo + sidetal.
+DIVIDER_INDEXES = {0, 7}
 
 for idx, builder in enumerate(SLIDES):
     s = prs.slides.add_slide(blank)
