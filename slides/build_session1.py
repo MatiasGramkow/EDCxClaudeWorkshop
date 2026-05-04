@@ -599,40 +599,16 @@ def s_esc(s):
 @slide
 def s_divider_demo(s):
     fill_bg(s, EDC_NAVY)
-    add_text(s, Inches(0), Inches(1.4), SLIDE_W, Inches(0.6),
+    add_text(s, Inches(0), Inches(2.9), SLIDE_W, Inches(0.6),
              'Punkt 2', size=22, color=EDC_YELLOW,
              align=PP_ALIGN.CENTER, font='Menlo')
-    add_text(s, Inches(0), Inches(2.1), SLIDE_W, Inches(1.2),
+    add_text(s, Inches(0), Inches(3.6), SLIDE_W, Inches(1.2),
              'Live demo', size=54, bold=True, color=WHITE,
              align=PP_ALIGN.CENTER)
-    add_text(s, Inches(0), Inches(3.2), SLIDE_W, Inches(0.6),
+    add_text(s, Inches(0), Inches(4.7), SLIDE_W, Inches(0.6),
              'Samme opgave — dårlig prompt vs. god prompt',
              size=20, color=RGBColor(0xC8, 0xD4, 0xE8),
              align=PP_ALIGN.CENTER)
-    # URL pill — what to do during the demo
-    pill_w = Inches(7.0)
-    pill_h = Inches(1.4)
-    pill = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
-                              (SLIDE_W - pill_w) / 2, Inches(4.6),
-                              pill_w, pill_h)
-    pill.adjustments[0] = 0.15
-    pill.fill.solid()
-    pill.fill.fore_color.rgb = EDC_YELLOW
-    pill.line.fill.background()
-    add_text(s, (SLIDE_W - pill_w) / 2, Inches(4.7),
-             pill_w, Inches(0.5),
-             'KOPIER PROMPTS FRA',
-             size=14, bold=True, color=EDC_NAVY,
-             align=PP_ALIGN.CENTER, font='Menlo')
-    add_text(s, (SLIDE_W - pill_w) / 2, Inches(5.15),
-             pill_w, Inches(0.8),
-             '/prompts',
-             size=44, bold=True, color=EDC_NAVY,
-             align=PP_ALIGN.CENTER, font='Menlo')
-    add_text(s, Inches(0), Inches(6.4), SLIDE_W, Inches(0.5),
-             'Skærmen er min — kig med på terminal og /demo',
-             size=15, color=RGBColor(0xC8, 0xD4, 0xE8),
-             align=PP_ALIGN.CENTER, italic=True)
     bot = s.shapes.add_shape(MSO_SHAPE.RECTANGLE,
                              0, Inches(7.32), SLIDE_W, Inches(0.18))
     bot.fill.solid()
