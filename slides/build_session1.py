@@ -259,24 +259,51 @@ def slide(fn):
     return fn
 
 
-# --- 1. Cover (Punkt 1 style — navy, no logo) ---
+# --- 1. Cover (Punkt 1 style — navy, with Claude IRL screenshots) ---
 @slide
 def s_cover(s):
     fill_bg(s, EDC_NAVY)
-    # "Punkt 1" yellow
-    add_text(s, Inches(0), Inches(2.9), SLIDE_W, Inches(0.6),
-             'Session 1', size=22, bold=False, color=EDC_YELLOW,
+    # Compact title at top
+    add_text(s, Inches(0), Inches(0.5), SLIDE_W, Inches(0.5),
+             'Session 1', size=18, bold=False, color=EDC_YELLOW,
              align=PP_ALIGN.CENTER, font='Menlo')
-    # Big title
-    add_text(s, Inches(0), Inches(3.6), SLIDE_W, Inches(1.2),
-             'Gode vs. dårlige prompts', size=54, bold=True, color=WHITE,
+    add_text(s, Inches(0), Inches(1.0), SLIDE_W, Inches(1.0),
+             'Gode vs. dårlige prompts', size=44, bold=True, color=WHITE,
              align=PP_ALIGN.CENTER)
-    # Subtitle
-    add_text(s, Inches(0), Inches(4.7), SLIDE_W, Inches(0.6),
-             'Kickoff og fundamentet · EDC × Claude Code',
-             size=20, color=RGBColor(0xC8, 0xD4, 0xE8),
+    add_text(s, Inches(0), Inches(2.0), SLIDE_W, Inches(0.4),
+             'Mens I finder pladser — lidt Claude IRL',
+             size=14, italic=True, color=RGBColor(0xC8, 0xD4, 0xE8),
              align=PP_ALIGN.CENTER)
-    # Bottom thin line
+
+    # Apology image — Claude making stuff up
+    apology = os.path.join(HERE, 'cover', 'claude_apology.png')
+    if os.path.exists(apology):
+        add_text(s, Inches(0), Inches(2.7), SLIDE_W, Inches(0.35),
+                 'Når Claude finder på ting:',
+                 size=13, bold=True, color=EDC_YELLOW,
+                 align=PP_ALIGN.CENTER, font='Menlo')
+        # Native aspect ~929:20. At 10" wide → ~0.22" tall.
+        img_w = Inches(10)
+        img_h = Inches(0.215)
+        s.shapes.add_picture(apology,
+                             (SLIDE_W - img_w) / 2, Inches(3.05),
+                             width=img_w, height=img_h)
+
+    # Bug-find image — Claude actually working
+    bugfind = os.path.join(HERE, 'cover', 'claude_bug_find.png')
+    if os.path.exists(bugfind):
+        add_text(s, Inches(0), Inches(3.55), SLIDE_W, Inches(0.35),
+                 '...og når Claude graver 224 sekunder for at finde en rigtig bug:',
+                 size=13, bold=True, color=EDC_YELLOW,
+                 align=PP_ALIGN.CENTER, font='Menlo')
+        # Native aspect 674:892. At 2.5" wide → ~3.31" tall.
+        img_w = Inches(2.5)
+        img_h = Inches(3.31)
+        s.shapes.add_picture(bugfind,
+                             (SLIDE_W - img_w) / 2, Inches(3.95),
+                             width=img_w, height=img_h)
+
+    # Bottom yellow stripe
     bot = s.shapes.add_shape(MSO_SHAPE.RECTANGLE,
                              0, Inches(7.32), SLIDE_W, Inches(0.18))
     bot.fill.solid()
