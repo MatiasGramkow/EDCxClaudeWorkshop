@@ -574,26 +574,45 @@ def s_next(s):
 def s_core(s):
     fill_bg(s, WHITE)
     add_title(s, 'Dagens kerne', 'En prompt er alt')
-    # Two big lines
-    add_text(s, Inches(0.6), Inches(2.7),
-             Inches(12.2), Inches(0.9),
+    # Two big lines (compressed slightly to make room for new callout)
+    add_text(s, Inches(0.6), Inches(2.2),
+             Inches(12.2), Inches(0.85),
              'En dårlig prompt giver generisk kode.',
-             size=34, bold=True, color=MUTED)
-    add_text(s, Inches(0.6), Inches(3.7),
-             Inches(12.2), Inches(0.9),
+             size=32, bold=True, color=MUTED)
+    add_text(s, Inches(0.6), Inches(3.05),
+             Inches(12.2), Inches(0.85),
              'En god prompt giver produktionsklar kode.',
-             size=34, bold=True, color=EDC_NAVY)
-    # Subtitle
+             size=32, bold=True, color=EDC_NAVY)
+
+    # Light callout: Forskellen er...
     sub = s.shapes.add_shape(MSO_SHAPE.RECTANGLE,
-                             Inches(0.6), Inches(5.5),
-                             Inches(12.13), Inches(1.0))
+                             Inches(0.6), Inches(4.35),
+                             Inches(12.13), Inches(0.9))
     sub.fill.solid()
     sub.fill.fore_color.rgb = EDC_LIGHT_BG
     sub.line.fill.background()
-    add_text(s, Inches(0.6), Inches(5.5), Inches(12.13), Inches(1.0),
+    add_text(s, Inches(0.6), Inches(4.35), Inches(12.13), Inches(0.9),
              'Forskellen er hvor præcist du beskriver opgaven.',
-             size=22, color=EDC_NAVY, align=PP_ALIGN.CENTER,
+             size=20, color=EDC_NAVY, align=PP_ALIGN.CENTER,
              anchor=MSO_ANCHOR.MIDDLE)
+
+    # Punchline callout: den første prompt er den vigtigste
+    punch = s.shapes.add_shape(MSO_SHAPE.RECTANGLE,
+                               Inches(0.6), Inches(5.45),
+                               Inches(12.13), Inches(1.25))
+    punch.fill.solid()
+    punch.fill.fore_color.rgb = EDC_NAVY
+    punch.line.fill.background()
+    # Small yellow eyebrow label
+    add_text(s, Inches(0.6), Inches(5.6), Inches(12.13), Inches(0.35),
+             'OG VIGTIGST AF ALT',
+             size=12, bold=True, color=EDC_YELLOW,
+             align=PP_ALIGN.CENTER, font='Menlo')
+    # Main punchline
+    add_text(s, Inches(0.6), Inches(5.95), Inches(12.13), Inches(0.7),
+             'Den første prompt er den vigtigste.',
+             size=26, bold=True, color=WHITE,
+             align=PP_ALIGN.CENTER)
 
 
 # --- 6. De 4 byggeklodser ---
@@ -965,11 +984,13 @@ NOTES = [
 
     # 5. Dagens kerne
     "─── LÆS ───\n"
-    "Saml i ÉN sætning · 0:13–0:15. Sig den langsomt. Det er hele dagen i én linje.\n\n"
+    "Saml i ÉN sætning · 0:13–0:15. Sig de tre linjer langsomt. Den sidste — \"den første prompt er den vigtigste\" — er nøgle-pointen: når Claude først er i gang med en svag retning, er det svært at rette kursen. Bedre at bruge 30 sek ekstra på prompten end 10 min på at rydde op.\n\n"
     "─── SIG ───\n"
     "\"En dårlig prompt giver generisk kode.\"\n\n"
     "\"En god prompt giver produktionsklar kode.\"\n\n"
-    "\"Forskellen er hvor præcist du beskriver opgaven for Claude. Det er det vi træner i dag.\"",
+    "\"Forskellen er hvor præcist du beskriver opgaven for Claude.\"\n\n"
+    "[Pause. Peg på det navy-felt nederst.]\n\n"
+    "\"Og den vigtigste prompt er den første. Når Claude er i gang i en forkert retning, er det svært at rette kursen. Bedre at bruge 30 sekunder ekstra på den første prompt end 10 minutter på at rydde op bagefter.\"",
 
     # 6. De 4 byggeklodser
     "─── LÆS ───\n"
