@@ -259,28 +259,22 @@ def slide(fn):
     return fn
 
 
-# --- 1. Cover (Punkt 1 style — navy with logo) ---
+# --- 1. Cover (Punkt 1 style — navy, no logo) ---
 @slide
 def s_cover(s):
     fill_bg(s, EDC_NAVY)
-    # Centered EDC logo
-    if os.path.exists(LOGO_PATH):
-        logo_w = Inches(1.6)
-        s.shapes.add_picture(LOGO_PATH,
-                             (SLIDE_W - logo_w) / 2, Inches(1.8),
-                             width=logo_w, height=logo_w)
     # "Punkt 1" yellow
-    add_text(s, Inches(0), Inches(4.0), SLIDE_W, Inches(0.6),
+    add_text(s, Inches(0), Inches(2.9), SLIDE_W, Inches(0.6),
              'Session 1', size=22, bold=False, color=EDC_YELLOW,
              align=PP_ALIGN.CENTER, font='Menlo')
     # Big title
-    add_text(s, Inches(0), Inches(4.7), SLIDE_W, Inches(1.0),
-             'Gode vs. dårlige prompts', size=44, bold=True, color=WHITE,
+    add_text(s, Inches(0), Inches(3.6), SLIDE_W, Inches(1.2),
+             'Gode vs. dårlige prompts', size=54, bold=True, color=WHITE,
              align=PP_ALIGN.CENTER)
     # Subtitle
-    add_text(s, Inches(0), Inches(5.5), SLIDE_W, Inches(0.6),
+    add_text(s, Inches(0), Inches(4.7), SLIDE_W, Inches(0.6),
              'Kickoff og fundamentet · EDC × Claude Code',
-             size=18, color=RGBColor(0xC8, 0xD4, 0xE8),
+             size=20, color=RGBColor(0xC8, 0xD4, 0xE8),
              align=PP_ALIGN.CENTER)
     # Bottom thin line
     bot = s.shapes.add_shape(MSO_SHAPE.RECTANGLE,
