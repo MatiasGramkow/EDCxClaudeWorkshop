@@ -848,125 +848,173 @@ def s_outro(s):
 
 
 # ---------- Speaker notes -------------------------------------------------
+# Format-konvention:
+#   ─── LÆS ─── = baggrund/kontekst du skanner med øjnene
+#   ─── SIG ─── = ordret hvad du siger (i citationstegn)
+#   ─── GØR ─── = handlinger (klik, kopier, refresh, osv.)
 NOTES = [
     # 1. Cover
-    "VELKOMST · 0:00–0:05\n\n"
-    "Velkommen. Jeg er Matias, det her er Michael. Vi er facilitatorer for de næste 5 uger.\n\n"
-    "Sig: 'Det her er ikke et kursus hvor I lytter til os. Det er en træningslejr hvor I lærer ved at gøre — og fra session 2 også ved at undervise jeres kollegaer.'\n\n"
-    "Vent ikke for længe på dette slide — kom videre.",
+    "─── LÆS ───\n"
+    "Velkomst · 0:00–0:05. Første øjeblik — bare rammesæt. Vent ikke for længe; kom videre.\n\n"
+    "─── SIG ───\n"
+    "\"Velkommen. Jeg er Matias, og det her er Michael. Vi er facilitatorer for de næste 5 uger.\"\n\n"
+    "\"Det her er ikke et kursus hvor I lytter til os. Det er en træningslejr hvor I lærer ved at gøre — og fra session 2 også ved at undervise jeres kollegaer.\"",
 
     # 2. Dagsorden
-    "DAGSORDEN · 0:05–0:07\n\n"
-    "Hurtigt overblik — peg på de fremhævede felter (de blå): det er de tre hoveddele.\n\n"
-    "Sig: 'Lige om lidt fortæller jeg lidt om hvordan de næste 5 uger ser ud. Så går vi i terminalen og laver en live demo. Og så er det jer der skal kode.'\n\n"
-    "Pause efter 30 min er en god mental anker — folk slapper af når de ved hvornår de kan trække vejret.",
+    "─── LÆS ───\n"
+    "Hurtigt overblik · 0:05–0:07. Peg på de fremhævede (blå) felter — det er de tre hoveddele. Pause efter 30 min er en mental anker.\n\n"
+    "─── SIG ───\n"
+    "\"Lige om lidt fortæller jeg lidt om hvordan de næste 5 uger ser ud.\"\n\n"
+    "\"Så går vi i terminalen og laver en live demo.\"\n\n"
+    "\"Og så er det jer der skal kode.\"",
 
     # 3. Vores rolle
-    "VORES ROLLE · 0:07–0:10\n\n"
-    "Det her er den vigtigste pointe i dag: vi er ikke guruer. Hvis I bare lytter, lærer I ingenting. Hvis I underviser hinanden, sidder det fast.\n\n"
-    "Sig direkte: 'Jeg ved ikke nødvendigvis mere end jer om Claude Code om 5 uger. Det her er et hold der lærer sammen.'\n\n"
-    "Forklar at vi hjælper med slides ugen før — så ingen står alene. Det er præcis 1 time, det er ikke en disputats.",
+    "─── LÆS ───\n"
+    "Vigtigste pointe i dag · 0:07–0:10. Hvis de bare lytter, lærer de ingenting. Hvis de underviser hinanden, sidder det fast.\n\n"
+    "─── SIG ───\n"
+    "\"Det her er den vigtigste pointe i dag: Michael og jeg er facilitatorer, ikke guruer.\"\n\n"
+    "\"Jeg ved ikke nødvendigvis mere end jer om Claude Code om 5 uger. Det her er et hold der lærer sammen.\"\n\n"
+    "\"Fra session 2 er det én af jer der præsenterer dagens emne. Vi hjælper med slides ugen før, så ingen står alene med det.\"",
 
     # 4. Vælg næste præsentant
-    "VÆLG NÆSTE PRÆSENTANT · 0:10–0:13\n\n"
-    "Det her øjeblik er lidt akavet — det er meningen. Stil spørgsmålet og hold mund.\n\n"
-    "Sig: 'Hvem vil tage session 2 om Plan mode? Det er torsdag, jeg hjælper jer med slides senest mandag eftermiddag.'\n\n"
-    "Vent. Lad stilheden arbejde for jer. Hvis ingen melder sig efter 10 sekunder, så vælg én du ved godt har lyst — eller én der ser frisk ud. Sig venligt: '[Navn] — vil du tage den?'\n\n"
+    "─── LÆS ───\n"
+    "Akavet øjeblik · 0:10–0:13. Stil spørgsmålet og hold mund. Lad stilheden virke. Hvis ingen melder sig efter 10 sek: vælg én du ved godt har lyst — eller én der ser frisk ud.\n\n"
+    "─── SIG ───\n"
+    "\"Hvem vil tage session 2 om Plan mode? Det er torsdag, jeg hjælper jer med slides senest mandag eftermiddag.\"\n\n"
+    "[Vent. Tæl til 10 i hovedet.]\n\n"
+    "Hvis ingen melder sig:\n"
+    "\"[Navn] — vil du tage den?\"\n\n"
+    "─── GØR ───\n"
     "Når én melder sig: TAK højt. Det sætter normen for resten af forløbet.",
 
     # 5. Dagens kerne
-    "DAGENS KERNE · 0:13–0:15\n\n"
-    "Saml det op til ÉN sætning. Sig den langsomt:\n\n"
-    "'En dårlig prompt giver generisk kode. En god prompt giver produktionsklar kode.'\n\n"
-    "Forskellen er kontekst. Det er det vi træner i dag. Resten af de næste 5 uger bygger ovenpå det.",
+    "─── LÆS ───\n"
+    "Saml i ÉN sætning · 0:13–0:15. Sig den langsomt. Det er hele dagen i én linje.\n\n"
+    "─── SIG ───\n"
+    "\"En dårlig prompt giver generisk kode.\"\n\n"
+    "\"En god prompt giver produktionsklar kode.\"\n\n"
+    "\"Forskellen er kontekst. Det er det vi træner i dag.\"",
 
     # 6. De 4 byggeklodser
-    "DE 4 BYGGEKLODSER · 0:15–0:18\n\n"
-    "Det her er det MØNSTER I skal kunne udenad efter session 1. Læs dem op én af gangen og giv et lille eksempel:\n\n"
-    "1. KONTEKST — 'Læs lib/propertyService.ts og components/PropertyCard.tsx'\n"
-    "2. OPGAVE — 'Lav en formatPrice-helper og brug den i begge filer'\n"
-    "3. BEGRÆNSNINGER — 'Rør intet andet. Ingen commit.'\n"
-    "4. FORVENTET OUTPUT — 'Priser vises som 8.500.000 kr. — alle 3 steder'\n\n"
-    "Lov dem at vi vender tilbage til mønsteret hver eneste session.",
+    "─── LÆS ───\n"
+    "Mønsteret · 0:15–0:18. Det her skal de kunne udenad efter session 1. Læs dem op én af gangen og giv et lille eksempel for hver.\n\n"
+    "─── SIG ───\n"
+    "\"En god prompt har altid 4 dele.\"\n\n"
+    "\"1. Kontekst — fx: Læs lib/propertyService.ts og components/PropertyCard.tsx.\"\n\n"
+    "\"2. Opgave — fx: Lav en formatPrice-helper og brug den i begge filer.\"\n\n"
+    "\"3. Begrænsninger — fx: Rør intet andet. Ingen commit.\"\n\n"
+    "\"4. Forventet output — fx: Priser vises som 8.500.000 kr. — alle 3 steder.\"\n\n"
+    "\"Vi vender tilbage til de 4 byggeklodser hver eneste session de næste 5 uger.\"",
 
     # 7. Esc Esc
-    "TRYGHED · 0:18–0:20\n\n"
-    "Det her er et trick I skal vide om FRA dag 1, selvom vi går i dybden i session 3.\n\n"
-    "Sig: 'Når Claude laver noget I fortryder — eller koden går i sort — så tryk Esc to gange. Der kommer en menu hvor I kan rulle tilbage til ethvert tidligere punkt i samtalen. Filerne, conversation, eller begge dele.'\n\n"
-    "Pointe (læs slidet højt): 'Det er det her der gør det trygt at lade Claude prøve noget vildt.'\n\n"
-    "Sig: 'I må gerne bruge det fra første prompt I skriver i dag.'",
+    "─── LÆS ───\n"
+    "Tryghed fra dag 1 · 0:18–0:20. Vi går i dybden i session 3, men de skal vide om det FRA i dag. Pointe: hvis de aldrig kan rulle tilbage, tør de aldrig prøve noget nyt.\n\n"
+    "─── SIG ───\n"
+    "\"Når Claude laver noget I fortryder — eller koden går i sort — så tryk Esc to gange.\"\n\n"
+    "\"Der kommer en menu hvor I kan rulle tilbage til ethvert tidligere punkt i samtalen. Filerne, conversation, eller begge dele.\"\n\n"
+    "\"Det er det her der gør det trygt at lade Claude prøve noget vildt.\"\n\n"
+    "\"I må gerne bruge det fra første prompt I skriver i dag.\"",
 
     # 8. Live demo divider
-    "LIVE DEMO · 0:20 — start\n\n"
-    "OK — nu skifter vi til terminal og browser. Slides bliver siddende på dette billede mens I forklarer setup'et.\n\n"
-    "Sig: 'I de næste 15 minutter skriver jeg samme opgave til Claude — først dårligt, så godt. Kig BÅDE på terminalen og på /demo i browseren ved siden af.'\n\n"
+    "─── LÆS ───\n"
+    "Skift til terminal · 0:20 — start.\n\n"
     "TJEKLISTE FØR DU KØRER:\n"
-    "□ git status er clean\n"
-    "□ /demo er åben i browseren med USD-priser synlige\n"
-    "□ claude --dangerously-skip-permissions kører i demo/-mappen\n"
-    "□ Du kan se BÅDE terminal og browser samtidig på projektoren",
+    "  □ git status er clean\n"
+    "  □ /demo er åben i browseren med USD-priser synlige\n"
+    "  □ claude --dangerously-skip-permissions kører i demo/-mappen\n"
+    "  □ Du kan se BÅDE terminal og browser samtidig på projektoren\n\n"
+    "─── SIG ───\n"
+    "\"OK — nu skifter vi til terminal og browser.\"\n\n"
+    "\"I de næste 15 minutter skriver jeg samme opgave til Claude — først dårligt, så godt.\"\n\n"
+    "\"Kig BÅDE på terminalen og på /demo i browseren ved siden af.\"",
 
     # 9. Bug'en
-    "VIS BUG'EN · 0:20–0:22\n\n"
-    "Skift til browseren. Scroll ned ad /demo. Peg eksplicit på priserne.\n\n"
-    "Sig: 'Det her er en dansk bolig-side. Priserne er i amerikanske dollars MED cents. Hele sitet er i stykker visuelt.'\n\n"
-    "Klik på en bolig — vis at detaljesiden har samme problem. Søg demo@edc.dk i favorit-widgeten — også USD-priser.\n\n"
-    "Sig: 'Det er det her vi vil have Claude til at fixe. Pris-formateringen ligger inline 3 steder uden helper. Det er ikke konstrueret — det er typisk consequence af 'hurtigt fix' nogen lavede engang.'",
+    "─── LÆS ───\n"
+    "Vis bug'en · 0:20–0:22.\n\n"
+    "─── GØR ───\n"
+    "Skift til browseren. Scroll ned ad /demo. Peg eksplicit på priserne.\n"
+    "Klik på en bolig — vis at detaljesiden har samme problem.\n"
+    "Søg \"demo@edc.dk\" i favorit-widgeten — også USD-priser.\n\n"
+    "─── SIG ───\n"
+    "\"Det her er en dansk bolig-side. Priserne er i amerikanske dollars MED cents. Hele sitet er i stykker visuelt.\"\n\n"
+    "\"Pris-formateringen ligger inline 3 steder uden helper. Det er ikke konstrueret — det er typisk consequence af 'hurtigt fix' nogen lavede engang.\"\n\n"
+    "\"Det er det her vi vil have Claude til at fixe.\"",
 
     # 10. Dårlig prompt
-    "DÅRLIG PROMPT · 0:22–0:26\n\n"
-    "Sig først: 'Det her ligner en prompt de fleste skriver på autopilot — vi nævner symptomet, men ikke hvor i koden det skal fixes. Det er IKKE en stråmand, det er hverdag.'\n\n"
-    "Kopier prompten ind. Tryk enter.\n\n"
-    "Mens Claude arbejder, fortæl: 'Forventning: den finder ET fix der virker. Men vi har kørt det her 3 gange — den lander forskelligt hver gang.'\n\n"
-    "Når den er færdig: vis hvad den gjorde, refresh /demo, og sig: 'Det virker! Men hold den her i baghovedet.'",
+    "─── LÆS ───\n"
+    "Realistisk dårlig · 0:22–0:26. Vi har kørt det her 3 gange — den lander forskelligt hver gang.\n\n"
+    "─── SIG ───\n"
+    "\"Det her ligner en prompt de fleste skriver på autopilot — vi nævner symptomet, men ikke hvor i koden det skal fixes.\"\n\n"
+    "\"Det er IKKE en stråmand, det er hverdag.\"\n\n"
+    "─── GØR ───\n"
+    "Kopier prompten fra slidet ind i Claude. Tryk enter.\n\n"
+    "─── SIG (mens Claude arbejder) ───\n"
+    "\"Forventning: den finder ET fix der virker. Men hold den her i baghovedet — vi har kørt det 3 gange, den lander forskelligt hver gang.\"\n\n"
+    "─── GØR ───\n"
+    "Når Claude er færdig: vis hvad den gjorde, refresh /demo.\n\n"
+    "─── SIG ───\n"
+    "\"Det virker! Men hold det her i baghovedet.\"",
 
     # 11. God prompt
-    "GOD PROMPT · 0:26–0:31\n\n"
-    "Først: rul tilbage. Sig højt mens du gør det:\n"
+    "─── LÆS ───\n"
+    "Samme opgave, med kontekst · 0:26–0:31.\n\n"
+    "─── GØR ───\n"
+    "Rul tilbage i terminalen (vis det højt mens du gør det):\n"
     "  git checkout .\n"
     "  /clear\n\n"
-    "Sig: 'Nu siger vi præcis HVOR (3 filer), HVAD (én helper), og HVORDAN (da-DK, DKK, 0 decimaler).'\n\n"
-    "Kopier den gode prompt ind. Tryk enter.\n\n"
+    "─── SIG ───\n"
+    "\"Nu siger vi præcis HVOR (3 filer), HVAD (én helper), og HVORDAN (da-DK, DKK, 0 decimaler).\"\n\n"
+    "─── GØR ───\n"
+    "Kopier den gode prompt ind. Tryk enter.\n"
     "Når den er færdig: vis at den lavede ÉN helper i propertyService.ts, og at de andre 2 filer importerer den. Refresh /demo.\n\n"
-    "Sig: 'Samme visuelle resultat. Helt anden kode-struktur.'",
+    "─── SIG ───\n"
+    "\"Samme visuelle resultat. Helt anden kode-struktur.\"",
 
     # 12. Pointen
-    "POINTEN · 0:31–0:33\n\n"
-    "Det her er momentet hvor I skal sige det højt — ikke bare lade slidet tale.\n\n"
-    "Sig: 'Begge fixes virker visuelt — kr. står overalt. Men kig på koden:\n"
-    "- Den dårlige duplikerede logikken 3 steder.\n"
-    "- Den gode lavede én helper, brugt 3 steder.'\n\n"
-    "'Om 3 måneder, når en designer beder om at vise øre i favorit-listen, er det den forskel der bestemmer om I bruger 5 minutter eller 30.'\n\n"
-    "Det er pointen. Det er hele dagen i én sætning.",
+    "─── LÆS ───\n"
+    "Sig det højt · 0:31–0:33. Det her er momentet hvor du SKAL sige det højt — ikke bare lade slidet tale. Det er hele dagen i én sætning.\n\n"
+    "─── SIG ───\n"
+    "\"Begge fixes virker visuelt — kr. står overalt. Men kig på koden:\"\n\n"
+    "\"Den dårlige duplikerede logikken 3 steder.\"\n\n"
+    "\"Den gode lavede én helper, brugt 3 steder.\"\n\n"
+    "\"Om 3 måneder, når en designer beder om at vise øre i favorit-listen, er det den forskel der bestemmer om I bruger 5 minutter eller 30.\"",
 
     # 13. Vigtigt forbehold
-    "VIGTIGT FORBEHOLD · 0:33–0:35\n\n"
-    "Det her slide er forsikring mod den deltager der siger 'jamen den dårlige fungerede jo fint'.\n\n"
-    "Sig direkte: 'I har ret. På denne lille demo med Opus 4.7 er forskellen subtil — Claude er smart nok til at finde et fix der virker, selv når prompten er vag.'\n\n"
-    "'Men i jeres rigtige projekter — 100k+ linjer, DTO'er, mappere, migrations, konventioner der ikke er skrevet ned — eksploderer det. En vag prompt rammer den forkerte fil, glemmer halvdelen af kæden, eller introducerer et abstraktionslag der konflikter med jeres eksisterende.'\n\n"
-    "'Vi træner mønsteret her hvor det er sikkert at fejle — så det sidder i fingrene når I er midt i en rigtig PR mandag morgen.'",
+    "─── LÆS ───\n"
+    "Forsikring · 0:33–0:35. Det her slide er forsikring mod den deltager der siger \"jamen den dårlige fungerede jo fint\". Anerkend det direkte — det er ærligt.\n\n"
+    "─── SIG ───\n"
+    "\"I har ret. På denne lille demo med Opus 4.7 er forskellen subtil — Claude er smart nok til at finde et fix der virker, selv når prompten er vag.\"\n\n"
+    "\"Men i jeres rigtige projekter — 100k+ linjer, DTO'er, mappere, migrations, konventioner der ikke er skrevet ned — eksploderer det.\"\n\n"
+    "\"En vag prompt rammer den forkerte fil, glemmer halvdelen af kæden, eller introducerer et abstraktionslag der konflikter med jeres eksisterende.\"\n\n"
+    "\"Vi træner mønsteret her hvor det er sikkert at fejle — så det sidder i fingrene når I er midt i en rigtig PR mandag morgen.\"",
 
     # 14. Hands-on divider
-    "HANDS-ON · 0:35 — start\n\n"
-    "Korte og klare instrukser. Læs slidet højt — kort.\n\n"
-    "Sig: 'Nu jer. Par jer op 2 og 2 — gerne på tværs af teams så I møder nogen nye. I har 20 minutter.'",
+    "─── LÆS ───\n"
+    "Korte instrukser · 0:35 — start. De skal i gang.\n\n"
+    "─── SIG ───\n"
+    "\"Nu jer.\"\n\n"
+    "\"Par jer op 2 og 2 — gerne på tværs af teams så I møder nogen nye.\"\n\n"
+    "\"I har 20 minutter.\"",
 
     # 15. Hands-on instructions
-    "HANDS-ON FORTSAT · 0:35–0:55\n\n"
-    "Pege på slidet og læs trinene højt. Sørg for at de:\n"
-    "1. Får clonet repoet (én af dem)\n"
-    "2. Kører Claude i demo/-mappen\n"
-    "3. PRØVER BEGGE prompts — ikke bare den gode\n"
-    "4. Diskuterer forskellen sammen\n\n"
-    "Mens de arbejder: gå rundt. Hjælp dem der sidder fast. Lyt efter en god 'aha'-bemærkning du kan bede dem dele bagefter.\n\n"
-    "Med 5 min tilbage: 'Saml jer — én indsigt højt fra hvert par. Den der overraskede jer mest.'",
+    "─── LÆS ───\n"
+    "Mens de arbejder · 0:35–0:55. Gå rundt. Hjælp dem der sidder fast. Lyt efter en god 'aha'-bemærkning du kan bede dem dele bagefter.\n\n"
+    "─── SIG (i starten) ───\n"
+    "\"Læs trinene på slidet: clone, npm install, claude i demo. Vælg én opgave fra demoen.\"\n\n"
+    "\"Det vigtigste: prøv BEGGE prompts — ikke bare den gode. Diskuter forskellen sammen.\"\n\n"
+    "\"Hvis I sidder fast, ræk hånden op — vi går rundt.\"\n\n"
+    "─── SIG (med 5 min tilbage) ───\n"
+    "\"Saml jer — én indsigt højt fra hvert par. Den der overraskede jer mest.\"",
 
     # 16. Outro
-    "AFSLUTNING · 0:55–1:00\n\n"
-    "Sig direkte: 'Hjemmeopgaven er nem. Brug Claude Code på MINDST én rigtig opgave inden torsdag — i et af jeres rigtige projekter, ikke demoen.'\n\n"
-    "'Tag to prompts med til torsdag: én der virkede godt, og én der ikke gjorde. Vi starter session 2 med at dele dem. Vi lærer mest af de fejlede prompts.'\n\n"
-    "Bekræft næste præsentant igen ved navn så de ved det er reelt: '[Navn] tager session 2 om Plan mode. Jeg sender slide-skabelon og pre-work-video senest mandag.'\n\n"
-    "Tak for i dag.",
+    "─── LÆS ───\n"
+    "Afslutning · 0:55–1:00. Hjemmeopgave nem. Bekræft næste præsentant igen ved navn så de ved det er reelt.\n\n"
+    "─── SIG ───\n"
+    "\"Hjemmeopgaven er nem. Brug Claude Code på MINDST én rigtig opgave inden torsdag — i et af jeres rigtige projekter, ikke demoen.\"\n\n"
+    "\"Tag to prompts med til torsdag: én der virkede godt, og én der ikke gjorde.\"\n\n"
+    "\"Vi starter session 2 med at dele dem. Vi lærer mest af de fejlede prompts.\"\n\n"
+    "\"[Navn] tager session 2 om Plan mode. Jeg sender slide-skabelon og pre-work-video senest mandag.\"\n\n"
+    "\"Tak for i dag.\"",
 ]
 
 
