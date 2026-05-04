@@ -302,9 +302,8 @@ def s_agenda(s):
     rows = [
         ('0:00–0:05', 'Velkomst', False),
         ('0:05–0:15', 'Foredrag — sådan kører de næste 5 uger + vælg næste præsentant', True),
-        ('0:15–0:30', 'Live demo — samme opgave, dårlig vs. god prompt', True),
-        ('0:30–0:35', 'Pause', False),
-        ('0:35–0:55', 'Hands-on — par jer 2 og 2', True),
+        ('0:15–0:35', 'Live demo — samme opgave, dårlig vs. god prompt', True),
+        ('0:35–0:55', 'Hands-on — solo på din egen maskine', True),
         ('0:55–1:00', 'Del indsigter + take-home', False),
     ]
     row_h = Inches(0.55)
@@ -356,7 +355,7 @@ def s_agenda(s):
 @slide
 def s_role(s):
     fill_bg(s, WHITE)
-    add_title(s, 'Vores rolle', 'Facilitatorer, ikke guruer')
+    add_title(s, 'Vores rolle', 'Facilitatorer, ikke eksperter')
     # Two big content boxes (mirror EDC style page 3)
     box_y_1 = Inches(2.0)
     box_y_2 = Inches(4.4)
@@ -400,7 +399,7 @@ def s_role(s):
 
     role_box(box_y_1, '1',
              'Vi er facilitatorer hele forløbet',
-             'Michael og jeg står for **selve faciliteringen** alle 5 uger. Vi er her for at gøre det trygt — ikke for at være eksperter på Claude Code. Det her er et hold der lærer sammen.')
+             'Michael og jeg står for **selve faciliteringen** alle 5 uger. Vi er her for at gøre det trygt og holde tråden — det her er et hold der lærer sammen.')
     role_box(box_y_2, '2',
              'I underviser hinanden fra session 2',
              'Fra session 2 er det **én deltager fra holdet** der præsenterer dagens emne. Vi hjælper med slides ugen før, så ingen står alene med det. **Pointe:** I lærer det bedst ved at undervise det.')
@@ -779,7 +778,7 @@ def s_divider_handson(s):
              'Hands-on', size=44, bold=True, color=WHITE,
              align=PP_ALIGN.CENTER)
     add_text(s, Inches(0), Inches(5.5), SLIDE_W, Inches(0.6),
-             '20 minutter · par jer 2 og 2',
+             '20 minutter · solo på din egen maskine',
              size=18, color=RGBColor(0xC8, 0xD4, 0xE8),
              align=PP_ALIGN.CENTER)
     bot = s.shapes.add_shape(MSO_SHAPE.RECTANGLE,
@@ -795,14 +794,13 @@ def s_handson(s):
     fill_bg(s, WHITE)
     add_title(s, 'Hands-on', 'Prøv begge prompt-typer på samme opgave')
     add_bullets(s, Inches(0.7), Inches(2.2), Inches(12.0), Inches(4.5), [
-        'Par jer op — gerne på tværs af teams',
-        'En af jer kører: **git clone** + **npm install** + **claude** i `demo/`-mappen',
+        '**git clone** + **npm install** + **claude** i `demo/`-mappen',
         'Vælg én opgave fra demoen (pris-bug, performance, eller favorit-knap)',
-        'Skriv først en **hurtig prompt** — som I ville skrive på en travl dag',
+        'Skriv først en **hurtig prompt** — som du ville skrive på en travl dag',
         '**git checkout .** og **/clear** for at rulle tilbage',
         'Skriv så en prompt med **alle 4 byggeklodser**',
-        'Sammenlign: hvad var forskellen? Hvilken ville I committe?',
-    ], size=17, line_spacing=1.6)
+        'Sammenlign: hvad var forskellen? Hvilken ville du committe?',
+    ], size=18, line_spacing=1.6)
 
 
 # --- 16. Hjemmeopgave + tak ---
@@ -862,17 +860,17 @@ NOTES = [
 
     # 2. Dagsorden
     "─── LÆS ───\n"
-    "Hurtigt overblik · 0:05–0:07. Peg på de fremhævede (blå) felter — det er de tre hoveddele. Pause efter 30 min er en mental anker.\n\n"
+    "Hurtigt overblik · 0:05–0:07. Peg på de fremhævede (blå) felter — det er de tre hoveddele. Ingen pause på en time, men det går stærkt.\n\n"
     "─── SIG ───\n"
     "\"Lige om lidt fortæller jeg lidt om hvordan de næste 5 uger ser ud.\"\n\n"
     "\"Så går vi i terminalen og laver en live demo.\"\n\n"
-    "\"Og så er det jer der skal kode.\"",
+    "\"Og så er det jer der skal kode — solo på jeres egen maskine.\"",
 
     # 3. Vores rolle
     "─── LÆS ───\n"
     "Vigtigste pointe i dag · 0:07–0:10. Hvis de bare lytter, lærer de ingenting. Hvis de underviser hinanden, sidder det fast.\n\n"
     "─── SIG ───\n"
-    "\"Det her er den vigtigste pointe i dag: Michael og jeg er facilitatorer, ikke guruer.\"\n\n"
+    "\"Det her er den vigtigste pointe i dag: Michael og jeg er facilitatorer, ikke eksperter.\"\n\n"
     "\"Jeg ved ikke nødvendigvis mere end jer om Claude Code om 5 uger. Det her er et hold der lærer sammen.\"\n\n"
     "\"Fra session 2 er det én af jer der præsenterer dagens emne. Vi hjælper med slides ugen før, så ingen står alene med det.\"",
 
@@ -993,7 +991,7 @@ NOTES = [
     "Korte instrukser · 0:35 — start. De skal i gang.\n\n"
     "─── SIG ───\n"
     "\"Nu jer.\"\n\n"
-    "\"Par jer op 2 og 2 — gerne på tværs af teams så I møder nogen nye.\"\n\n"
+    "\"Solo på din egen maskine — du skal selv mærke forskellen i fingrene.\"\n\n"
     "\"I har 20 minutter.\"",
 
     # 15. Hands-on instructions
@@ -1001,10 +999,10 @@ NOTES = [
     "Mens de arbejder · 0:35–0:55. Gå rundt. Hjælp dem der sidder fast. Lyt efter en god 'aha'-bemærkning du kan bede dem dele bagefter.\n\n"
     "─── SIG (i starten) ───\n"
     "\"Læs trinene på slidet: clone, npm install, claude i demo. Vælg én opgave fra demoen.\"\n\n"
-    "\"Det vigtigste: prøv BEGGE prompts — ikke bare den gode. Diskuter forskellen sammen.\"\n\n"
-    "\"Hvis I sidder fast, ræk hånden op — vi går rundt.\"\n\n"
+    "\"Det vigtigste: prøv BEGGE prompts — ikke bare den gode. Læg mærke til forskellen.\"\n\n"
+    "\"Hvis du sidder fast, ræk hånden op — vi går rundt.\"\n\n"
     "─── SIG (med 5 min tilbage) ───\n"
-    "\"Saml jer — én indsigt højt fra hvert par. Den der overraskede jer mest.\"",
+    "\"Saml jer — én indsigt højt fra hver. Den der overraskede jer mest.\"",
 
     # 16. Outro
     "─── LÆS ───\n"

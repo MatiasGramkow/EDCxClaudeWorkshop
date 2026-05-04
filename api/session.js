@@ -46,14 +46,14 @@ const SESSIONS = [
         schedule: [
             { t: '0:00–0:05', what: 'Velkomst' },
             { t: '0:05–0:15', what: 'Foredrag: sådan foregår de næste 5 uger + vælg næste præsentant' },
-            { t: '0:15–0:30', what: 'Live demo: samme opgave, dårlig vs. god prompt' },
-            { t: '0:30–0:55', what: 'Par-øvelse: prøv begge prompt-typer på jeres egen kode' },
+            { t: '0:15–0:35', what: 'Live demo: samme opgave, dårlig vs. god prompt' },
+            { t: '0:35–0:55', what: 'Hands-on: prøv begge prompt-typer solo på din egen maskine' },
             { t: '0:55–1:00', what: 'Del indsigter + take-home' }
         ],
         foredrag: [
             '5 uger · tirsdag + torsdag · 1 time pr. session, 9 sessioner i alt',
             'Fast format fra session 2: recap → deltager-præsentation → vælg næste præsentant → Matias-demo (hvis tid)',
-            '**Vores rolle: facilitatorer, ikke guruer.** Michael og jeg står for selve faciliteringen alle 5 uger. Men fra session 2 er det ÉN deltager fra holdet der præsenterer dagens emne. Vi hjælper med at bygge slides ugen før, så ingen står alene med det.',
+            '**Vores rolle: facilitatorer, ikke eksperter.** Michael og jeg står for selve faciliteringen alle 5 uger. Men fra session 2 er det ÉN deltager fra holdet der præsenterer dagens emne. Vi hjælper med at bygge slides ugen før, så ingen står alene med det.',
             '**Vælg næste præsentant nu:** Hvem vil tage session 2 (Plan mode)? Hvis ingen melder sig, vælger vi én. Vi gentager øvelsen i slutningen af hver session for sessionen efter.',
             'Pre-work: fra session 2 sender vi en kort video ud inden hver gang. Ingen pre-work til i dag.',
             'Dagens kerne: en dårlig prompt giver generisk kode. En god prompt giver produktionsklar kode.',
@@ -153,17 +153,16 @@ Rør IKKE Header, SearchBar eller andre komponenter. Ingen nye dependencies — 
         ],
         handsOn: {
             aSpor: {
-                title: 'Fælles hands-on — par op 2 og 2',
+                title: 'Hands-on — solo på din egen maskine',
                 steps: [
-                    'Par jer op med sidemanden — gerne på tværs af teams',
-                    '`git clone https://github.com/MatiasGramkow/EDCxClaudeWorkshop.git && cd EDCxClaudeWorkshop/demo && npm install` (én af jer)',
+                    '`git clone https://github.com/MatiasGramkow/EDCxClaudeWorkshop.git && cd EDCxClaudeWorkshop/demo && npm install`',
                     '`claude` i `demo/`-mappen',
                     'Vælg én af de tre opgaver fra demoen (userService-bug, propertyService-performance, eller PropertyCard-favorit)',
-                    'Skriv først en **hurtig prompt** — som I ville skrive på en travl dag',
+                    'Skriv først en **hurtig prompt** — som du ville skrive på en travl dag',
                     'Kør `git checkout .` for at rulle tilbage. Kør `/clear` så Claude starter forfra',
                     'Skriv så en **prompt med de 4 byggeklodser** ([Fil] + [Opgave] + [Begrænsninger] + [Forventet output])',
-                    'Sammenlign: hvad var forskellen på svarene? Hvilken ville I stole nok på til at committe?',
-                    'Del én indsigt højt med rummet — den der overraskede jer mest'
+                    'Sammenlign: hvad var forskellen på svarene? Hvilken ville du stole nok på til at committe?',
+                    'Del én indsigt højt med rummet — den der overraskede dig mest'
                 ]
             },
             bSpor: { title: '', steps: [] }
