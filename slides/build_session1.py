@@ -264,43 +264,35 @@ def slide(fn):
 def s_cover(s):
     fill_bg(s, EDC_NAVY)
     # Compact title at top
-    add_text(s, Inches(0), Inches(0.5), SLIDE_W, Inches(0.5),
-             'Session 1', size=18, bold=False, color=EDC_YELLOW,
+    add_text(s, Inches(0), Inches(0.4), SLIDE_W, Inches(0.4),
+             'Session 1', size=16, bold=False, color=EDC_YELLOW,
              align=PP_ALIGN.CENTER, font='Menlo')
-    add_text(s, Inches(0), Inches(1.0), SLIDE_W, Inches(1.0),
-             'Gode vs. dårlige prompts', size=44, bold=True, color=WHITE,
+    add_text(s, Inches(0), Inches(0.85), SLIDE_W, Inches(0.9),
+             'Gode vs. dårlige prompts', size=42, bold=True, color=WHITE,
              align=PP_ALIGN.CENTER)
-    add_text(s, Inches(0), Inches(2.0), SLIDE_W, Inches(0.4),
+    add_text(s, Inches(0), Inches(1.85), SLIDE_W, Inches(0.35),
              'Mens I finder pladser — lidt Claude IRL',
              size=14, italic=True, color=RGBColor(0xC8, 0xD4, 0xE8),
              align=PP_ALIGN.CENTER)
 
-    # Apology image — Claude making stuff up
+    # Apology image — Claude making stuff up. Wide strip.
+    # Native aspect ~929:20. At 12" wide → ~0.258" tall.
     apology = os.path.join(HERE, 'cover', 'claude_apology.png')
     if os.path.exists(apology):
-        add_text(s, Inches(0), Inches(2.7), SLIDE_W, Inches(0.35),
-                 'Når Claude finder på ting:',
-                 size=13, bold=True, color=EDC_YELLOW,
-                 align=PP_ALIGN.CENTER, font='Menlo')
-        # Native aspect ~929:20. At 10" wide → ~0.22" tall.
-        img_w = Inches(10)
-        img_h = Inches(0.215)
+        img_w = Inches(12)
+        img_h = Inches(0.258)
         s.shapes.add_picture(apology,
-                             (SLIDE_W - img_w) / 2, Inches(3.05),
+                             (SLIDE_W - img_w) / 2, Inches(2.5),
                              width=img_w, height=img_h)
 
-    # Bug-find image — Claude actually working
+    # Bug-find image — Claude actually working. Big.
+    # Native aspect 674:892. At 3.3" wide → 4.37" tall (max within stripe).
     bugfind = os.path.join(HERE, 'cover', 'claude_bug_find.png')
     if os.path.exists(bugfind):
-        add_text(s, Inches(0), Inches(3.55), SLIDE_W, Inches(0.35),
-                 '...og når Claude graver 224 sekunder for at finde en rigtig bug:',
-                 size=13, bold=True, color=EDC_YELLOW,
-                 align=PP_ALIGN.CENTER, font='Menlo')
-        # Native aspect 674:892. At 2.5" wide → ~3.31" tall.
-        img_w = Inches(2.5)
-        img_h = Inches(3.31)
+        img_w = Inches(3.3)
+        img_h = Inches(4.37)
         s.shapes.add_picture(bugfind,
-                             (SLIDE_W - img_w) / 2, Inches(3.95),
+                             (SLIDE_W - img_w) / 2, Inches(2.9),
                              width=img_w, height=img_h)
 
     # Bottom yellow stripe
