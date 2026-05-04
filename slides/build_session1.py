@@ -263,11 +263,12 @@ def slide(fn):
 @slide
 def s_cover(s):
     fill_bg(s, EDC_NAVY)
-    # Centered EDC logo (slightly larger)
+    # Centered EDC logo
     if os.path.exists(LOGO_PATH):
+        logo_w = Inches(1.6)
         s.shapes.add_picture(LOGO_PATH,
-                             Inches(6.17), Inches(2.3),
-                             width=Inches(1.0), height=Inches(1.0))
+                             (SLIDE_W - logo_w) / 2, Inches(1.8),
+                             width=logo_w, height=logo_w)
     # "Punkt 1" yellow
     add_text(s, Inches(0), Inches(4.0), SLIDE_W, Inches(0.6),
              'Session 1', size=22, bold=False, color=EDC_YELLOW,
@@ -576,9 +577,10 @@ def s_esc(s):
 def s_divider_demo(s):
     fill_bg(s, EDC_NAVY)
     if os.path.exists(LOGO_PATH):
+        logo_w = Inches(1.6)
         s.shapes.add_picture(LOGO_PATH,
-                             Inches(6.17), Inches(2.3),
-                             width=Inches(1.0), height=Inches(1.0))
+                             (SLIDE_W - logo_w) / 2, Inches(1.8),
+                             width=logo_w, height=logo_w)
     add_text(s, Inches(0), Inches(4.0), SLIDE_W, Inches(0.6),
              'Punkt 2', size=22, color=EDC_YELLOW,
              align=PP_ALIGN.CENTER, font='Menlo')
@@ -772,9 +774,10 @@ def s_caveat(s):
 def s_divider_handson(s):
     fill_bg(s, EDC_NAVY)
     if os.path.exists(LOGO_PATH):
+        logo_w = Inches(1.6)
         s.shapes.add_picture(LOGO_PATH,
-                             Inches(6.17), Inches(2.3),
-                             width=Inches(1.0), height=Inches(1.0))
+                             (SLIDE_W - logo_w) / 2, Inches(1.8),
+                             width=logo_w, height=logo_w)
     add_text(s, Inches(0), Inches(4.0), SLIDE_W, Inches(0.6),
              'Punkt 3', size=22, color=EDC_YELLOW,
              align=PP_ALIGN.CENTER, font='Menlo')
@@ -813,9 +816,10 @@ def s_handson(s):
 def s_outro(s):
     fill_bg(s, EDC_NAVY)
     if os.path.exists(LOGO_PATH):
+        logo_w = Inches(1.2)
         s.shapes.add_picture(LOGO_PATH,
-                             Inches(6.17), Inches(0.9),
-                             width=Inches(0.9), height=Inches(0.9))
+                             (SLIDE_W - logo_w) / 2, Inches(0.7),
+                             width=logo_w, height=logo_w)
     add_text(s, Inches(0), Inches(2.1), SLIDE_W, Inches(0.6),
              'Hjemmeopgave inden torsdag', size=18, color=EDC_YELLOW,
              align=PP_ALIGN.CENTER, font='Menlo')
