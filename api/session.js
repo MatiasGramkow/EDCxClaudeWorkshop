@@ -4,7 +4,7 @@
 
 // Første tirsdag kl 09:00 dansk tid. Ret denne hvis datoen flytter sig.
 // Alle andre sessioner beregnes automatisk herfra (tirsdag + torsdag i 5 uger).
-const START_DATE_ISO = '2026-05-05T07:00:00Z'; // 09:00 Europe/Copenhagen (CEST, UTC+2)
+const START_DATE_ISO = '2026-05-05T09:00:00Z'; // 11:00 Europe/Copenhagen (CEST, UTC+2)
 const SESSION_DURATION_MIN = 60;
 
 function sessionUnlockAt(n) {
@@ -44,20 +44,21 @@ const SESSIONS = [
         presenters: ['Matias', 'Michael'],
         prework: { videoUrl: '', note: '' },
         schedule: [
-            { t: '0:00–0:05', what: 'Velkomst + runde: hvem er I, hvad bruger I Claude til i dag?' },
-            { t: '0:05–0:20', what: 'Foredrag: sådan foregår forløbet + hvorfor prompten er alt' },
-            { t: '0:20–0:35', what: 'Live demo: samme opgave, dårlig vs. god prompt' },
-            { t: '0:35–0:55', what: 'Par-øvelse: prøv begge prompt-typer på jeres egen kode' },
-            { t: '0:55–1:00', what: 'Del indsigter + take-home: handout + hjemmeopgave' }
+            { t: '0:00–0:05', what: 'Velkomst' },
+            { t: '0:05–0:15', what: 'Foredrag: sådan foregår de næste 5 uger + vælg næste præsentant' },
+            { t: '0:15–0:30', what: 'Live demo: samme opgave, dårlig vs. god prompt' },
+            { t: '0:30–0:55', what: 'Par-øvelse: prøv begge prompt-typer på jeres egen kode' },
+            { t: '0:55–1:00', what: 'Del indsigter + take-home' }
         ],
         foredrag: [
-            '5 uger · tirsdag + torsdag · 1 time pr. session',
-            'Fast format: recap → foredrag → demo → hands-on → take-home',
-            '**Vores rolle: facilitatorer, ikke guruer.** Vi er ikke Claude-eksperterne — vi finder strukturen sammen. Spar med hinanden, del prompts der virker (og dem der ikke gør), spørg højt. Workshoppen bliver kun så god som det vi sammen lægger i den.',
-            'Handout + hjemmeopgave pr. session så I tager noget med videre',
+            '5 uger · tirsdag + torsdag · 1 time pr. session, 9 sessioner i alt',
+            'Fast format fra session 2: recap → deltager-præsentation → vælg næste præsentant → Matias-demo (hvis tid)',
+            '**Vores rolle: facilitatorer, ikke guruer.** Michael og jeg står for selve faciliteringen alle 5 uger. Men fra session 2 er det ÉN deltager fra holdet der præsenterer dagens emne. Vi hjælper med at bygge slides ugen før, så ingen står alene med det.',
+            '**Vælg næste præsentant nu:** Hvem vil tage session 2 (Plan mode)? Hvis ingen melder sig, vælger vi én. Vi gentager øvelsen i slutningen af hver session for sessionen efter.',
+            'Pre-work: fra session 2 sender vi en kort video ud inden hver gang. Ingen pre-work til i dag.',
             'Dagens kerne: en dårlig prompt giver generisk kode. En god prompt giver produktionsklar kode.',
             'De 4 byggeklodser: [Kontekst] + [Opgave] + [Begrænsninger] + [Forventet output]',
-            '**Tryghed fra start:** Når Claude laver noget du fortryder, tryk `Esc Esc` — det er undo for hele sessionen. Vi går i dybden med `/rewind` i session 4, men I må gerne bruge det fra dag 1 — det er hvad der gør det trygt at lade Claude prøve noget vildt.'
+            '**Tryghed fra start:** Når Claude laver noget du fortryder, tryk `Esc Esc` — det er undo for hele sessionen. Vi går i dybden i session 3, men I må gerne bruge det fra dag 1 — det er hvad der gør det trygt at lade Claude prøve noget vildt.'
         ],
         demo: [
             {
@@ -140,7 +141,7 @@ Rør IKKE Header, SearchBar eller andre komponenter. Ingen nye dependencies — 
             {
                 heading: 'Bonus — `Esc Esc` undo (1 min)',
                 say: 'Inden vi sender jer ud i hands-on: én ting der gør det HELT trygt at lade Claude prøve noget. Tryk Esc to gange — så får I en menu hvor I kan rulle tilbage til ethvert tidligere punkt i samtalen.',
-                body: 'Vis live: lad Claude lave en lille ændring. Tryk `Esc Esc`. Vælg et tidligere step i menuen. Filerne ruller tilbage. Sig: "Vi går i dybden med det i session 4 — men brug det allerede i dag. Det er hvad der gør det ok at klikke accept hurtigt."',
+                body: 'Vis live: lad Claude lave en lille ændring. Tryk `Esc Esc`. Vælg et tidligere step i menuen. Filerne ruller tilbage. Sig: "Vi går i dybden med det i session 3 — men brug det allerede i dag. Det er hvad der gør det ok at klikke accept hurtigt."',
                 promptLabel: 'Keybind — prøv det selv',
                 prompt: 'Esc Esc',
                 expected: 'En rewind-menu åbner. I kan vælge "rewind code only", "rewind conversation only", "rewind both", eller annullere. Pointen i session 1: I behøver ikke vide hvilken — bare ved at det findes så I tør lade Claude køre.'
@@ -265,11 +266,10 @@ Svar i punktform. Rør ikke koden.`
         presenters: [],
         prework: { videoUrl: '', note: '' },
         schedule: [
-            { t: '0:00–0:05', what: 'Recap: del jeres "den der virkede" og "den der ikke virkede"' },
-            { t: '0:05–0:20', what: 'Foredrag: plan mode + permissions' },
-            { t: '0:20–0:35', what: 'Live demo: samme opgave med og uden plan mode' },
-            { t: '0:35–0:55', what: 'Hands-on: brug plan mode på en ægte opgave' },
-            { t: '0:55–1:00', what: 'Take-home' }
+            { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
+            { t: '0:10–0:45', what: 'Deltager-præsentation: Plan mode (1 person, dagens emne)' },
+            { t: '0:45–0:50', what: 'Beslut: hvem præsenterer næste gang?' },
+            { t: '0:50–1:00', what: 'Matias-demo (hvis tid)' }
         ],
         foredrag: [
             'Plan mode = Shift+Tab. Claude skriver en plan men rører ikke filer endnu.',
@@ -522,32 +522,45 @@ alias claude-yolo="claude --permission-mode bypassPermissions"  # kun i sandbox`
     {
         number: 3,
         title: 'Kontekst er konge',
-        subtitle: 'Hvorfor Claude hallucinerer — og hvordan du stopper det',
+        subtitle: 'Den første prompt er alt — kontekst, /clear-flow, scope-lock, chains, debug og /rewind',
         theme: 'Prompting er en superkraft',
         day: 'Tirsdag · Uge 2',
         presenters: [],
         prework: { videoUrl: '', note: '' },
         schedule: [
-            { t: '0:00–0:05', what: 'Recap: hvem brugte plan mode? Hvad fandt I?' },
-            { t: '0:05–0:20', what: 'Foredrag: de 4 slags kontekst' },
-            { t: '0:20–0:35', what: 'Live demo: 0 → lidt → meget kontekst' },
-            { t: '0:35–0:55', what: 'Par-øvelse på tværs af teams' },
-            { t: '0:55–1:00', what: 'Take-home' }
+            { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
+            { t: '0:10–0:45', what: 'Deltager-præsentation: Kontekst er konge (1 person, dagens emne)' },
+            { t: '0:45–0:50', what: 'Beslut: hvem præsenterer næste gang?' },
+            { t: '0:50–1:00', what: 'Matias-demo (hvis tid)' }
         ],
         foredrag: [
+            '**Den første prompt er alt.** Den sætter tonen, scopet og kvalitetsniveauet for hele samtalen. Hvis den er vag, fortsætter Claude vagt. Hvis den er præcis, fortsætter Claude præcist. Brug 30 sekunder ekstra på første prompt — det sparer 5 minutter senere.',
             'Claude "hallucinerer" fordi den gætter når den ikke ved. Giv den det den ikke ved.',
+            '**De 4 slags kontekst:**',
             '**Filer** — "læs først X.cs, Y.cs"',
             '**Regler** — "vi bruger xUnit, ikke NUnit. Vi bruger records, ikke classes."',
             '**Eksempler** — "gør det som ExistingService.cs gør"',
             '**Begrænsninger** — "kun denne metode. Ingen nye dependencies."',
-            '`@filnavn` er det hurtigste værktøj til at tilføje filkontekst',
+            '`@filnavn` er det hurtigste værktøj til at tilføje filkontekst — IKKE copy-paste hele filen.',
             '',
-            '**Dagens hovedemne: `@`-syntaks i prompten.** Det er forskellen mellem at copy-paste 200 linjer kode ind i prompten (langsomt, fylder context, fejlbehæftet) og at pege Claude på filen direkte.',
+            '**`@`-syntaks i prompten.** Forskellen mellem at copy-paste 200 linjer (langsomt, fylder context, fejlbehæftet) og at pege Claude på filen direkte.',
             '`@filnavn.cs` — Claude læser hele filen',
             '`@filnavn.cs#L20-40` — Claude læser kun linje 20-40 (sparer context når filen er stor)',
             '`@mappe/` — Claude lister mappen og afgør selv hvad der er relevant',
-            '`@filnavn.cs#funktionsnavn` — peger på et symbol (virker ikke alle steder, men ofte)',
-            'Brug tab-completion: skriv `@` og start på et filnavn — Claude foreslår paths fra repoet.'
+            'Brug tab-completion: skriv `@` og start på et filnavn — Claude foreslår paths fra repoet.',
+            '',
+            '**`/clear`-metoden — undgå `/compact`.** Når samtalen bliver lang eller emnet skifter, skal context renses. To valg:',
+            '`/compact` — Claude prøver at opsummere samtalen til sig selv. Problem: semi-relevant støj følger med, og I aner ikke hvad der blev gemt vs. smidt. Undgå det som default.',
+            '`/clear` (anbefalet) — start helt forfra. **MEN** før du clearer: skriv det nuværende setup ned i en `.md`-fil (fx `setup.md` med "vi arbejder på X, har gjort Y, næste skridt er Z"). Efter `/clear`: peg Claude på md-filen med `@setup.md` og fortsæt. Du genstarter med ren context men fuld viden.',
+            '`/context` — vis hvor meget context der er brugt. Over 70% → overvej clear-flow\'et.',
+            '',
+            '**Scope-kontrol:** "ændr KUN X, rør ikke Y" — forhindrer scope creep. Hvis Claude tænker "det ville være pænere at...", bed den skrive det som kommentar, IKKE lave det.',
+            '**Chain prompting:** én opgave ad gangen vs. alt på én gang. Ved store features: trin 1 = læs + plan, trin 2 = implementer første del, trin 3 = næste del. Små trin = små bugs, nem at rulle tilbage.',
+            '**Debug-pattern:** fejl + stacktrace + hvad du har prøvet + din hypotese. Claude er bedre til at *udelukke* mistænkte end at *gætte* løsningen. Bed den bekræfte/afkræfte hypotesen FØR fix.',
+            '',
+            '**To power-features der gør det trygt at eksperimentere:**',
+            '`/rewind` (eller `Esc Esc`) — undo for hele samtalen. Vælg om du vil rulle KODE tilbage, SAMTALEN tilbage, eller BEGGE.',
+            '`Ctrl+B` — kør en task i baggrunden mens du fortsætter prompting (fx `dotnet test --watch`). `/tasks` viser status, `Ctrl+T` åbner overlay. Claude kan læse output og fixe fejl mens den kører.'
         ],
         demo: [
             {
@@ -647,6 +660,103 @@ Opdater også stories-filen med en variant "withFavorite".
 
 Rør IKKE: styling (Tailwind-klasser), andre komponenter.`,
                 expected: 'Claude genbruger eksisterende FavoriteButton i stedet for at reimplementere. Pointe: et konkret eksempel er stærkere end 5 linjers regler.'
+            },
+            {
+                heading: '`/clear`-metoden — `/compact` er en fælde (3 min)',
+                say: 'Når samtalen bliver lang eller emnet skifter, har I to valg. Det ene er bedre end det andet — og næsten alle bruger det forkerte default.',
+                body: '**Trin 1:** Kør `/context`. Hvis I er over 70% → tid til hygiejne.\n\n**Forkert default — `/compact`:** Claude opsummerer samtalen til sig selv. Problemet er at I aner ikke hvad der blev gemt og hvad der blev smidt. Semi-relevant støj fra tidligere opgaver følger med. Resultat: subtile gætterier kommer fra "noget Claude læste tidligere" som I troede var glemt.\n\n**Anbefalet — clear-flow med md-fil:**\n1. Skriv et kort `setup.md` (eller `state.md`) i repo: hvad arbejder vi på, hvad er gjort, hvad er næste skridt, hvilke filer er relevante\n2. Kør `/clear` — Claude starter HELT forfra\n3. Genstart med `Læs @setup.md og fortsæt opgaven.`\n\n**Hvorfor virker det bedre?** I bestemmer hvad der overlever. Md-filen er eksplicit, kan læses med øjnene, kan gemmes i git hvis det er en lang opgave. Claude får rent context med præcis det I ville have med.',
+                promptLabel: 'Eksempel på setup.md du skriver før /clear',
+                prompt: `# Nuværende opgave
+
+Vi tilføjer ExternalId til Property-entiteten. Migration + DTO + mapper er færdige (commits a1b2c3, d4e5f6). Mangler: API-kontrakt og integration test.
+
+## Relevante filer
+- @Property.cs (entitet — opdateret)
+- @PropertyDto.cs (opdateret)
+- @PropertiesController.cs (skal have ExternalId i response)
+- @Migrations/20260420_AddExternalId.cs
+
+## Næste skridt
+1. Opdater PropertiesController så ExternalId returneres
+2. Tilføj integration test der verificerer feltet ende-til-ende
+3. Kør \`dotnet test\` og bekræft alt grønt
+
+## Begrænsninger
+- Rør IKKE andre felter
+- Ingen nye NuGet-pakker`,
+                expected: 'Filen ligger i repo. Kør `/clear`. Skriv: "Læs @setup.md og fortsæt med næste skridt." Claude starter med ren context, men ved præcis hvor I er. Pointe: dette er forskellen mellem "Claude bliver dummere over tid" og "Claude er lige skarp i time 4 som i time 1".'
+            },
+            {
+                heading: 'Scope-lock pattern (2 min)',
+                say: 'Når Claude har for tendens til at "forbedre" alt muligt andet end det du bad om — brug dette mønster.',
+                promptLabel: 'Scope-lock eksempel',
+                prompt: `Ændring: gør metoden PropertySearch.Filter async.
+
+Scope-regler (SKAL overholdes):
+- Kun denne metode ændres signaturmæssigt
+- Offentlig signatur må ændres (Task-return er ok)
+- Kald-steder opdateres til at awaite (det er ok)
+- Ingen andre metoder refactores
+- Ingen nye dependencies
+
+Hvis du tænker "det ville være pænere at også...", SKRIV det som kommentar i svaret — men LAV det IKKE.`,
+                expected: 'Claude gør KUN det, og lister sine "ville være pænere hvis..."-forslag som tekst til sidst. Du kan vælge at tage dem bagefter — eller ignorere.'
+            },
+            {
+                heading: 'Chain prompting — stor feature opdelt (3 min)',
+                say: 'Stor feature der rører 4-6 filer? Del op i stedet for én mega-prompt.',
+                body: 'Trin 1 er PLANLÆG kun — ingen kode endnu.',
+                promptLabel: 'Trin 1 af 3 — PLAN',
+                prompt: `Trin 1 af 3 — LÆS KUN. Ingen kode endnu.
+
+Jeg vil tilføje "favoritter": brugere kan markere properties som favorit, og kalde GET /api/me/favorites for at hente dem.
+
+Læs: @Property.cs, @User.cs, @ApplicationDbContext.cs, seneste 3 migrations, @PropertiesController.cs.
+
+Giv mig:
+1. Hvilke 4-6 filer skal ændres/oprettes?
+2. Afhængigheder mellem dem (hvad skal laves først)?
+3. En nummereret plan hvor hvert trin er isoleret testbart.
+
+Rør ingen filer. Kun plan.`,
+                expected: 'Claude giver 4-6 trins plan. Næste trin er "implementer trin 1". Pointe: små trin = små bugs, nem at rulle tilbage.'
+            },
+            {
+                heading: 'Debug-pattern med hypotese (3 min)',
+                say: 'Bug i prod. Den dårlige måde: "fix den". Den gode måde: hypotese + bevisførelse.',
+                body: 'Kør `/clear`. Bemærk: prompten har hypotese + hvad du har prøvet.',
+                promptLabel: 'God debug-prompt',
+                prompt: `Fejl i PropertiesController.GetAll() (endpoint GET /api/properties).
+
+Stacktrace:
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at PropertyMapper.ToDto(Property property) line 42
+   at PropertiesController.GetAll() line 28
+
+Hvad jeg har prøvet:
+- Tjekket at Property-listen ikke er null (den er ikke)
+- Sat breakpoint på linje 42 — property.Agent er null for nogle rows
+
+Min hypotese: PropertyMapper.ToDto accesserer property.Agent.Name uden null-check, og nogle properties har ingen tildelt agent.
+
+Opgave: udeluk eller bekræft min hypotese. Læs @PropertyMapper.cs linje 42 og omkring. Foreslå IKKE fix endnu.`,
+                expected: 'Claude læser filen, bekræfter eller afkræfter hypotesen, peger på linje 42. Foreslår IKKE fix endnu — venter på godkendelse. Du beholder kontrollen.'
+            },
+            {
+                heading: '`/rewind` — de 4 valg i menuen (3 min)',
+                say: 'Vi nævnte `Esc Esc` i session 1 som "undo". Nu går vi i dybden — det er ikke ÉT undo, det er fire forskellige.',
+                body: 'Lad Claude gøre en lille ting. Tryk `Esc Esc` (eller skriv `/rewind`). Menu åbner med 4 valg:\n\n**1. Rewind code only** — filerne ruller tilbage, men samtalen forbliver. Brug når Claude prøvede et fix, du vil prøve igen, og vil have at Claude husker hvad der ikke virkede.\n\n**2. Rewind conversation only** — samtalen ruller tilbage, men filerne forbliver. Brug når du vil have Claude til at glemme en pinlig instruktion, men beholde de gode ændringer.\n\n**3. Rewind both** — alt tilbage. Brug ved fuld restart af et eksperiment.\n\n**4. Cancel** — annuller, ingen ændring.',
+                promptLabel: 'Åbn rewind-menuen',
+                prompt: '/rewind',
+                expected: 'Menu med 4 valg vises. Pointe: dette er forskellen mellem "AI-skrækkelig backup-strategi" og "AI-eksperimenter uden frygt".'
+            },
+            {
+                heading: '`Ctrl+B` — kør tests i baggrunden mens du prompter (2 min)',
+                say: 'Indtil nu har vi kørt `dotnet test` én gang og ventet. Nu starter vi det i baggrunden i watch-mode og lader Claude se output mens vi fortsætter samtalen.',
+                body: 'Tryk `Ctrl+B`. Claude beder om kommandoen. Skriv `dotnet test --watch`. Tasken starter i baggrunden — du beholder prompten. Skriv en prompt der ændrer kode. Tasken re-kører tests automatisk. Claude kan læse output via `/tasks` og fixe fejlene live.',
+                promptLabel: 'Background task — watch tests',
+                prompt: 'dotnet test --watch',
+                expected: 'Output: "Started background task #1". Når en test brydes, kan Claude læse fejlen via `/tasks` og foreslå et fix uden du skal copy-paste output. Pointe: kombineret med `/rewind` får I "eksperimenter frit, hvis det går galt: rul tilbage. Background tests fortæller hvornår."'
             }
         ],
         handsOn: {
@@ -788,232 +898,35 @@ Gør det som @FavoriteButton.tsx ellers gør det i projektet.
 
 Rør IKKE: styling-systemet. Ingen nye dependencies.
 Forventet output: opdateret komponent + test for "klik toggler favorit".`
-            }
-        ],
-        handout: {
-            title: 'Kontekst-checklist + `@`-cheat sheet',
-            content: [
-                '**Før du trykker enter — har du givet Claude:**',
-                '',
-                '☐ **Filer** den skal læse (`@filnavn`)',
-                '☐ **Regler** (framework, konventioner, "vi gør X sådan")',
-                '☐ **Eksempler** (peg på en eksisterende fil der løser samme mønster)',
-                '☐ **Begrænsninger** ("rør ikke X", "ingen nye dependencies")',
-                '☐ **Forventet output** (hvordan ser "done" ud?)',
-                '',
-                'Mangler du mere end 1-2 flueben → omskriv prompten.',
-                '',
-                '---',
-                '',
-                '**`@`-syntaks cheat sheet — kopier IKKE filer ind i prompten:**',
-                '',
-                '`@filnavn.cs` — læs hele filen',
-                '`@filnavn.cs#L20-40` — kun linje 20-40 (sparer context på store filer)',
-                '`@filnavn.cs#L42` — kun linje 42',
-                '`@mappe/` — Claude lister mappen og vælger',
-                '`@a.cs og @b.cs` — flere filer i samme prompt',
-                '',
-                '**Pro tip:** skriv `@` + start på filnavn → tab-completion foreslår fra repoet.',
-                '',
-                '**Anti-pattern:** copy-paste hele filer ind i prompten. Det fylder context, kan ikke gentages, og Claude mister forbindelsen til repoet.'
-            ]
-        },
-        hjemmeopgave: [
-            'Lav en "prompt-log" denne uge: gem hver prompt + resultat + 1-sætnings vurdering',
-            'Tag logfilen med til torsdag — vi kigger på mønstre'
-        ]
-    },
-
-    // ---- Session 4 ----------------------------------------------------------
-    {
-        number: 4,
-        title: 'Avanceret prompting: scope, chains, debug',
-        subtitle: 'Prompt-patterns der virker igen og igen',
-        theme: 'Prompting er en superkraft',
-        day: 'Torsdag · Uge 2',
-        presenters: [],
-        prework: { videoUrl: '', note: '' },
-        schedule: [
-            { t: '0:00–0:05', what: 'Recap: del 1 prompt fra jeres log der overraskede jer' },
-            { t: '0:05–0:20', what: 'Foredrag: scope, chains, debug-pattern, anti-patterns' },
-            { t: '0:20–0:35', what: 'Live demo: bug-fix med god debug-prompt' },
-            { t: '0:35–0:55', what: 'Hands-on: A/B spor' },
-            { t: '0:55–1:00', what: 'Take-home' }
-        ],
-        foredrag: [
-            '**Scope-kontrol:** "ændr KUN X, rør ikke Y" — forhindrer scope creep',
-            '**Chain prompting:** én opgave ad gangen vs. alt på én gang (og hvornår hvad)',
-            '**Debug-pattern:** fejl + stacktrace + hvad du har prøvet + din hypotese',
-            '**Anti-patterns:** brede opgaver, blindt accept, "fix alt"-prompts',
-            'Claude er bedre til at *udelukke* mistænkte end at *gætte* løsningen',
-            '',
-            '**Også i dag — to power-features der gør debug-flow markant bedre:**',
-            '`/rewind` (eller `Esc Esc`) — undo for hele samtalen. Vælg om du vil rulle KODE tilbage, SAMTALEN tilbage, eller BEGGE. Du kan eksperimentere uden frygt.',
-            '`Ctrl+B` — kør en task i baggrunden mens du fortsætter prompting (fx `dotnet test --watch`). `/tasks` viser status, `Ctrl+T` åbner task-list overlay. Claude kan læse output og fixe fejl mens den kører.'
-        ],
-        demo: [
-            {
-                heading: 'Setup — en konkret bug (1 min)',
-                say: 'Vores endpoint GET /api/properties fejler for nogle brugere med "Object reference not set to an instance of an object". Det sker kun for brugere uden tildelt agent.',
-                body: 'Hav stacktrace-outputtet klar i et tekstvindue du kan kopiere fra.'
             },
             {
-                heading: 'Dårlig debug-prompt — "realistisk dårlig" (1 min)',
-                body: 'Det her er hvad man skriver når man er stresset og bare vil have Claude til at løse det.',
-                promptLabel: 'Dårlig prompt',
-                prompt: 'Min GET /api/properties endpoint giver NullReferenceException i produktion. Kan du finde fejlen og fixe den?',
-                expected: 'Claude læser PropertiesController.cs, ser på kaldte services, og begynder at tilføje null-checks alle steder "for en sikkerheds skyld". Fixet virker måske — men du ved ikke om DEN specifikke NRE faktisk er løst, eller om Claude har dækket symptomer uden at finde årsagen. Mangler: stacktrace, reproduktions-info, din hypotese, og hvad der ikke må ændres.'
-            },
-            {
-                heading: 'God debug-prompt (3 min)',
-                body: 'Kør `/clear`. Bemærk: prompten har hypotese + hvad du har prøvet.',
-                promptLabel: 'God debug-prompt',
-                prompt: `Fejl i PropertiesController.GetAll() (endpoint GET /api/properties).
+                label: 'setup.md — skabelon før /clear',
+                language: 'markdown',
+                text: `# Nuværende opgave
 
-Stacktrace:
-System.NullReferenceException: Object reference not set to an instance of an object.
-   at PropertyMapper.ToDto(Property property) line 42
-   at PropertiesController.GetAll() line 28
+[1-2 sætninger: hvad arbejder vi på lige nu]
 
-Hvad jeg har prøvet:
-- Tjekket at Property-listen ikke er null (den er ikke)
-- Sat breakpoint på linje 42 — property.Agent er null for nogle rows
+## Hvad er gjort
+- [punkt 1, gerne med commit-sha hvis committet]
+- [punkt 2]
 
-Min hypotese: PropertyMapper.ToDto accesserer property.Agent.Name uden null-check, og nogle properties har ingen tildelt agent.
+## Relevante filer
+- @[fil1] — [hvorfor relevant]
+- @[fil2]
+- @[fil3]
 
-Opgave: udeluk eller bekræft min hypotese. Læs @PropertyMapper.cs linje 42 og omkring. Foreslå IKKE fix endnu.`,
-                expected: 'Claude læser filen, bekræfter hypotesen, peger på linje 42. Foreslår IKKE fix endnu — venter på godkendelse. Kontrast til dårlig prompt er åbenbar.'
-            },
-            {
-                heading: 'Scope-lock pattern (2 min)',
-                say: 'Når Claude har for tendens til at "forbedre" alt muligt andet end det du bad om, brug dette mønster.',
-                promptLabel: 'Scope-lock eksempel',
-                prompt: `Ændring: gør metoden PropertySearch.Filter async.
+## Næste skridt
+1. [konkret næste opgave]
+2. [og den efter]
+3. [og den efter]
 
-Scope-regler (SKAL overholdes):
-- Kun denne metode ændres signaturmæssigt
-- Offentlig signatur må ændres (Task-return er ok)
-- Kald-steder opdateres til at awaite (det er ok)
-- Ingen andre metoder refactores
-- Ingen nye dependencies
+## Begrænsninger
+- Rør IKKE [hvad skal være urørt]
+- [andre regler — ingen nye dependencies, etc.]
 
-Hvis du tænker "det ville være pænere at også...", SKRIV det som kommentar i svaret — men LAV det IKKE.`,
-                expected: 'Claude gør KUN det, og lister sine "ville være pænere hvis..."-forslag som tekst til sidst. Du kan vælge at tage dem bagefter — eller ignorere.'
-            },
-            {
-                heading: 'Chain prompting — stor feature opdelt (4 min)',
-                say: 'Vi vil bygge "favoritter" — brugere kan favoritisere properties og kalde /api/me/favorites for at hente dem. Det rører 4-6 filer. I stedet for én mega-prompt deler vi op.',
-                body: 'Kør `/clear`. Dette er trin 1 af 3.',
-                promptLabel: 'Trin 1 af 3 — PLANLÆG kun',
-                prompt: `Trin 1 af 3 — LÆS KUN. Ingen kode endnu.
-
-Jeg vil tilføje "favoritter": brugere kan markere properties som favorit, og kalde GET /api/me/favorites for at hente dem.
-
-Læs: @Property.cs, @User.cs, @ApplicationDbContext.cs, seneste 3 migrations, @PropertiesController.cs.
-
-Giv mig:
-1. Hvilke 4-6 filer skal ændres/oprettes?
-2. Afhængigheder mellem dem (hvad skal laves først)?
-3. En nummereret plan hvor hvert trin er isoleret testbart.
-
-Rør ingen filer. Kun plan.`,
-                expected: 'Claude giver 4-6 trins plan med afhængigheder. Du reviewer. Dette er PLANLÆGNINGEN. Næste trin er "implementer trin 1 af planen" — og så videre. Pointe: små trin = små bugs, nem at rulle tilbage.'
-            },
-            {
-                heading: 'Trin 2 af 3 — implementér kun første punkt (1 min)',
-                body: 'Når trin 1\'s plan er godkendt, gå videre:',
-                promptLabel: 'Trin 2 af 3',
-                prompt: `Trin 2 af 3 — implementér kun første punkt fra planen (FavoriteEntity + migration).
-
-Rør IKKE de andre punkter endnu — det gør vi i trin 3.
-
-Skriv også testen der verificerer at entiteten kan gemmes.`,
-                expected: 'Én afgrænset ændring, én test. Kør tests. Hvis grønne → fortsæt med trin 2 af planen. Hvis røde → fix før du går videre.'
-            },
-            {
-                heading: 'TDD-loop — test først, implementér efter (4 min)',
-                say: 'En af de mest undervurderede måder at bruge Claude: skriv testen FØR, lad Claude implementere, kør, iterér.',
-                body: 'Denne tilgang tvinger Claude til at forstå HVAD der skal virke før HVORDAN. Drastisk færre hallucinationer.',
-                promptLabel: 'TDD-loop prompt',
-                prompt: `Jeg starter en TDD-loop.
-
-Læs @PropertySearchTests.cs — jeg har lige tilføjet en ny test "Filter_ReturnsOnlyActiveProperties_WhenIsActiveIsTrue" der fejler.
-
-Opgave:
-1. Kør testen og bekræft at den fejler (forventet)
-2. Implementér MINIMUM det der skal til for at testen passerer — ikke mere
-3. Kør testen igen og bekræft at den passerer
-4. Stop. Rør ingen andre metoder.
-
-Hvis du tænker "jeg burde også fikse...", SKRIV det som kommentar — men LAV det IKKE.`,
-                expected: 'Claude kører test (rød) → implementerer → kører igen (grøn) → stopper. Ingen scope creep. Pointe: du kontrollerer præcist hvad der implementeres, og du har en test der beviser det virker.'
-            },
-            {
-                heading: '`/rewind` — de 4 valg i menuen (3 min)',
-                say: 'I session 1 viste jeg `Esc Esc` som "undo". Nu går vi i dybden — for det er ikke ÉT undo, det er fire forskellige.',
-                body: 'Lad Claude gøre en lille ting. Tryk `Esc Esc` (eller skriv `/rewind`). Menu åbner med 4 valg:\n\n**1. Rewind code only** — filerne ruller tilbage, men samtalen forbliver. Brug når Claude prøvede et fix, du vil prøve igen, og vil have at Claude husker hvad der ikke virkede.\n\n**2. Rewind conversation only** — samtalen ruller tilbage, men filerne forbliver. Brug når du vil have Claude til at glemme en pinlig instruktion ("nej det var ikke det jeg mente"), men beholde de gode ændringer.\n\n**3. Rewind both** — alt tilbage. Brug ved fuld restart af et eksperiment.\n\n**4. Cancel** — annuller, ingen ændring.',
-                promptLabel: 'Åbn rewind-menuen',
-                prompt: '/rewind',
-                expected: 'Menu med 4 valg vises. Demo: lav 3 ændringer i træk, tryk `/rewind`, vælg "rewind code only", brug 2-3 min på at vise hvordan Claude nu husker hvad der ikke virkede og foreslår en anden tilgang. Pointe: dette er forskellen mellem "AI-skrækkelig backup-strategi" og "AI-eksperimenter uden frygt".'
-            },
-            {
-                heading: '`Ctrl+B` — kør tests i baggrunden mens du prompter (3 min)',
-                say: 'Indtil nu har vi kørt `dotnet test` én gang og ventet. Nu starter vi det i baggrunden i watch-mode og lader Claude se output mens vi fortsætter samtalen.',
-                body: 'Tryk `Ctrl+B`. Claude beder om kommandoen. Skriv `dotnet test --watch`. Tasken starter i baggrunden — du beholder prompten. Skriv en prompt der ændrer kode. Tasken re-kører tests automatisk. Claude kan læse output via `/tasks` og fixe fejlene live.',
-                promptLabel: 'Background task — watch tests',
-                prompt: 'dotnet test --watch',
-                expected: 'Output: "Started background task #1 (dotnet test --watch)". Du kan fortsætte prompting. Når en test brydes, kan Claude læse fejlen via `/tasks` og foreslå et fix uden du skal copy-paste output. Pointe: dette er hvad der gør TDD-loop fra forrige demo dobbelt så hurtig.'
-            },
-            {
-                heading: '`/tasks` og `Ctrl+T` — se status (1 min)',
-                say: 'Når du har background tasks kørende, har du to måder at kigge på dem.',
-                body: '`/tasks` — slash-kommando, lister alle tasks med status (running, finished, failed) + seneste output.\n\n`Ctrl+T` — hurtig overlay direkte over Claude-vinduet. Lukker når du trykker Esc. Brug det som en "hurtig kig"-genvej.',
-                promptLabel: 'List background tasks',
-                prompt: '/tasks',
-                expected: 'Liste af alle running + nyligt afsluttede tasks. Vis hvordan I kan bede Claude læse output: "læs output fra task 1 og fix den fejlende test". Pointe: I behøver ikke længere have terminalen åben i et andet vindue.'
-            },
-            {
-                heading: 'Combo — `/rewind` + `Ctrl+B` (2 min)',
-                say: 'Disse to features sammen er kraftige. Eksperimenter frit, hvis det går galt: rul tilbage. Background tests fortæller dig hvornår det går galt.',
-                body: 'Sæt `dotnet test --watch` i baggrunden via `Ctrl+B`. Bed Claude lave en risikabel refactor. Tasken viser røde tests inden for sekunder. `/rewind code only` ruller filerne tilbage. Claude husker hvad der ikke virkede. Prøv en anden tilgang. Pointe: dette er hvordan I tør bruge auto/bypassPermissions-mode i sandbox uden at sove dårligt.'
-            }
-        ],
-        handsOn: {
-            aSpor: {
-                title: 'A-spor (begynder)',
-                steps: [
-                    'Tag en konkret bug (egen eller en sammen-valgt)',
-                    'Brug debug-skabelonen nedenfor',
-                    'Kør Claude med den. Læs svaret højt for din nabo.',
-                    'Noter: hvad fangede Claude som du ikke havde tænkt på?'
-                ]
-            },
-            bSpor: {
-                title: 'B-spor (advanced)',
-                steps: [
-                    'Tag en større feature (4+ filer)',
-                    'Bryd den ned i 3 chained prompts — ét steg ad gangen',
-                    'Kør dem sekventielt. Verificer efter hvert trin.',
-                    'Sammenlign med at have sagt "byg det hele" — hvor gik det galt?'
-                ]
-            }
-        },
-        prompts: [
-            {
-                label: 'Debug-skabelon',
-                language: 'text',
-                text: `Jeg har en fejl i [fil/funktion].
-
-Fejlen:
-[paste fejl + stacktrace her]
-
-Hvad jeg har prøvet:
-- [forsøg 1]
-- [forsøg 2]
-
-Min hypotese: [hvad jeg tror det er]
-
-Opgave: udeluk eller bekræft min hypotese først. Foreslå IKKE fix endnu. Læs @[relevante filer].`
+# Når du har skrevet denne fil:
+#   1. Kør /clear
+#   2. Skriv: "Læs @setup.md og fortsæt med næste skridt."`
             },
             {
                 label: 'Scope-lock prompt',
@@ -1029,7 +942,7 @@ Scope-regler (SKAL overholdes):
 Hvis du tænker "det ville være pænere at...", skriv det i svaret — men lav det IKKE.`
             },
             {
-                label: 'Chain prompting — trin 1 af 3',
+                label: 'Chain prompting — trin 1 af 3 (PLAN)',
                 language: 'text',
                 text: `Trin 1 af 3 — læs kun, kod ikke endnu.
 
@@ -1041,13 +954,29 @@ Opgave: jeg vil bygge [feature]. Læs @[relevante filer] og giv mig:
 Svar i punktform. Ingen kode.`
             },
             {
-                label: 'Chain prompting — trin 2 af 3',
+                label: 'Chain prompting — trin 2 af 3 (IMPLEMENT)',
                 language: 'text',
                 text: `Trin 2 af 3 — implementér kun første ændring fra planen.
 
 Implementér kun [fil X] fra din plan. Skriv også testen der verificerer at denne ændring virker isoleret.
 
 Rør IKKE de andre filer endnu — det gør vi i trin 3.`
+            },
+            {
+                label: 'Debug-skabelon',
+                language: 'text',
+                text: `Jeg har en fejl i [fil/funktion].
+
+Fejlen:
+[paste fejl + stacktrace her]
+
+Hvad jeg har prøvet:
+- [forsøg 1]
+- [forsøg 2]
+
+Min hypotese: [hvad jeg tror det er]
+
+Opgave: udeluk eller bekræft min hypotese først. Foreslå IKKE fix endnu. Læs @[relevante filer].`
             },
             {
                 label: '`/rewind` — åbn undo-menuen',
@@ -1070,63 +999,85 @@ Rør IKKE de andre filer endnu — det gør vi i trin 3.`
 dotnet test --watch
 dotnet watch run
 npm run test:watch
-npm run dev`
-            },
-            {
-                label: '`/tasks` — se status på baggrunds-tasks',
-                language: 'text',
-                text: `/tasks
+npm run dev
 
-# Eller Ctrl+T for et hurtigt overlay (lukkes med Esc).
-# Bed Claude læse output:
-# "Læs output fra task 1 og fix den fejlende test."`
+# /tasks         — list status (eller Ctrl+T for overlay)
+# Bed Claude læse output: "Læs output fra task 1 og fix den fejlende test."`
             }
         ],
         handout: {
-            title: '6 prompt-patterns + 2 power-features',
+            title: 'Kontekst-checklist + `@`-cheat sheet + /clear-flow + patterns',
             content: [
-                '**1. Debug** — Fejl + stacktrace + hypotese → "udeluk hypotesen først"',
-                '**2. Refactor** — "ændr kun X, bevar offentlig kontrakt, tests skal stadig passere"',
-                '**3. Test** — "skriv test for [metode] i stilen af @[eksempel-test]"',
-                '**4. Review** — "kig efter: null-checks, glemte tests, scope creep. Ingen stil-kommentarer."',
-                '**5. Forklar** — "læs @[fil]. Forklar i 5 bullets hvad den gør. Ingen kode."',
-                '**6. Scope-lock** — "hvis du tænker pænere, skriv det — men ændr det IKKE"',
+                '**Før du trykker enter — har du givet Claude:**',
+                '',
+                '☐ **Filer** den skal læse (`@filnavn`)',
+                '☐ **Regler** (framework, konventioner, "vi gør X sådan")',
+                '☐ **Eksempler** (peg på en eksisterende fil der løser samme mønster)',
+                '☐ **Begrænsninger** ("rør ikke X", "ingen nye dependencies")',
+                '☐ **Forventet output** (hvordan ser "done" ud?)',
+                '',
+                'Mangler du mere end 1-2 flueben → omskriv prompten.',
                 '',
                 '---',
                 '',
-                '**Power-feature 1: `/rewind` (eller `Esc Esc`)**',
-                '- Rewind code only — filer tilbage, samtalen beholdes (Claude husker hvad der ikke virkede)',
-                '- Rewind conversation only — fjerner pinlig instruktion, beholder gode ændringer',
-                '- Rewind both — fuld restart',
+                '**`@`-syntaks cheat sheet — kopier IKKE filer ind i prompten:**',
                 '',
-                '**Power-feature 2: `Ctrl+B` background tasks**',
-                '- Start `dotnet test --watch` i baggrunden, fortsæt prompting samtidig',
-                '- `/tasks` lister status, `Ctrl+T` er hurtig overlay',
-                '- Claude kan læse output og fixe live: "læs output fra task 1, fix den fejlende test"'
+                '`@filnavn.cs` — læs hele filen',
+                '`@filnavn.cs#L20-40` — kun linje 20-40 (sparer context på store filer)',
+                '`@mappe/` — Claude lister mappen og vælger',
+                '`@a.cs og @b.cs` — flere filer i samme prompt',
+                '',
+                'Pro tip: skriv `@` + start på filnavn → tab-completion foreslår fra repoet.',
+                'Anti-pattern: copy-paste hele filer ind i prompten.',
+                '',
+                '---',
+                '',
+                '**`/clear`-flow (i stedet for `/compact`):**',
+                '',
+                '1. Kør `/context` — over 70%? → tid til hygiejne',
+                '2. Skriv et kort `setup.md`: hvad arbejder vi på, hvad er gjort, næste skridt, relevante filer',
+                '3. Kør `/clear`',
+                '4. Genstart: "Læs @setup.md og fortsæt"',
+                '',
+                'Hvorfor: I bestemmer hvad der overlever. /compact gemmer semi-relevant støj I ikke kan se.',
+                '',
+                '---',
+                '',
+                '**Prompt-patterns:**',
+                '',
+                '**Scope-lock** — "ændr kun X, rør ikke Y. Hvis pænere, skriv det — ændr det IKKE."',
+                '**Chain** — trin 1 = plan, trin 2 = implement første del, trin 3 = næste del',
+                '**Debug** — fejl + stacktrace + hvad du prøvede + din hypotese → "udeluk hypotesen først, foreslå IKKE fix endnu"',
+                '',
+                '---',
+                '',
+                '**Power-features:**',
+                '',
+                '`/rewind` (eller `Esc Esc`) — code only / conversation only / både / cancel',
+                '`Ctrl+B` — kør task i baggrunden (`dotnet test --watch`). `/tasks` for status, `Ctrl+T` for overlay.'
             ]
         },
         hjemmeopgave: [
-            'Find ud af om dit projekt har en CLAUDE.md',
-            'Hvis nej: brug 5 min på at notere hvad der burde stå i den',
-            'Tag noterne med til session 5'
+            'Find ud af om dit projekt har en `CLAUDE.md`',
+            'Hvis nej: brug 5 min på at notere hvad der burde stå i den (stack, konventioner, ting Claude gætter forkert på)',
+            'Tag noterne med til session 4 — vi bygger CLAUDE.md sammen'
         ]
     },
 
-    // ---- Session 5 ----------------------------------------------------------
+    // ---- Session 4 ----------------------------------------------------------
     {
-        number: 5,
+        number: 4,
         title: 'CLAUDE.md og projekt-hukommelse',
         subtitle: 'Gør Claude klogere på lige præcis jeres kode',
         theme: 'Workflows der virker',
-        day: 'Tirsdag · Uge 3',
+        day: 'Torsdag · Uge 2',
         presenters: [],
         prework: { videoUrl: '', note: '' },
         schedule: [
-            { t: '0:00–0:05', what: 'Recap: prompt-patterns I har brugt' },
-            { t: '0:05–0:20', what: 'Foredrag: hvad CLAUDE.md er (og ikke er) + memory-systemet' },
-            { t: '0:20–0:35', what: 'Live demo: før/efter med god CLAUDE.md' },
-            { t: '0:35–0:55', what: 'Hands-on: skriv/forbedr jeres egen' },
-            { t: '0:55–1:00', what: 'Take-home' }
+            { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
+            { t: '0:10–0:45', what: 'Deltager-præsentation: CLAUDE.md og projekt-hukommelse (1 person, dagens emne)' },
+            { t: '0:45–0:50', what: 'Beslut: hvem præsenterer næste gang?' },
+            { t: '0:50–1:00', what: 'Matias-demo (hvis tid)' }
         ],
         foredrag: [
             'CLAUDE.md = projektets "onboarding-dokument" til Claude',
@@ -1560,32 +1511,38 @@ Aktiveres kun når Claude rører frontend-filer.
         hjemmeopgave: [
             'Få din nye/opdaterede CLAUDE.md committed til dit repo',
             'Kør Claude på samme opgave med og uden CLAUDE.md — noter forskellen',
-            'Tag eksempel med til session 6'
+            'Tag eksempel med til session 5'
         ]
     },
 
-    // ---- Session 6 ----------------------------------------------------------
+    // ---- Session 5 ----------------------------------------------------------
     {
-        number: 6,
+        number: 5,
         title: 'Git-workflow, commits og review',
-        subtitle: 'Claude i dit daglige Git-flow — og hvornår du ikke skal stole på den',
+        subtitle: 'Claude i dit daglige Git-flow + PAT/Azure DevOps-adgang — og hvornår du ikke skal stole på review',
         theme: 'Workflows der virker',
-        day: 'Torsdag · Uge 3',
+        day: 'Tirsdag · Uge 3',
         presenters: [],
         prework: { videoUrl: '', note: '' },
         schedule: [
-            { t: '0:00–0:05', what: 'Recap: før/efter CLAUDE.md' },
-            { t: '0:05–0:20', what: 'Foredrag: /commit, /review, hvad Claude fanger og ikke fanger' },
-            { t: '0:20–0:35', what: 'Live demo: commit + review flow' },
-            { t: '0:35–0:55', what: 'Par-øvelse: byt kode og review hinandens' },
-            { t: '0:55–1:00', what: 'Take-home' }
+            { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
+            { t: '0:10–0:45', what: 'Deltager-præsentation: Git-workflow, commits og review (1 person, dagens emne)' },
+            { t: '0:45–0:50', what: 'Beslut: hvem præsenterer næste gang?' },
+            { t: '0:50–1:00', what: 'Matias-demo (hvis tid)' }
         ],
         foredrag: [
             '`/commit` — Claude analyserer diff og foreslår commit-besked i jeres stil',
             '`/review` — Claude kigger på PR før kolleger gør',
             'Claude ER god til: typing, null-checks, konvention-brud, glemte tests, døde kode-stier',
             'Claude ER IKKE god til: domæne-logik, performance på skala, infra-sikkerhed, forretningsregler',
-            'Golden rule: Claude-review forbereder kollega-review — det erstatter det ikke'
+            'Golden rule: Claude-review forbereder kollega-review — det erstatter det ikke',
+            '',
+            '**Adgang til Azure DevOps — PAT og `az`-CLI:**',
+            'For at Claude kan klone, push\'e, eller læse fra EDC\'s private Azure DevOps-repos skal git autentificere sig. To gængse veje:',
+            '**1. Personal Access Token (PAT)** — opret i Azure DevOps under User Settings → Personal Access Tokens. Scope: `Code (read & write)`. Brug PAT som password når git spørger, eller læg det i Git Credential Manager.',
+            '**2. `az`-CLI med Azure DevOps extension** — `az login` + `az extension add --name azure-devops`. Derefter `az devops login` med PAT — credentials gemmes så git og Claude kan bruge dem uden videre.',
+            '**Sikkerhed:** PAT giver fuld kode-adgang. Sæt udløb (max 90 dage), brug mindste nødvendige scope, gem ALDRIG i prompts/repos — kun i credential manager eller `~/.netrc` (lokalt, ikke committet).',
+            'Når Claude skal pushe/clone via terminal, bruger den jeres lokale git-config — så når PAT er sat én gang, virker `/commit` + push uden videre.'
         ],
         demo: [
             {
@@ -1608,7 +1565,7 @@ Aktiveres kun når Claude rører frontend-filer.
 Eksempel på vores format: "fix(user): håndter tom email i GetUser"
 
 Opdater commit-beskeden.`,
-                expected: 'Claude retter beskeden. Pointe: dette er et signal om at I burde bygge en custom /commit — det gør vi i session 7.'
+                expected: 'Claude retter beskeden. Pointe: dette er et signal om at I burde bygge en custom /commit — det gør vi i session 6.'
             },
             {
                 heading: 'Brug /review på en åben PR (4 min)',
@@ -1646,6 +1603,59 @@ Svar i punktform med fil:linje-reference.`,
             {
                 heading: 'Hvornår IKKE stole på /review (1 min)',
                 body: '**Claude fanger dårligt:**\n- Forretningslogik ("returnerer vi den rigtige pris?")\n- Performance på rigtig skala\n- Sikkerhed på infra-niveau (auth, SQL injection i edge cases)\n- Migrations (hvad sker der med data?)\n\n**Golden rule:** Claude-review forbereder kollega-review — det erstatter det ikke.'
+            },
+            {
+                heading: 'Azure DevOps — opret PAT (2 min)',
+                say: 'Inden vi skifter emne: hvis Claude skal kunne pushe til EDC\'s repos, skal PAT være sat op. Hurtig-guide.',
+                body: '**Trin 1:** Gå til https://dev.azure.com/[org]/_usersSettings/tokens (eller User Settings → Personal Access Tokens øverst til højre).\n\n**Trin 2:** Klik "New Token". Sæt:\n- Name: `claude-code-[din-maskine]`\n- Expiration: 90 dage (max praktisk — undgå "1 year" / "Custom defined" uden grund)\n- Scopes: **Custom defined** → `Code (read & write)`. Andre scopes hvis I bruger Boards/Pipelines.\n\n**Trin 3:** Kopiér tokenet (vises KUN én gang). Gem det i password-manager, ikke i repo.',
+                promptLabel: 'Sæt PAT i Git Credential Manager',
+                prompt: `# macOS / Linux — gem credential så det ikke spørges igen
+git config --global credential.helper "manager-core"
+
+# Eller gem direkte i ~/.netrc (mindre sikkert men virker overalt):
+cat >> ~/.netrc << 'EOF'
+machine dev.azure.com
+login [din-edc-email]
+password [paste-PAT-her]
+EOF
+chmod 600 ~/.netrc`,
+                expected: 'Næste git-pull/push fra Azure DevOps spørger ikke om credentials. Claude kan nu klone, pushe og commit\'e mod EDC-repos uden manuel intervention.'
+            },
+            {
+                heading: '`az`-CLI med Azure DevOps extension (2 min)',
+                say: 'For dem der vil have ét login der dækker både Azure-portal OG DevOps: brug `az`-CLI.',
+                body: 'Installer `az` (Azure CLI) hvis I ikke har den. Derefter:',
+                promptLabel: 'az + azure-devops extension setup',
+                prompt: `# 1) Install Azure CLI
+brew install azure-cli                       # macOS
+# eller: winget install -e --id Microsoft.AzureCLI    (Windows)
+
+# 2) Login til Azure (browser opens)
+az login
+
+# 3) Tilføj DevOps-extension
+az extension add --name azure-devops
+
+# 4) Sæt default org så du ikke skal angive hver gang
+az devops configure --defaults organization=https://dev.azure.com/[edc-org]
+
+# 5) Login mod DevOps (paste PAT når der spørges)
+az devops login
+
+# Verificer:
+az repos list --output table`,
+                expected: 'Output: liste over repos I har adgang til. Pointe: nu kan I bruge `az repos`, `az pipelines`, `az boards` direkte fra terminalen — og Claude kan kalde dem via Bash når I beder om det ("opret en PR fra denne branch til main").'
+            },
+            {
+                heading: 'Test: lad Claude oprette en PR via az (1 min)',
+                body: 'Stå i en branch med commits ahead of main.',
+                promptLabel: 'Prompt — Claude opretter PR via az',
+                prompt: 'Opret en PR fra current branch til main i Azure DevOps. Brug `az repos pr create`. Title og description skal genereres ud fra `git log main..HEAD`. Vent på at jeg godkender før du eksekverer.',
+                expected: 'Claude foreslår kommandoen, viser title+description, venter på din accept. Pointe: når PAT/`az` er på plads, er Claude lige så hjemme i Azure DevOps som lokalt.'
+            },
+            {
+                heading: 'Sikkerhed — hvad PAT IKKE må (1 min)',
+                body: '**ALDRIG:**\n- Commit PAT til repo (selv private)\n- Paste PAT i Claude-prompts (det forlader jeres maskine, selv om Anthropic ikke træner på det)\n- Del PAT i Slack/Teams\n- Genbruge på tværs af maskiner — ét token pr. enhed gør det nemt at revoke ved tab\n\n**Hvis du har lækket en PAT:** revoke den i DevOps (User Settings → PAT → Revoke). Lav ny. Tjek audit log for misbrug.'
             }
         ],
         handsOn: {
@@ -1724,10 +1734,73 @@ Eksempel:
 \`fix(property): håndter null email i GetUser\`
 
 Vis beskeden. Spørg om den skal committes.`
+            },
+            {
+                label: 'Azure DevOps PAT — opret + gem credential',
+                language: 'bash',
+                text: `# 1) Opret PAT i browseren:
+#    https://dev.azure.com/[edc-org]/_usersSettings/tokens
+#    Scope: Code (read & write). Expiration: 90 dage.
+#    Kopiér tokenet med det samme — vises kun én gang.
+
+# 2) Gem credential så git ikke spørger igen:
+
+# Variant A: Git Credential Manager (anbefalet)
+git config --global credential.helper "manager-core"
+# Næste push spørger om credentials én gang — gemmes derefter.
+
+# Variant B: ~/.netrc (lokalt, simpelt)
+cat >> ~/.netrc << 'EOF'
+machine dev.azure.com
+login [din-edc-email]
+password [paste-PAT-her]
+EOF
+chmod 600 ~/.netrc
+
+# Test:
+git ls-remote https://dev.azure.com/[org]/[project]/_git/[repo]`
+            },
+            {
+                label: 'az + azure-devops extension — fuldt setup',
+                language: 'bash',
+                text: `# Install Azure CLI
+brew install azure-cli                  # macOS
+# winget install -e --id Microsoft.AzureCLI   # Windows
+# curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash   # Ubuntu
+
+# Login mod Azure (åbner browser)
+az login
+
+# Tilføj DevOps-extension
+az extension add --name azure-devops
+
+# Sæt default organisation (slipper for --org på alle kommandoer)
+az devops configure --defaults organization=https://dev.azure.com/[edc-org]
+
+# Login mod DevOps med PAT
+az devops login
+
+# Verificer adgang
+az repos list --output table
+az boards work-item list --top 5 --output table`
+            },
+            {
+                label: 'Lad Claude oprette en PR via az',
+                language: 'text',
+                text: `Opret en PR fra current branch til main i Azure DevOps.
+
+Brug \`az repos pr create\`. Felter:
+- title: udled fra git log main..HEAD (én linje, max 72 tegn)
+- description: bullet-list over commits med kort beskrivelse
+- target-branch: main
+- source-branch: current branch
+- auto-complete: false (vi vil reviewe selv først)
+
+Vis kommandoen først. Vent på min accept før du kører den.`
             }
         ],
         handout: {
-            title: 'Review-checklist — når du stoler på Claude',
+            title: 'Review-checklist + Azure DevOps-adgang',
             content: [
                 '**Claude-review er nok når:**',
                 '☑ Små refactorings',
@@ -1742,31 +1815,43 @@ Vis beskeden. Spørg om den skal committes.`
                 '☐ Det er nye arkitektur-valg',
                 '☐ Det er en migration',
                 '',
-                'Tommelfingerregel: "ville jeg mærke det hvis det var forkert om 3 måneder?" → ja → kollega-review også.'
+                'Tommelfingerregel: "ville jeg mærke det hvis det var forkert om 3 måneder?" → ja → kollega-review også.',
+                '',
+                '---',
+                '',
+                '**Azure DevOps-adgang for Claude (skal kun gøres én gang):**',
+                '',
+                '1. Opret PAT: User Settings → Personal Access Tokens → New Token',
+                '   - Scope: `Code (read & write)`, expiration max 90 dage',
+                '2. Gem i Git Credential Manager: `git config --global credential.helper "manager-core"`',
+                '3. (Valgfrit, anbefalet) `az` + `azure-devops` extension for samme login overalt:',
+                '   - `az login` → `az extension add --name azure-devops` → `az devops login`',
+                '',
+                '**Sikkerhed:** ALDRIG i prompts/repos/Slack. Revoke straks ved tab.'
             ]
         },
         hjemmeopgave: [
             'Brug `/commit` eller `/review` mindst én gang på ægte arbejde',
+            'Sæt PAT/az op hvis I ikke har det — så Claude kan klone og pushe mod EDC-repos',
             'Find én ting Claude fangede som du ikke ville have fanget selv',
-            'Tag den med til session 7'
+            'Tag den med til session 6'
         ]
     },
 
-    // ---- Session 7 ----------------------------------------------------------
+    // ---- Session 6 ----------------------------------------------------------
     {
-        number: 7,
+        number: 6,
         title: 'Skills, agents og model-tuning',
         subtitle: 'Automatisér dine gentagne workflows — skills, subagents, slash commands og model-/effort-tuning',
         theme: 'Avancerede features',
-        day: 'Tirsdag · Uge 4',
+        day: 'Torsdag · Uge 3',
         presenters: [],
         prework: { videoUrl: '', note: '' },
         schedule: [
-            { t: '0:00–0:05', what: 'Recap: hvad /review fangede hos jer' },
-            { t: '0:05–0:20', what: 'Foredrag: built-in + custom slash commands + model-valg' },
-            { t: '0:20–0:35', what: 'Live demo: byg en /pr-description command' },
-            { t: '0:35–0:55', what: 'Hands-on' },
-            { t: '0:55–1:00', what: 'Take-home' }
+            { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
+            { t: '0:10–0:45', what: 'Deltager-præsentation: Skills, agents og model-tuning (1 person, dagens emne)' },
+            { t: '0:45–0:50', what: 'Beslut: hvem præsenterer næste gang?' },
+            { t: '0:50–1:00', what: 'Matias-demo (hvis tid)' }
         ],
         foredrag: [
             'Built-in: `/commit`, `/review`, `/init`, `/clear`, `/compact`, `/help`',
@@ -1923,6 +2008,44 @@ Du svarer kortfattet. Ingen fix-forslag — kun arkæologi.`,
                 body: '**Brug subagent når:**\n- Opgaven kræver at læse 10+ filer og I kun vil have summary tilbage\n- Flere uafhængige opgaver kan køre parallelt (fx review 3 PRs)\n- Det er en specialopgave I gerne vil isolere fra hovedsamtalen\n\n**IKKE subagent når:**\n- Opgaven har brug for context fra jeres samtale (subagenten starter blank)\n- Det kun er en enkelt prompt — bare prompt direkte\n- I skal have kontrol step-by-step (subagent kører autonomt indtil færdig)'
             },
             {
+                heading: 'Built-in Explore-agent — research uden at fylde context (2 min)',
+                say: 'Claude Code leverer nogle subagents ud af boksen. Explore er til at researche codebase uden at rode hovedsamtalens context.',
+                promptLabel: 'Research via Explore-subagent',
+                prompt: 'Brug Explore-agenten til at finde alle steder i denne codebase hvor vi instantierer HttpClient direkte (i stedet for at injecte IHttpClientFactory). Svar med filsti og linjenummer.',
+                expected: 'Claude spawner en subagent der browser codebasen. Main-samtalen får kun det endelige resultat tilbage — ikke alle browsing-trin. Din hovedcontext forbliver ren. Pointe: brug Explore når I tænker "find alle steder hvor X" — det er præcis use casen.'
+            },
+            {
+                heading: 'Parallelle subagents — skaler review (2 min)',
+                say: 'Du kan spawne flere subagents samtidig. Linær speedup på uafhængige opgaver.',
+                promptLabel: 'Parallel review-prompt',
+                prompt: 'Spawn tre parallelle review-subagents, én pr. af disse branches: feature/favorites, feature/search-v2, fix/null-guard. Hver skal svare med maks 3 findings i prioriteret rækkefølge. Kombinér output i én tabel til sidst.',
+                expected: 'Claude kører de 3 reviews parallelt i stedet for sekventielt. Typisk 3x hurtigere. Pointe: subagents er forskellen mellem "Claude som smart notesblok" og "Claude som team af assistenter".'
+            },
+            {
+                heading: 'Custom subagent — test-reviewer (2 min)',
+                say: 'Når I gentagne gange beder Claude om samme specialiserede review, lav en custom subagent.',
+                body: 'Opret filen `.claude/agents/test-reviewer.md` i repo-rod.',
+                promptLabel: '.claude/agents/test-reviewer.md',
+                prompt: `---
+name: test-reviewer
+description: Review tests for coverage gaps, mocks-smell og AAA-tydelighed
+tools: Read, Grep, Glob
+---
+
+Du er test-review-specialist. Når du får en test-fil eller test-suite:
+
+1. List tests der KUN dækker happy path (mangler null/empty/negative/boundary)
+2. Identificér tests der mocker så meget at de i praksis tester mock'en
+3. Find tests uden klar Arrange/Act/Assert-struktur
+4. Spot tests med for brede assertions (fx .Should().NotBeNull() uden mere)
+
+Output-format:
+- fil:linje — issue-type — forslag til ny test-navn
+
+Vær konkret. Ingen generiske "overvej at tilføje mere dækning"-kommentarer.`,
+                expected: 'Gem filen. Genstart Claude. Invokér med: "Brug test-reviewer-agenten på @UserServiceTests.cs". Pointe: code-archaeologist + test-reviewer er to typer specialagenter — begge committes så hele teamet får samme review-kvalitet.'
+            },
+            {
                 heading: 'Model-skift live (2 min)',
                 say: 'Ikke alt kræver Opus. For hurtige simple opgaver skifter vi ned.',
                 promptLabel: 'Vis modeller',
@@ -1973,7 +2096,7 @@ Kør IKKE testene endnu — vis mig diff'en først.`,
                 body: 'Brug `claude -p "..."` (print mode). Claude svarer én gang og exiter — ingen REPL, ingen interaktion.',
                 promptLabel: 'Terminal-kommando (ikke inde i Claude Code)',
                 prompt: 'claude -p "Opsummer ændringerne i de sidste 5 commits i dette repo i 3 bullets" --output-format text',
-                expected: 'Claude starter, læser git log, svarer med bullets, exiter. Output kan pipes til andre scripts. Pointe: kombineret med custom commands + subagents (næste session) kan hele review-flows automatiseres i CI.'
+                expected: 'Claude starter, læser git log, svarer med bullets, exiter. Output kan pipes til andre scripts. Pointe: kombineret med custom commands + MCP/hooks (næste session) kan hele review-flows automatiseres i CI.'
             }
         ],
         handsOn: {
@@ -2165,6 +2288,46 @@ Når du får [input], gør du:
 - [hvad må agenten IKKE gøre]`
             },
             {
+                label: 'Subagent — .claude/agents/test-reviewer.md',
+                language: 'markdown',
+                text: `---
+name: test-reviewer
+description: Review tests for coverage gaps, mocks-smell og AAA-tydelighed
+tools: Read, Grep, Glob
+---
+
+Du er test-review-specialist. Når du får en test-fil eller test-suite:
+
+1. List tests der KUN dækker happy path (mangler null/empty/negative/boundary)
+2. Identificér tests der mocker så meget at de i praksis tester mock'en
+3. Find tests uden klar Arrange/Act/Assert-struktur
+4. Spot tests med for brede assertions (fx .Should().NotBeNull() uden mere)
+
+Output-format:
+- fil:linje — issue-type — forslag til ny test-navn
+
+Vær konkret. Ingen generiske "overvej at tilføje mere dækning"-kommentarer.`
+            },
+            {
+                label: 'Invoker en subagent i prompt',
+                language: 'text',
+                text: `Brug test-reviewer-agenten på @UserServiceTests.cs og @PropertyServiceTests.cs. Kombinér resultaterne i én prioriteret tabel.
+
+# Eller via /agents-picker:
+/agents`
+            },
+            {
+                label: 'Parallelle subagents — review flere branches',
+                language: 'text',
+                text: `Spawn tre parallelle review-subagents, én pr. af disse branches:
+- feature/favorites
+- feature/search-v2
+- fix/null-guard
+
+Hver skal svare med maks 3 findings i prioriteret rækkefølge.
+Kombinér output i én tabel til sidst.`
+            },
+            {
                 label: 'Model-/effort-tuning — sample workflow',
                 language: 'text',
                 text: `# Cost-savings sample — brug før simple prompts
@@ -2243,79 +2406,36 @@ Når du får [input], gør du:
         ]
     },
 
-    // ---- Session 8 ----------------------------------------------------------
+    // ---- Session 7 ----------------------------------------------------------
     {
-        number: 8,
-        title: 'Subagents, MCP og hooks',
-        subtitle: 'Skalér Claude — isolerede agenter, eksterne værktøjer, automatiske handlinger',
+        number: 7,
+        title: 'MCP og hooks',
+        subtitle: 'Eksterne værktøjer + automatiske handlinger — Claude som integreret del af jeres pipeline',
         theme: 'Avancerede features',
-        day: 'Torsdag · Uge 4',
+        day: 'Tirsdag · Uge 4',
         presenters: [],
         prework: { videoUrl: '', note: '' },
         schedule: [
-            { t: '0:00–0:05', what: 'Recap: commands vi har bygget' },
-            { t: '0:05–0:20', what: 'Foredrag: subagents + MCP + hooks' },
-            { t: '0:20–0:40', what: 'Live demo: subagent → MCP → hook' },
-            { t: '0:40–0:55', what: 'Hands-on' },
-            { t: '0:55–1:00', what: 'Take-home' }
+            { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
+            { t: '0:10–0:45', what: 'Deltager-præsentation: MCP og hooks (1 person, dagens emne)' },
+            { t: '0:45–0:50', what: 'Beslut: hvem præsenterer næste gang?' },
+            { t: '0:50–1:00', what: 'Matias-demo (hvis tid)' }
         ],
         foredrag: [
-            '**Subagents** = isoleret Claude-instans med eget context-vindue. Bruges til research, parallelle reviews, eller afgrænsede opgaver der ellers ville fylde hovedsamtalen.',
-            'Built-in agents virker out-of-the-box (fx "Explore", "Plan"). Custom agents lever i `.claude/agents/[navn].md`.',
-            '**MCP** (Model Context Protocol): Claude får direkte adgang til værktøjer — GitHub, database, Slack, jeres interne APIs.',
-            '**Hooks**: automatiske handlinger ved events (PreToolUse, PostToolUse, Stop, UserPromptSubmit). Kan blokere farlige kommandoer.',
-            'Alle tre konfigureres i `.claude/settings.json` — kan committes til repo så hele teamet får samme opsætning.'
+            '**MCP** (Model Context Protocol): Claude får direkte adgang til eksterne værktøjer — GitHub/Azure DevOps, database, Slack, jeres interne APIs. Tænk på det som "plugins" til Claude Code.',
+            'MCP-servere lever som processer Claude kalder — de starter når I bruger dem og giver Claude nye værktøjer (`list_pull_requests`, `read_database`, osv.).',
+            'Konfigureres i `.claude/settings.json` (personlig — secrets her) eller `.mcp.json` (projekt-niveau — committes, ingen secrets).',
+            '',
+            '**Hooks**: automatiske handlinger ved events. Fire vigtige events:',
+            '`PreToolUse` — kører FØR Claude bruger et tool. Kan blokere (exit 2) — perfekt til sikkerheds-guards.',
+            '`PostToolUse` — kører EFTER tool. Brug til auto-format, auto-lint efter fil-edits.',
+            '`Stop` — kører når Claude er færdig. Brug til auto-test, smoke-checks.',
+            '`UserPromptSubmit` — kører når I sender en prompt. Brug til prompt-validation eller logging.',
+            '',
+            'Alle hooks er bare shell-kommandoer. Output gemmes i context (Claude læser det). Exit codes: 0 = ok, 2 = bloker handling, andet = vis fejl men tillad.',
+            'Sikkerhed: hooks kører som dig. Læs altid hooks I copy-paster fra internettet — det er bash der får jeres credentials.'
         ],
         demo: [
-            {
-                heading: 'Subagents — hvorfor? (2 min foredrag)',
-                say: 'Tænk på subagents som "Claude hiring a specialist". De har deres eget context-vindue — så de forstyrrer ikke din hovedsamtale, og flere kan køre samtidig.',
-                body: 'Typiske use cases: "find alle steder vi bruger HttpClient direkte" (research), "review disse 3 PRs parallelt" (review-skalering), "byg denne feature mens jeg fortsætter anden opgave" (parallel arbejde).'
-            },
-            {
-                heading: 'Brug built-in Explore-agent (3 min)',
-                say: 'Claude Code leverer nogle subagents ud af boksen. Explore er til at researche codebase uden at rode hovedsamtalens context.',
-                promptLabel: 'Research via subagent',
-                prompt: 'Brug Explore-agenten til at finde alle steder i denne codebase hvor vi instantierer HttpClient direkte (i stedet for at injecte IHttpClientFactory). Svar med filsti og linjenummer.',
-                expected: 'Claude spawner en subagent der browser codebasen. Main-samtalen får kun det endelige resultat tilbage — ikke alle browsing-trin. Din hovedcontext forbliver ren.'
-            },
-            {
-                heading: 'Parallelle subagents (2 min)',
-                say: 'Du kan spawne flere subagents samtidig — skaleres linært.',
-                promptLabel: 'Parallel review-prompt',
-                prompt: 'Spawn tre parallelle review-subagents, én pr. af disse branches: feature/favorites, feature/search-v2, fix/null-guard. Hver skal svare med maks 3 findings i prioriteret rækkefølge. Kombinér output i én tabel til sidst.',
-                expected: 'Claude kører de 3 reviews parallelt i stedet for sekventielt. Typisk 3x hurtigere. Pointe: subagents er forskellen mellem "Claude som smart notesblok" og "Claude som team af assistenter".'
-            },
-            {
-                heading: 'Byg custom subagent — test-reviewer (3 min)',
-                say: 'Når I gentagne gange beder Claude om samme specialiserede ting, lav en custom subagent.',
-                body: 'Opret filen `.claude/agents/test-reviewer.md` i repo-rod.',
-                promptLabel: '.claude/agents/test-reviewer.md',
-                prompt: `---
-name: test-reviewer
-description: Review tests for coverage gaps, mocks-smell og AAA-tydelighed
-tools: Read, Grep, Glob
----
-
-Du er test-review-specialist. Når du får en test-fil eller test-suite:
-
-1. List tests der KUN dækker happy path (mangler null/empty/negative/boundary)
-2. Identificér tests der mocker så meget at de i praksis tester mock'en
-3. Find tests uden klar Arrange/Act/Assert-struktur
-4. Spot tests med for brede assertions (fx .Should().NotBeNull() uden mere)
-
-Output-format:
-- fil:linje — issue-type — forslag til ny test-navn
-
-Vær konkret. Ingen generiske "overvej at tilføje mere dækning"-kommentarer.`,
-                expected: 'Gem filen. Genstart Claude Code. Nu er agenten tilgængelig i `/agents`-menuen og kan kaldes med navnet.'
-            },
-            {
-                heading: 'Kør din custom subagent (1 min)',
-                promptLabel: 'Invoker test-reviewer',
-                prompt: 'Brug test-reviewer-agenten på @UserServiceTests.cs og @PropertyServiceTests.cs. Kombiner resultaterne.',
-                expected: 'Agenten kører i sin egen context, returnerer konkret liste af issues. Kan committes + deles — hele teamet får samme review-kvalitet.'
-            },
             {
                 heading: '`/mcp` — picker for installerede MCP-servere (1 min)',
                 say: 'Inden vi installerer noget: vis hvad I allerede har. `/mcp` lister alle installerede MCP-servere og deres status.',
@@ -2418,70 +2538,25 @@ Vær konkret. Ingen generiske "overvej at tilføje mere dækning"-kommentarer.`,
         ],
         handsOn: {
             aSpor: {
-                title: 'A-spor (begynder) — prøv en subagent',
+                title: 'A-spor (begynder) — installer GitHub MCP',
                 steps: [
-                    'Kør built-in Explore-agent på dit eget projekt: "Find alle steder vi bruger [en ting du er nysgerrig på]"',
-                    'Tilføj GitHub MCP (snippet i prompts) og list dine åbne PRs',
-                    'Noter: hvilken af de to gav mest værdi lige nu?'
+                    'Opret en GitHub PAT (Settings → Developer settings → PAT) med `repo`-scope',
+                    'Tilføj snippet i `~/.claude/settings.json` (se prompts)',
+                    'Genstart Claude Code, kør `/mcp` og bekræft "github" er connected',
+                    'Bed Claude liste dine senest åbne PRs'
                 ]
             },
             bSpor: {
-                title: 'B-spor (advanced) — byg custom',
+                title: 'B-spor (advanced) — byg en hook',
                 steps: [
-                    'Vælg én: custom subagent, custom hook, eller MCP-integration',
-                    'Byg den i `.claude/agents/` eller `.claude/settings.json`',
-                    'Test den på reel opgave',
-                    'Commit til repo hvis den er team-relevant — del i #claude-code'
+                    'Vælg én hook-type: PreToolUse (sikkerhed), PostToolUse (format/lint), Stop (auto-test)',
+                    'Byg den i `.claude/settings.json` i et projekt',
+                    'Test den på reel opgave — bekræft at den kører på rette event',
+                    'Commit til repo hvis team-relevant — del i #claude-code'
                 ]
             }
         },
         prompts: [
-            {
-                label: 'Custom subagent — .claude/agents/test-reviewer.md',
-                language: 'markdown',
-                text: `---
-name: test-reviewer
-description: Review tests for coverage gaps, mocks-smell og AAA-tydelighed
-tools: Read, Grep, Glob
----
-
-Du er test-review-specialist. Når du får en test-fil eller test-suite:
-
-1. List tests der KUN dækker happy path (mangler null/empty/negative/boundary)
-2. Identificér tests der mocker så meget at de i praksis tester mock'en
-3. Find tests uden klar Arrange/Act/Assert-struktur
-4. Spot tests med for brede assertions (fx .Should().NotBeNull() uden mere)
-
-Output-format:
-- fil:linje — issue-type — forslag til ny test-navn
-
-Vær konkret. Ingen generiske "overvej at tilføje mere dækning"-kommentarer.`
-            },
-            {
-                label: 'Custom subagent — .claude/agents/domain-explainer.md',
-                language: 'markdown',
-                text: `---
-name: domain-explainer
-description: Forklar EDC-domænebegreber for nye udviklere
-tools: Read, Grep, Glob
----
-
-Du er domæne-guide for EDC's ejendomsmægler-platform.
-
-Når nogen spørger om et begreb (fx "Property", "Agent", "Listing", "ExternalId"):
-
-1. Find 2-3 konkrete eksempler i koden hvor det bruges
-2. Forklar begrebet i 3-5 sætninger på dansk
-3. Vis hvordan det relaterer til andre domænebegreber
-4. Peg på canonical definition i @Domain/-mappen hvis den findes
-
-Brug ikke C#-specifik terminologi — forklar så en projektleder også forstår det.`
-            },
-            {
-                label: 'Invoker en subagent i prompt',
-                language: 'text',
-                text: `Brug test-reviewer-agenten på @UserServiceTests.cs og @PropertyServiceTests.cs. Kombinér resultaterne i én prioriteret tabel.`
-            },
             {
                 label: 'GitHub MCP — .claude/settings.json snippet',
                 language: 'json',
@@ -2614,44 +2689,49 @@ Brug ikke C#-specifik terminologi — forklar så en projektleder også forstår
             }
         ],
         handout: {
-            title: 'Subagents + MCP + hooks kickstart',
+            title: 'MCP + hooks kickstart',
             content: [
-                '**Subagents:** isoleret context, kan køre parallelt. Lever i `.claude/agents/[navn].md`.',
-                '**MCP-servere:** peg Claude på et eksternt værktøj (GitHub, DB, Slack).',
-                '**Hooks:** kør shell-kommando ved event (PreToolUse, PostToolUse, Stop, UserPromptSubmit).',
+                '**MCP-servere:** peg Claude på et eksternt værktøj (GitHub, Azure DevOps, DB, Slack).',
+                '`~/.claude/settings.json` — personlig (secrets her, IKKE committet)',
+                '`.mcp.json` — projekt-niveau (committes, ingen secrets)',
+                '`/mcp` — vis status (connected / error / disabled)',
                 '',
-                '**Start med én af disse tre:**',
-                '1. Custom subagent til jeres gentagne specialist-opgave (fx test-review, security-scan)',
-                '2. GitHub MCP (PRs + issues direkte fra Claude)',
-                '3. PreToolUse-hook der blokerer destruktive kommandoer',
+                '**Hooks:** kør shell-kommando ved event:',
+                '`PreToolUse` — bloker farlige Bash-kommandoer (exit 2)',
+                '`PostToolUse` — auto-format / auto-lint efter Edit|Write',
+                '`Stop` — kør tests automatisk når Claude er færdig',
+                '`UserPromptSubmit` — log eller validér prompts',
                 '',
-                '**Sikkerhed:** Hooks + tokens kører som dig. Personlige credentials i `~/.claude/settings.json`, team-setup i repoets `.claude/settings.json`.',
+                '**Start med én af disse to:**',
+                '1. GitHub eller Azure DevOps MCP (PRs + issues direkte fra Claude)',
+                '2. PreToolUse-hook der blokerer destruktive kommandoer',
+                '',
+                '**Sikkerhed:** Hooks + tokens kører som dig. Læs hooks I copy-paster — det er bash med jeres credentials.',
                 '',
                 '**Exit codes i hooks:** 0 = ok, 2 = bloker handling, andet = vis fejl men tillad'
             ]
         },
         hjemmeopgave: [
-            'Vælg én: byg custom subagent, installer MCP, eller lav hook — aktiv i hele ugen',
+            'Vælg én: installer MCP, eller lav hook — aktiv i hele ugen',
             'Noter: én ting der sparede tid, én ting der var irriterende',
-            'Tag begge med til session 9'
+            'Tag begge med til session 8'
         ]
     },
 
-    // ---- Session 9 ----------------------------------------------------------
+    // ---- Session 8 ----------------------------------------------------------
     {
-        number: 9,
+        number: 8,
         title: 'Best practices og faldgruber',
         subtitle: 'Det vi har lært — og det vi IKKE skal gøre',
         theme: 'Mastery og deling',
-        day: 'Tirsdag · Uge 5',
+        day: 'Torsdag · Uge 4',
         presenters: [],
         prework: { videoUrl: '', note: '' },
         schedule: [
-            { t: '0:00–0:05', what: 'Recap: hooks/MCP oplevelser' },
-            { t: '0:05–0:20', what: 'Foredrag: top 10 faldgruber' },
-            { t: '0:20–0:35', what: 'Live demo: AI-kode der ser rigtig ud men har skjult bug' },
-            { t: '0:35–0:55', what: 'Gruppe-øvelse: find fejlene' },
-            { t: '0:55–1:00', what: 'Forberedelse til session 10' }
+            { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
+            { t: '0:10–0:45', what: 'Deltager-præsentation: Best practices og faldgruber (1 person, dagens emne)' },
+            { t: '0:45–0:50', what: 'Beslut: hvem præsenterer næste gang?' },
+            { t: '0:50–1:00', what: 'Matias-demo (hvis tid)' }
         ],
         foredrag: [
             '**1.** Blindt accept — altid kør tests efter Claude-ændringer',
@@ -2814,25 +2894,25 @@ Svar med linjenumre. Kast ikke kode væk — bare liste.`
             ]
         },
         hjemmeopgave: [
-            'Forbered 3 min til session 10: "min bedste Claude Code-oplevelse" ELLER "det jeg bygger videre på"',
+            'Forbered 3 min til session 9: "min bedste Claude Code-oplevelse" ELLER "det jeg bygger videre på"',
             'Medbring 1 command / hook / CLAUDE.md I vil dele med andre teams'
         ]
     },
 
-    // ---- Session 10 ---------------------------------------------------------
+    // ---- Session 9 ---------------------------------------------------------
     {
-        number: 10,
+        number: 9,
         title: 'Show & Tell + vejen frem',
         subtitle: 'Del hvad I har bygget — og planlæg de næste 3 måneder',
         theme: 'Mastery og deling',
-        day: 'Torsdag · Uge 5',
+        day: 'Tirsdag · Uge 5',
         presenters: [],
         prework: { videoUrl: '', note: '' },
         schedule: [
-            { t: '0:00–0:10', what: 'Recap af hele forløbet + største aha-oplevelser' },
-            { t: '0:10–0:40', what: 'Show & Tell — 3 min pr. person/team' },
-            { t: '0:40–0:55', what: 'Fælles: EDC CLAUDE.md-standard + hvordan holder vi momentum?' },
-            { t: '0:55–1:00', what: 'Fælles forpligtelse: "om 3 måneder har jeg..."' }
+            { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
+            { t: '0:10–0:45', what: 'Deltager-præsentation: Show & Tell + vejen frem (1 person, dagens emne)' },
+            { t: '0:45–0:50', what: 'Beslut: hvem præsenterer næste gang?' },
+            { t: '0:50–1:00', what: 'Matias-demo (hvis tid)' }
         ],
         foredrag: [
             'Vi har dækket: prompting, plan mode, kontekst, CLAUDE.md, git, commands, MCP, hooks, faldgruber',
@@ -2874,7 +2954,7 @@ Svar med linjenumre. Kast ikke kode væk — bare liste.`
             },
             {
                 heading: 'Closer — pak det hele sammen (1 min)',
-                body: '**De 5 uger på én slide:**\n\n☑ Prompts med kontekst (sessions 1, 3, 4)\n☑ Plan mode + permissions (session 2)\n☑ CLAUDE.md + memory (session 5)\n☑ Git-workflow (session 6)\n☑ Skills + agents + model-tuning (session 7)\n☑ MCP + hooks (session 8)\n☑ Faldgruber + sikkerhed (session 9)\n☑ **Tag det med jer** — `/remote-control`, `/teleport`, `/mobile` (i dag)\n\nClaude er ikke et værktøj I henter ned. Det er en arbejdsmåde I tager med.'
+                body: '**5 uger på én slide:**\n\n☑ Prompts med kontekst + dårlig vs. god prompt (session 1)\n☑ Plan mode + permissions + mode-cyklen (session 2)\n☑ Kontekst er konge — `@`-syntaks, /clear-flow, scope, chains, debug, /rewind (session 3)\n☑ CLAUDE.md + `.claude/rules/` + /memory (session 4)\n☑ Git-workflow + PAT/Azure DevOps (session 5)\n☑ Skills + subagents + model-tuning (session 6)\n☑ MCP + hooks (session 7)\n☑ Faldgruber + sikkerhed (session 8)\n☑ **Tag det med jer** — `/remote-control`, `/teleport`, `/mobile` (i dag)\n\nClaude er ikke et værktøj I henter ned. Det er en arbejdsmåde I tager med.'
             }
         ],
         handsOn: {
@@ -2965,14 +3045,13 @@ alias claude-go="claude --remote-control"`
                 '',
                 '1. Prompting cheatsheet + `Esc Esc` undo (session 1)',
                 '2. Plan mode + hele mode-cyklen (session 2)',
-                '3. Kontekst-checklist + `@`-cheat sheet (session 3)',
-                '4. 6 prompt-patterns + `/rewind` + `Ctrl+B` (session 4)',
-                '5. CLAUDE.md + `.claude/rules/` + `/memory` (session 5)',
-                '6. Review-checklist (session 6)',
-                '7. Skills + subagents + commands + model-tuning (session 7)',
-                '8. MCP + hooks snippets (session 8)',
-                '9. Do & don\'t-liste (session 9)',
-                '10. `/remote-control` + `/teleport` + mobile (session 10)',
+                '3. Kontekst-checklist + `@`-cheat sheet + /clear-flow + scope/chain/debug + /rewind + Ctrl+B (session 3)',
+                '4. CLAUDE.md + `.claude/rules/` + `/memory` (session 4)',
+                '5. Review-checklist + Azure DevOps PAT/az-setup (session 5)',
+                '6. Skills + subagents + commands + model-/effort-tuning (session 6)',
+                '7. MCP + hooks snippets (session 7)',
+                '8. Do & don\'t-liste (session 8)',
+                '9. `/remote-control` + `/teleport` + mobile (session 9 — i dag)',
                 '',
                 '**Tag det med dig:**',
                 '- `/remote-control` — par mobilen med din session (kræver claude.ai-login)',

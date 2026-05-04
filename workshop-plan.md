@@ -1,149 +1,108 @@
-# EDC x Claude Code — Workshop-plan (v2, survey-baseret)
+# EDC x Claude Code — Workshop-plan (v3, ny format)
 
-**Varighed:** 5 uger · tirsdag + torsdag · 1 time pr. session = 10 sessioner
+**Varighed:** 5 uger · tirsdag + torsdag · 1 time pr. session = **9 sessioner**
 **Målgruppe:** Udviklere fra edc.dk, Operational, Erhverv (C# hele vejen rundt, React på edc.dk)
-**Format:** Kort foredrag (10–15 min) → live demo (10–15 min) → hands-on (25–30 min) → take-home (5 min)
-**Facilitatorer:** Matias Gramkow & Michael
+**Format fra session 2:** Recap → deltager-præsentation (1 person) → vælg næste præsentant → Matias-demo (hvis tid)
+**Facilitatorer:** Matias Gramkow & Michael (faciliterer alle sessioner — deltagerne præsenterer)
 
 ---
 
-## 📍 Status pr. 2026-04-30
+## 📍 Status pr. 2026-05-01
 
-- **Format-skifte (2026-04-30):** Workshoppen kører på **PowerPoint pr. session** — vi (Matias + Michael) bygger en PowerPoint sammen med Claude før hver session, og 1–2 personer præsenterer den live. Vi beslutter til sidst i hver session hvem der præsenterer næste gang.
+- **Format-skifte (2026-05-01):** Workshoppen kører på **deltager-præsentationer** fra session 2. Én deltager pr. session præsenterer dagens emne. Matias og Michael faciliterer og hjælper med slides ugen før. Vi vælger næste præsentant i slutningen af hver session — hvis ingen melder sig, vælger vi.
+- **Sammenslået session 3+4 (2026-05-01):** "Kontekst er konge" og "Avanceret prompting" er nu én session. Workshoppen er gået fra 10 til 9 sessioner.
 - **Hjemmesiden er KUN til os.** `/workshop?peek=<token>` er facilitator-arbejdsdokument, ikke deltager-facing. Den viser:
   1. Hvem præsenterer (presenter-pill pr. session)
   2. Forarbejde-video (URL pr. session — vi sender ud til deltagerne før hver gang)
   3. PowerPoint-deck (upload via `/api/deck`, gemmes i Vercel Blob)
-  4. Reference-noter (foredrag/demo/prompts) som vi trækker fra når vi bygger slides
-- **Live site:** `/workshop` på Vercel (edc-x-claude-workshops) — 10 sessioner med server-side gating pr. dato
-- **Start-dato:** Tirsdag 2026-05-05 kl. 09:00 (sat i `api/session.js` → `START_DATE_ISO`)
+  4. Reference-noter (foredrag/demo/prompts) som den der præsenterer trækker fra når de bygger slides
+- **Live site:** `/workshop` på Vercel (edc-x-claude-workshops) — 9 sessioner med server-side gating pr. dato
+- **Start-dato:** Tirsdag 2026-05-05 kl. **11:00** (sat i `api/session.js` → `START_DATE_ISO`)
 - **Facilitator peek:** URL `/workshop?peek=<WORKSHOP_PEEK_TOKEN>` (env var på Vercel). På localhost: hvilken som helst `?peek=anything` virker.
 - **Indhold:** leveres fra `api/session.js` (ikke længere fra denne md-fil). Per session: `presenters: []` + `prework: { videoUrl, note }`.
-- **Survey:** afsluttet. GitHub-integration i `api/submit.js` fjernet.
 - **Endpoints:**
   - `GET /api/session?n=N&peek=...` — session-data + presenters + prework
   - `GET /api/deck?session=N&peek=...` — list uploaded decks
   - `POST /api/deck?peek=...` — Vercel Blob client-upload-protokol (handleUpload)
   - `DELETE /api/deck?session=N&id=...&peek=...` — fjern et deck
-- **Ændringer siden v1-planen nedenfor:**
-  - **2026-04-30:** Skift til PowerPoint-format + presenter-rotation. Hjemmesiden refrramet til facilitator-only.
-  - Session 1 reframed til **kollaborativ** (ingen A/B-spor; "facilitator, ikke guru")
-  - Session 2: tilføjet context-hygiejne (`/clear`, `/compact`, `/context`)
-  - Session 4: tilføjet TDD-loop pattern
-  - Session 7: tilføjet headless mode (`claude -p`)
-  - Session 8: omdøbt til "Subagents, MCP og hooks" — subagents er nu hovedemne
-  - Alle demos er strukturerede: "sig dette" + "kopier prompt" + "forventet resultat"
-  - Dårlige prompt-eksempler er nu "realistisk dårlige" (ikke stråmænd)
 
 ---
 
-## 🔌 Power-ups mapping (v2.190+)
+## Ændringer i v3 (2026-05-01)
 
-Claude Code v2.190+ har en `/powerup` slash-command der lærer 10 features. Vi har vævet dem ind i de eksisterende sessioner som additive lag — IKKE erstatninger. Eksisterende fokus er bevaret; power-ups er fundament eller closer hvor de passer.
-
-| # | Power-up | Hvor i CLI |
-|---|---|---|
-| 1 | Talk to your codebase | `@filnavn`, `@file#L20-40`, `@mappe/` |
-| 2 | Steer with modes | `Shift+Tab`, plan / acceptEdits / auto / bypassPermissions |
-| 3 | Undo anything | `/rewind`, `Esc Esc` |
-| 4 | Run in the background | `Ctrl+B`, `/tasks`, `Ctrl+T` |
-| 5 | Teach Claude your rules | `CLAUDE.md`, `/memory`, `.claude/rules/*.md` |
-| 6 | Extend with tools | MCP, `/mcp` |
-| 7 | Automate your workflow | Skills (`.claude/skills/<navn>/SKILL.md`), hooks (`.claude/settings.json`) |
-| 8 | Multiply yourself | Subagents, `/agents` |
-| 9 | Code from anywhere | `/remote-control`, `/teleport`, `/mobile`, claude.ai/code |
-| 10 | Dial the model | `/model`, `/effort` (low/medium/high/xhigh/max), `Option+P`/`Alt+P` |
-
-### Mapping pr. session
-
-| Session | Eksisterende fokus | Power-up tilføjelse |
-|---|---|---|
-| 1 — Kickoff + dårlig vs. god prompt | Foredrag + dårlig/god prompt-demos + 4 byggeklodser | **Power-up 3:** `Esc Esc` rewind som confidence-builder + tease af `@`-syntaks |
-| 2 — Plan mode | Plan vs. ikke-plan, settings.json baseline, context-hygiejne | **Power-up 2:** udvidet til hele mode-cyklen (Shift+Tab) — acceptEdits, auto, bypassPermissions, startup-flag |
-| 3 — Kontekst er konge | 4 slags kontekst, 3 runders demo, par-øvelse | **Power-up 1:** `@filnavn`, `@file#L20-40`, `@mappe/` som hovedemne. Anti-pattern: copy-paste hele filen vist eksplicit |
-| 4 — Avanceret prompting / debug | Scope-lock, chains, debug-pattern, TDD-loop | **Power-up 3 (deep):** `/rewind` med 4-valgs menu. **Power-up 4:** `Ctrl+B` background tasks + `/tasks` + `Ctrl+T` |
-| 5 — CLAUDE.md | CLAUDE.md før/efter, do & don't, C# + React skabeloner | **Power-up 5:** `.claude/rules/*.md` med `paths`-frontmatter, `/init`, `/memory`, auto-memory-folder |
-| 6 — Git/commit/review | `/commit`, `/review`, manuel review-prompt, custom /commit | (Ingen ny power-up — fokus bevaret) |
-| 7 — **Skills, agents og model-tuning** *(omdøbt fra "Slash commands")* | Custom commands, /pr-description, /explain-endpoint, headless mode | **Power-up 7 (skills-delen):** `.claude/skills/<navn>/SKILL.md` med tools-restriction og paths. **Power-up 8:** subagents, `/agents`-picker. **Power-up 10:** `/model`, `/effort`, `Option+P`/`Alt+P`, `opusplan`-alias |
-| 8 — MCP, hooks, automatisering | GitHub MCP, PreToolUse blocker, Stop test, PostToolUse format | **Power-up 6:** `/mcp` picker, `.mcp.json` projekt-niveau. **Power-up 7 (hooks-delen):** PostToolUse `dotnet format`, Stop `dotnet test` |
-| 9 — Best practices / faldgruber | Top 10 faldgruber, AI-kode med skjulte bugs, anti-hallucination prompt | (Recap — ingen ny tilføjelse) |
-| 10 — Show & Tell | Show & Tell, EDC-fælles CLAUDE.md, 3-måneders forpligtelse | **Power-up 9:** `/remote-control`, `/teleport`, `/mobile`, `claude --remote-control` som glansfuld closer ("tag det med dig") |
-
-**Designprincip:** Power-ups er additive lag, ikke nye sessioner. Hver tilføjelse skal kunne kopieres direkte (kommando, settings.json-snippet, skill-frontmatter, etc.) via copy-buttons på workshop-siden.
-
----
-
-## Hvad fortæller survey'en os?
-
-Baseret på de første svar (6 stk, ~20 forventet):
-
-| Niveau | Hvem (indtil videre) | Andel |
-|---|---|---|
-| `tried` (begynder) | Edvard, Troels | ~33 % |
-| `advanced` | Cecilie, Christian, Oliver | ~50 % |
-| `daily` (power user) | Jacob | ~17 % |
-
-**Ønskede emner (på tværs af niveau):**
-- `best-practices` — 5/6
-- `advanced-features` — 5/6
-- `workflow` — 4/6
-- `prompting` — 3/6 (både begyndere og advanced!)
-
-**Hvad folk allerede bruger:**
-- Nærmest alle: basic-chat, file-edit, bash, git-ops
-- Kun 1/6 bruger hooks (Oliver)
-- 3/6 har rørt MCP, men uden at "kunne det"
-- 3/6 har prøvet subagents (men begynder Troels har tikket af — sikkert forvirring)
-- Plan mode bruges kun af de advanced
-
-**Hvad det betyder pædagogisk:**
-1. **Ét hold, to spor.** Hver session har en A-øvelse (begynder) og B-øvelse (advanced) på samme tema. Det undgår at begyndere drukner og advanced keder sig.
-2. **Par-arbejde på tværs af niveau** fra session 3. Power users lærer bedst ved at forklare — begyndere lærer hurtigst af at se.
-3. **Én handout + én hjemmeopgave pr. session.** Så deltagerne har noget i hånden og noget at tage med til næste gang.
-4. **Kødfuld prompting-linje** gennem hele forløbet — det er det emne hvor spredningen er størst, og alle vil have mere.
-
----
-
-## Pædagogiske principper
-
-- **"Det du tager hjem" > "det jeg viste"**. Hver session ender med noget konkret i hånden.
-- **Skriv det ned, test det live**. PowerPoint-agendaen sætter rammen — terminalen bagefter er hvor det lærer.
-- **Dumme spørgsmål først**. Start hver session med 2 min "hvad gik galt i hjemmeopgaven?".
-- **Psykologisk sikkerhed**. Sessions 1–2: man arbejder kun på egen kode, ikke kolleger. Fra session 3: par på tværs af teams.
-
----
-
-## Operativt flow pr. session (PowerPoint-format)
-
-1. **Forberedelse (mellem sessioner):**
-   - Vi (Matias + Michael) bygger PowerPoint sammen med Claude — agenda + slides for det/de emner.
-   - Den der præsenterer fører pennen; den anden reviewer.
-   - Pre-work-video lægges som URL i `api/session.js` → `prework.videoUrl` og deles med deltagerne.
-   - Slides uploades på `/workshop?peek=<token>` under den relevante session-blok (gemt som .pptx eller .pdf i Vercel Blob).
-2. **Live (60 min):**
-   - 1–2 personer præsenterer fra deck'et.
-   - Reference-noter (foredrag/demo/prompts) på `/workshop` er backstage — bruges til at bygge slides og som spørge-buffer.
-3. **Afslutning af session:**
-   - Beslut hvem der præsenterer næste gang — opdater `presenters: []` i `api/session.js` og redeploy (eller lad mig opdatere det).
-
-### Presenter-rotation
-
-| Session | Præsentant(er) |
+| Hvad | Hvorfor |
 |---|---|
-| 1 | Matias & Michael (kickoff) |
-| 2–10 | Besluttes ved afslutning af forrige session |
+| **Start-tid 09:00 → 11:00** | Pasrer bedre med deltagernes morgener |
+| **Ny session-skabelon (session 2-9)** | Recap (10 min) + deltager-præsentation (35 min) + vælg næste præsentant (5 min) + Matias-demo hvis tid (10 min) |
+| **Session 1 = uændret** | Kickoff har ingen pre-work og ingen deltager-præsentation. Matias og Michael kører den. Vælger første præsentant under formatets gennemgang. |
+| **Session 3 = sammenslået "Kontekst" + "Avanceret prompting"** | Begge handler om prompting — det giver én tæt session i stedet for to spredte. Ny tilføjelse: hvor vigtig den første prompt er, og `/clear`-metoden (skriv setup til md, så `/clear` — undgå `/compact`). |
+| **Session 5 (Git) — tilføjet PAT + `az` til Azure DevOps** | Deltagerne skal kunne lade Claude pushe/pull mod EDC-repos uden manuel auth |
+| **Session 6 (Skills, agents) — alle subagents flyttet hertil** | Konsoliderer skills + subagents + model-tuning på ét sted |
+| **Session 7 (MCP og hooks) — kun MCP og hooks** | Subagents er væk fra session 7 — den er ren MCP/hooks nu |
+| **9 sessioner i alt (var 10)** | Workshoppen ender på Tue Uge 5 i stedet for Thu Uge 5 |
+
+---
+
+## Sessioner — overblik
+
+| # | Dag | Titel | Tema |
+|---|---|---|---|
+| 1 | Tirsdag · Uge 1 | Kickoff + Gode vs. dårlige prompts | Fundamentet |
+| 2 | Torsdag · Uge 1 | Plan mode vs. ikke plan mode | Fundamentet |
+| 3 | Tirsdag · Uge 2 | Kontekst er konge (første prompt + `/clear`-flow + scope/chain/debug + /rewind) | Prompting er en superkraft |
+| 4 | Torsdag · Uge 2 | CLAUDE.md og projekt-hukommelse | Workflows der virker |
+| 5 | Tirsdag · Uge 3 | Git-workflow, commits og review (+ PAT/Azure DevOps) | Workflows der virker |
+| 6 | Torsdag · Uge 3 | Skills, agents og model-tuning | Avancerede features |
+| 7 | Tirsdag · Uge 4 | MCP og hooks | Avancerede features |
+| 8 | Torsdag · Uge 4 | Best practices og faldgruber | Mastery og deling |
+| 9 | Tirsdag · Uge 5 | Show & Tell + vejen frem | Mastery og deling |
 
 ---
 
 ## Fast skabelon pr. session (60 min)
 
+### Session 1 — uændret (Matias + Michael kører)
+
 | Tid | Del | Hvad |
 |---|---|---|
-| 0:00–0:05 | Recap | Hjemmeopgave — hvad virkede? hvad gik galt? |
-| 0:05–0:20 | Foredrag | Dagens emne, 3–4 kernepointer |
-| 0:20–0:35 | Live demo | Samme emne vist i terminalen på ægte kode |
-| 0:35–0:55 | Hands-on | A-spor (begynder) / B-spor (advanced) |
-| 0:55–1:00 | Take-home | Handout + hjemmeopgave |
+| 0:00–0:05 | Velkomst | Kort intro |
+| 0:05–0:15 | Foredrag | Hvordan de næste 5 uger foregår + vælg næste præsentant |
+| 0:15–0:30 | Live demo | Dårlig vs. god prompt på `/demo` |
+| 0:30–0:55 | Par-øvelse | Deltagerne prøver begge prompt-typer på egen kode |
+| 0:55–1:00 | Take-home | Del indsigter + handout |
+
+### Session 2-9 — ny skabelon
+
+| Tid | Del | Hvad |
+|---|---|---|
+| 0:00–0:10 | Recap | Hjemmeopgave — hvad virkede? hvad gik galt? |
+| 0:10–0:45 | Deltager-præsentation | 1 person fra holdet præsenterer dagens emne (slides bygget ugen før med Matias/Michael) |
+| 0:45–0:50 | Beslut næste præsentant | Hvem tager næste session? Hvis ingen melder sig, vælger Matias/Michael |
+| 0:50–1:00 | Matias-demo | Live-demo af noget relateret hvis der er tid |
+
+---
+
+## Operativt flow pr. session
+
+1. **Forberedelse (mellem sessioner — uge før):**
+   - Næste præsentant arbejder med Matias/Michael på slides
+   - Reference-noter (foredrag/demo/prompts) i `api/session.js` er udgangspunktet
+   - Pre-work-video lægges som URL i `api/session.js` → `prework.videoUrl` og deles med deltagerne
+   - Slides uploades på `/workshop?peek=<token>` under den relevante session-blok (gemt som .pptx eller .pdf i Vercel Blob)
+2. **Live (60 min):**
+   - 1 deltager præsenterer (max — ikke 2)
+   - Matias/Michael faciliterer + giver hånd hvis præsentanten går i stå
+   - Reference-noter på `/workshop` er backstage — bruges som spørge-buffer + til at bygge Matias-demo
+3. **Afslutning af session:**
+   - Vælg næste præsentant — opdater `presenters: []` i `api/session.js`
+
+### Presenter-rotation
+
+| Session | Præsentant |
+|---|---|
+| 1 | Matias & Michael (kickoff) |
+| 2 | Vælges i session 1 |
+| 3-9 | Vælges ved afslutning af forrige session |
 
 ---
 
@@ -151,303 +110,158 @@ Baseret på de første svar (6 stk, ~20 forventet):
 
 ## Session 1 (tirsdag) — Kickoff + "Hvad er en god prompt?"
 
-**Facilitatorernes intro til forløbet + første emne** (som du foreslog).
+**Format:** Matias + Michael kører dette. Ingen deltager-præsentation. Bruges også til at vælge præsentant til session 2.
 
-**Foredrag (15 min):**
-- Sådan foregår de næste 5 uger (tirsdag/torsdag, 2 spor, hjemmeopgaver, handouts)
-- Survey-resultater vist tilbage: "her er vi som organisation"
-- Claude Code i 3 minutter: hvad det er, hvad det ikke er
-- **Dagens emne: Gode vs. dårlige prompts** — hvorfor det er fundamentet
+**Foredrag (10 min):**
+- 5 ugers forløb · 9 sessioner · tirsdag + torsdag · 1 time
+- Format fra session 2: deltager-præsenterer (1 person), Matias/Michael faciliterer
+- Vælg næste præsentant under denne foredrag — hvis ingen melder sig, vælger vi 1
+- Pre-work fra session 2 (kort video sendes ud)
+- Dagens emne: gode vs. dårlige prompts
+- `Esc Esc` som undo-knap fra dag 1 — tryghed uden frygt
 
 **Live demo (15 min):**
-- Samme opgave, to prompts:
-  - ❌ "fix buggen i min kode"
-  - ✅ "Læs `UserService.cs`. Metoden `GetUser` returnerer null når email er tom string — tilføj validering og en test der dækker det. Rør ikke andet."
-- Vis forskellen live i deres sprog (C# eksempel)
-- Kort om **plan mode** som teaser til torsdag
+- Brug demo-projektet på `/demo` — alle priser vises i USD ("$8,500,000.00")
+- Dårlig prompt vs. god prompt vist live i terminalen
 
 **Hands-on (25 min):**
-- **A-spor (tried):** Åbn Claude Code i et C#-projekt. Stil 3 spørgsmål om koden. Brug cheatsheetet som skabelon.
-- **B-spor (advanced/daily):** Find en opgave fra jeres backlog. Skriv én "worst case" prompt og én "best case" prompt. Kør begge. Noter forskellen.
+- Par-øvelse 2 og 2: prøv begge prompt-typer på samme opgave
 
-**Handout:** `handouts/01-prompting-cheatsheet.md` — 1-sides skabelon: *[Kontekst] + [Opgave] + [Begrænsninger] + [Format/forventet output]*
-
-**Hjemmeopgave til torsdag:**
-- Brug Claude Code på mindst én rigtig opgave i jeres kode
-- Noter 1 prompt der virkede godt og 1 der ikke gjorde
-- Tag begge med til torsdag
+**Hjemmeopgave til session 2:**
+- Brug Claude Code på mindst én rigtig opgave inden torsdag
+- Tag prompt der virkede + en der ikke virkede med
 
 ---
 
 ## Session 2 (torsdag) — Plan mode vs. ikke plan mode
 
-**Foredrag (15 min):**
-- Dagens dilemma: Hvornår skal Claude tænke før den koder?
-- Plan mode forklaret: Shift+Tab, "forklar hvad du vil gøre uden at ændre noget"
-- De 3 situationer hvor plan mode vinder:
-  1. Opgaven er uklar — du ved ikke helt hvad du vil
-  2. Opgaven rører flere filer
-  3. Du vil lære af Claudes tilgang før implementering
-- Permissions-systemet kort: accept-edits, bypass-permissions, ask
+**Deltager-præsenterer:** Plan mode + permissions + hele mode-cyklen (Shift+Tab)
 
-**Live demo (15 min):**
-- Tag en refactor-opgave. Kør den først UDEN plan mode → "go go go"-mode
-- Rul tilbage. Kør med plan mode → se planen → "ja men ikke trin 3, lav det anderledes"
-- Vis hvordan man godkender/afviser redigeringer
-- Hvor `settings.json` ligger og hvad man kan sætte
+**Reference-noter dækker:**
+- Plan mode (Shift+Tab) — hvornår tænk-først
+- acceptEdits / auto / bypassPermissions — sweet spots
+- `.claude/settings.json` baseline for EDC
+- Context-hygiejne kort (`/clear`, `/compact`, `/context`)
 
-**Hands-on (25 min):**
-- **A-spor:** Tag en lille opgave (rename, tilføj et felt, skriv en test). Brug plan mode. Sammenlign med hvad du ville have gjort selv.
-- **B-spor:** Tag en multi-file ændring. Brug plan mode. Afvis mindst ét trin i planen og bed om alternativ. Commit resultatet.
-
-**Handout:** `handouts/02-planmode-beslutningstrae.md` — flowchart: "Skal jeg bruge plan mode?"
-
-**Hjemmeopgave til tirsdag:**
-- Brug plan mode på mindst én ægte opgave i løbet af weekenden
-- Gem planen Claude foreslog (screenshot / kopiér) — vi kigger på den i session 3
+**Hjemmeopgave:** brug plan mode i den weekend, tag plan med til session 3
 
 ---
 
-# Uge 2 — Prompting er en superkraft
+# Uge 2 — Prompting er en superkraft (kondenseret til ÉN session)
 
 ## Session 3 (tirsdag) — Kontekst er konge
 
-**Foredrag (15 min):**
-- Hvorfor Claude "hallucinerer": fordi den ikke ved hvad den ikke ved
-- De 4 slags kontekst:
-  1. **Filer** ("læs først `X.cs`, `Y.cs`")
-  2. **Regler** ("vi bruger xUnit, ikke NUnit")
-  3. **Eksempler** ("gør det som `ExistingService.cs` gør")
-  4. **Begrænsninger** ("rør kun denne metode")
-- Hvorfor `@filename` er dit bedste værktøj
+**Deltager-præsenterer:** Kontekst er konge — fra første prompt til `/clear`-flow + scope/chains/debug + /rewind/Ctrl+B
 
-**Live demo (15 min):**
-- Tag samme opgave med 3 forskellige mængder kontekst:
-  1. Ingen kontekst → generisk kode
-  2. Filer + mønster → god kode
-  3. Filer + mønster + eksempel → produktionsklar kode
-- Vis på både C# og React (edc.dk-deltagere)
+**Reference-noter dækker:**
+- **Den første prompt er alt** — den sætter tone, scope, kvalitet for hele samtalen
+- De 4 slags kontekst (filer, regler, eksempler, begrænsninger)
+- `@`-syntaks: `@fil`, `@fil#L20-40`, `@mappe/`
+- Anti-pattern: copy-paste hele filer
+- **`/clear`-metoden (anbefalet over `/compact`):**
+  1. Skriv `setup.md` med "hvad arbejder vi på, hvad er gjort, næste skridt"
+  2. `/clear`
+  3. Genstart: "Læs @setup.md og fortsæt"
+- Scope-lock pattern, chain prompting, debug-pattern med hypotese
+- `/rewind` (Esc Esc) — 4 valg: code only / conversation only / both / cancel
+- `Ctrl+B` background tasks + `/tasks` + `Ctrl+T`
 
-**Hands-on (25 min) — PAR-ØVELSE på tværs af teams:**
-- **A+B sammen:** Par med én begynder + én advanced.
-- Begynder vælger opgave fra sin kode. Advanced hjælper med at skrive en kontekst-rig prompt.
-- Skift roller.
-- Saml de 3 bedste prompts på tavlen.
-
-**Handout:** `handouts/03-kontekst-checklist.md` — "Før du trykker enter: har du givet filer, regler, eksempler, begrænsninger?"
-
-**Hjemmeopgave til torsdag:**
-- Lav en "prompt-log" i en note-fil: hver gang du prompter denne uge, gem prompten + hvad der kom ud + 1-sætnings vurdering
+**Hjemmeopgave:** find ud af om dit projekt har en CLAUDE.md, ellers tænk på hvad der bør stå i den
 
 ---
 
-## Session 4 (torsdag) — Avanceret prompting: scope, chains, debugging
+## Session 4 (torsdag) — CLAUDE.md og projekt-hukommelse
 
-**Foredrag (15 min):**
-- Scope-kontrol: "ændr KUN X, rør ikke resten"
-- Chain prompting: én opgave ad gangen vs. alt på én gang (og hvornår hvad)
-- Debug-pattern: "her er fejlen + stacktrace + hvad jeg har prøvet — hvad er den mest sandsynlige årsag?"
-- **Anti-patterns:** brede opgaver, blindt accept, "fix alt"-prompts
+**Deltager-præsenterer:** CLAUDE.md, `.claude/rules/`, `/memory`, `/init`
 
-**Live demo (15 min):**
-- Kør en rigtig fejl fra et projekt
-- Vis 3 forskellige debug-prompts fra dårlig til fremragende
-- Vis hvordan Claude bedst bruges til at *udelukke* mistænkte, ikke til at gætte
-
-**Hands-on (25 min):**
-- **A-spor:** Tag en bug. Skriv en debug-prompt med: fejl + stacktrace + hvad du har prøvet. Vurder resultatet.
-- **B-spor:** Tag en større feature. Bryd den ned i 3 chained prompts. Kør dem sekventielt. Sammenlign med at have promptet "byg det hele".
-
-**Handout:** `handouts/04-prompt-patterns.md` — 6 genbrugelige prompt-skabeloner (debug, refactor, test, review, forklar, scope-lock)
-
-**Hjemmeopgave til tirsdag:**
-- Vælg ét projekt du arbejder i. Find ud af om det har en `CLAUDE.md`. Hvis nej, tænk 5 min over hvad der burde stå i den. Tag notater med.
+**Hjemmeopgave:** committe CLAUDE.md i et af dine repos
 
 ---
 
 # Uge 3 — Workflows der virker
 
-## Session 5 (tirsdag) — CLAUDE.md og projekt-hukommelse
+## Session 5 (tirsdag) — Git-workflow, commits, review (+ PAT/Azure DevOps)
 
-**Foredrag (15 min):**
-- Hvad en CLAUDE.md er: Claudes "onboarding-dokument" til jeres projekt
-- Hvad hører IND: stack, konventioner, hvad man IKKE skal gøre, hvor tingene ligger
-- Hvad hører IKKE IND: generel dokumentation, API-docs, ting der ændrer sig hver uge
-- Memory-systemet (auto-memory): forskellen på projekt-CLAUDE.md og personlig memory
+**Deltager-præsenterer:** `/commit`, `/review`, custom /commit, og **PAT + `az`-CLI til Azure DevOps**
 
-**Live demo (15 min):**
-- Åbn et EDC-projekt uden CLAUDE.md. Stil et spørgsmål → se generisk svar.
-- Tilføj en god CLAUDE.md. Stil samme spørgsmål → se præcis svar.
-- Vis EDC.EDCDK.Website's CLAUDE.md som C#-eksempel
-- Vis en React/TS-CLAUDE.md for edc.dk-folkene
+**Reference-noter dækker:**
+- `/commit` og `/review` flow
+- Hvad Claude fanger / ikke fanger
+- **Azure DevOps adgang:**
+  - PAT-oprettelse: User Settings → Personal Access Tokens → scope `Code (read & write)`, max 90 dages udløb
+  - Git Credential Manager: `git config --global credential.helper "manager-core"`
+  - `az login` + `az extension add --name azure-devops` + `az devops login`
+  - `az repos pr create` for at lade Claude oprette PRs
+- Sikkerhed: aldrig PAT i prompts/repos/Slack
 
-**Hands-on (25 min):**
-- **Alle spor:** Skriv (eller forbedr) en CLAUDE.md til dit team-repo. Hjemmeopgaven fra torsdag ER dit input.
-- **A-spor:** Kopiér skabelonen, fyld ud.
-- **B-spor:** Kritisér eksisterende CLAUDE.md i jeres repos. Slet det der er støj. Tilføj "det Claude plejer at gætte forkert på".
-
-**Handout:** `handouts/05-claudemd-skabelon.md` — en udfyldbar skabelon + do/don't-liste
-
-**Hjemmeopgave til torsdag:**
-- Få din nye CLAUDE.md commit'et i dit repo (hvis muligt) — eller mindst: kør Claude med og uden den og noter forskellen
+**Hjemmeopgave:** brug /commit eller /review en gang, sæt PAT/az op hvis ikke gjort
 
 ---
 
-## Session 6 (torsdag) — Git-workflow, commits og review
+## Session 6 (torsdag) — Skills, agents og model-tuning
 
-**Foredrag (15 min):**
-- `/commit` — generér god commit-besked ud fra dine ændringer
-- `/review` — lad Claude kigge på et PR før kolleger gør
-- Hvad Claude ER god til at fange: typing, manglende null-checks, konvention-brud, glemte tests
-- Hvad Claude IKKE ER god til at fange: domæne-logik, performance på rigtig skala, sikkerhed på infrastrukturniveau
-- Golden rule: Claude-review erstatter ikke kollega-review, det forbereder det
+**Deltager-præsenterer:** Custom commands, skills, **subagents** (alle subagent-emner samles her), `/model`, `/effort`
 
-**Live demo (15 min):**
-- Lav en reel ændring live. Kør `/commit`. Diskutér commit-beskeden.
-- Kør `/review` på en PR fra jeres repo. Gå igennem hvilke kommentarer der er værd at rette.
+**Reference-noter dækker:**
+- Built-in commands + custom `.claude/commands/`
+- `.claude/skills/<navn>/SKILL.md` med paths-frontmatter
+- **Subagents — fuldt dækket:**
+  - Built-in (Explore, Plan)
+  - Custom: code-archaeologist, test-reviewer
+  - Parallelle subagents (review 3 PRs samtidig)
+  - Hvornår delegere
+- Model + effort tuning: Opus/Sonnet/Haiku, low/medium/high/xhigh/max, `Option+P` quick-switch
+- Headless mode (`claude -p`)
 
-**Hands-on (25 min) — PAR-ØVELSE:**
-- Lav en lille ændring i dit repo.
-- Commit med Claude.
-- **Byt kode** med din par-partner.
-- Review hinandens kode med Claude. Del feedback.
-
-**Handout:** `handouts/06-review-checklist.md` — "Før du stoler på Claude-review, tjek selv: [liste]"
-
-**Hjemmeopgave til tirsdag:**
-- Brug `/commit` eller `/review` mindst én gang på ægte arbejde
-- Find én ting Claude påpegede, som du ikke ville have fanget selv
+**Hjemmeopgave:** byg ét custom command + brug det 3 gange
 
 ---
 
 # Uge 4 — Avancerede features
 
-## Session 7 (tirsdag) — Slash commands og custom commands
+## Session 7 (tirsdag) — MCP og hooks
 
-**Foredrag (15 min):**
-- Built-in commands: `/commit`, `/review`, `/init`, `/clear`, `/compact`
-- Custom slash commands i `.claude/commands/` — simpel markdown-fil = ny kommando
-- Hvornår er det værd at bygge en? (3+ gentagelser = byg den)
-- Model-valg: Opus / Sonnet / Haiku — hvornår hvad?
+**Deltager-præsenterer:** MCP-servere + hooks (PreToolUse / PostToolUse / Stop / UserPromptSubmit)
 
-**Live demo (15 min):**
-- Byg live en `/pr-description` command for EDC
-- Byg en `/explain-endpoint` command til C#-controllers
-- Vis hvordan den kører
+**Reference-noter dækker:**
+- `/mcp` picker
+- GitHub MCP (også relevant for Azure DevOps MCP)
+- `.mcp.json` projekt-niveau (committes uden secrets)
+- Hooks: bloker farlige kommandoer, auto-test efter Stop, auto-format efter Edit
+- Sikkerhed + exit codes
 
-**Hands-on (25 min):**
-- **A-spor:** Tilpas én af de færdige EDC-commands til dit eget repo. Kør den.
-- **B-spor:** Byg en custom command til dit teams mest gentagne opgave. Commit den til `.claude/commands/` i dit repo.
-
-**Handout:** `handouts/07-custom-command-kogebog.md` — 3 færdige EDC-kommandoer som starter-pakke
-
-**Hjemmeopgave til torsdag:**
-- Brug din/en custom command mindst 3 gange. Noter: hvad skulle justeres efter første kørsel?
+**Hjemmeopgave:** installer en MCP eller byg en hook, aktiv hele ugen
 
 ---
 
-## Session 8 (torsdag) — MCP, hooks og automatisering
+## Session 8 (torsdag) — Best practices og faldgruber
 
-**Foredrag (15 min):**
-- MCP (Model Context Protocol) i praksis — hvad det giver dig
-- Praktiske MCP-servere for EDC: filesystem, GitHub, evt. database
-- Hooks: automatiske handlinger (fx kør tests før commit, tjek secrets før filer lukkes)
-- Sikkerhed: hvad må hooks/MCP — og hvad må de ikke
+**Deltager-præsenterer:** Top 10 faldgruber, AI-kode med skjulte bugs, secrets-tjek
 
-**Live demo (15 min):**
-- Opsæt GitHub MCP live → "lav en PR"-flow
-- Opsæt en `PreToolUse`-hook der blokerer `rm -rf`
-- Vis en `Stop`-hook der kører `dotnet test` når Claude er færdig
-
-**Hands-on (25 min):**
-- **A-spor:** Opsæt GitHub MCP. Kør "list mine PRs". Bare dét.
-- **B-spor:** Skriv én hook til dit eget workflow (fx auto-test efter edit af `.cs`-fil, eller block hvis der røres `.env`).
-
-**Handout:** `handouts/08-mcp-og-hooks-kickstart.md` — færdige `settings.json`-snippets
-
-**Hjemmeopgave til tirsdag:**
-- Behold mindst én hook eller én MCP-server aktiv i hele ugen. Noter én ting der sparede dig tid, og én ting der var irriterende.
+**Hjemmeopgave:** forbered 3-min Show & Tell til session 9
 
 ---
 
 # Uge 5 — Mastery og deling
 
-## Session 9 (tirsdag) — Best practices og faldgruber
+## Session 9 (tirsdag) — Show & Tell + vejen frem
 
-**Foredrag (15 min):**
-- De 10 faldgruber vi (og I) er stødt på gennem de 8 sessioner
-- Sikkerhed: secrets, supply chain, hvad Claude IKKE må se
-- Kvalitetsbalance: hvornår stole på Claude, hvornår dobbelttjekke
-- "Teknisk gæld fra AI" — kode der virker men er skrøbelig
-- Prompt-fatigue og hvordan man undgår det
+**Deltager-præsenterer:** Hele holdet har 3 min hver til "min bedste Claude Code-oplevelse"
 
-**Live demo (15 min):**
-- Vis et stykke AI-genereret kode der SER rigtigt ud, men har en subtil bug
-- Gennemgå hvordan man fanger den — uden at læse hver linje
-
-**Hands-on (25 min) — GRUPPE-ØVELSE:**
-- Vi deler et stykke AI-genereret C#-kode med 3 skjulte fejl
-- Grupper på 3–4 finder fejlene. Brug Claude til at hjælpe.
-- Fælles gennemgang af hvad der blev fundet.
-
-**Handout:** `handouts/09-do-og-dont.md` — "EDC's do's and don'ts for AI-assisteret kode" (kan bruges som bilag til interne retningslinjer)
-
-**Hjemmeopgave til torsdag:**
-- Forbered 3 min "Min bedste Claude Code-oplevelse" til session 10
+**Reference-noter dækker:**
+- `/remote-control`, `/teleport`, `/mobile` som closer
+- EDC fælles CLAUDE.md-standard
+- Hvordan holder vi momentum (#claude-code kanal, månedligt Show & Tell)
 
 ---
 
-## Session 10 (torsdag) — Show & Tell + vejen frem
+## Pædagogiske principper
 
-**Foredrag (10 min):**
-- Recap af forløbet
-- De største aha-oplevelser på tværs af sessioner
-
-**Show & Tell (30 min):**
-- Hver person/team: 3 min om "min bedste Claude Code-oplevelse" eller "dét jeg bygger videre på"
-
-**Fælles (15 min):**
-- EDC's fælles CLAUDE.md-standard — hvad er vi enige om?
-- Hvordan holder vi momentum? (#claude-code-kanal, månedligt Show & Tell)
-- Feedback på workshop-serien
-
-**Handout:** `handouts/10-edc-claudecode-playbook.md` — alt vi har bygget, samlet i én fil som reference
-
-**Take-home:**
-- Én konkret forpligtelse pr. person ("om 3 måneder har jeg …")
-
----
-
-## Handouts — oversigt
-
-Hver handout er en kort markdown-fil (1–2 sider), printvenlig, som deltagerne kan proppe i deres repo eller OneNote.
-
-| # | Fil | Type |
-|---|---|---|
-| 01 | `handouts/01-prompting-cheatsheet.md` | Skabelon |
-| 02 | `handouts/02-planmode-beslutningstrae.md` | Flowchart |
-| 03 | `handouts/03-kontekst-checklist.md` | Checklist |
-| 04 | `handouts/04-prompt-patterns.md` | Skabeloner |
-| 05 | `handouts/05-claudemd-skabelon.md` | Skabelon |
-| 06 | `handouts/06-review-checklist.md` | Checklist |
-| 07 | `handouts/07-custom-command-kogebog.md` | Færdige commands |
-| 08 | `handouts/08-mcp-og-hooks-kickstart.md` | Config-snippets |
-| 09 | `handouts/09-do-og-dont.md` | Retningslinjer |
-| 10 | `handouts/10-edc-claudecode-playbook.md` | Samlet reference |
-
----
-
-## Splitning i 2 hold — hvornår og hvordan?
-
-**Sessions 1–2:** Samme hold. Alle skal med samme sted hen. A/B-øvelse er eneste forskel.
-
-**Sessions 3–4, 7–8:** A/B-spor i hands-on, men foredrag + demo er fælles. Lad advanced-folk parre med begyndere.
-
-**Sessions 5–6:** Alle arbejder på deres eget projekt — naturlig differentiering. Power users laver dybere CLAUDE.md og mere avancerede review-flows; begyndere bygger deres første.
-
-**Sessions 9–10:** Ét hold. Det er deling og refleksion.
-
-**Hvis gruppen bliver stor (~20):** Split fysisk i rummet fra session 3. A-spor i den ene ende (én facilitator patruljerer), B-spor i den anden (den anden facilitator + eventuelt en advanced deltager som "buddy").
+- **"Det du tager hjem" > "det jeg viste"**. Hver session ender med noget konkret i hånden.
+- **Skriv det ned, test det live**. Slides sætter rammen — terminalen er hvor det lander.
+- **Dumme spørgsmål først**. Start hver session med 2 min "hvad gik galt i hjemmeopgaven?".
+- **Psykologisk sikkerhed**. Sessions 1–2: man arbejder kun på egen kode, ikke kolleger. Fra session 3: par på tværs af teams hvor relevant.
+- **Deltager-præsentation = læring i sig selv**. At forklare et emne tvinger til dybere forståelse end at høre om det. Roteret rundt blandt holdet.
 
 ---
 
@@ -455,10 +269,9 @@ Hver handout er en kort markdown-fil (1–2 sider), printvenlig, som deltagerne 
 
 | Hvad | Hvem | Hvornår |
 |---|---|---|
-| Survey udfyldt | Deltagere | Inden session 1 |
-| Claude Code installeret + kørende | Deltagere | Inden session 1 |
-| En lille backlog-opgave med | Deltagere | Hver session |
-| Handout printet/delt | Facilitatorer | Dagen inden |
+| Slides bygget med Claude Code | Næste præsentant + Matias/Michael | Ugen før |
+| Pre-work video sendt ud | Facilitatorer | Senest 24 timer før |
+| Egen backlog-opgave med | Deltagere | Hver session |
 | Hjemmeopgave tjekket ind | Deltagere | Før næste session |
 
 ---
@@ -466,8 +279,8 @@ Hver handout er en kort markdown-fil (1–2 sider), printvenlig, som deltagerne 
 ## Faciliterings-tips
 
 - **Start altid med hjemmeopgaven** — det er dér læring landede
-- **Terminal > PowerPoint** — vis det, ikke-fortæl det
-- **Hands-on er hellig** — skær i foredrag, aldrig i øvelser
-- **Blandede par fra session 3** — det er dér advanced folk lærer mest (ved at forklare)
+- **Hjælp præsentanten uden at overtage** — Matias/Michael støtter, men deltageren har scenen
+- **Terminal > slides** — hvis Matias-demoen kommer i sidste 10 min, så LIVE i terminalen
+- **Reference-noter = bagagerum**, ikke pligtlæsning. Træk fra dem, lad være med at læse op af dem.
 - **Byg fælles vidensbank undervejs** — upload alle prompts/commands/CLAUDE.md'er til fælles repo
 - **"Dumme spørgsmål" er de bedste** — skab tryghed fra dag 1

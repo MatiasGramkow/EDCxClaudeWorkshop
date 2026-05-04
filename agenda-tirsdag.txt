@@ -1,0 +1,21 @@
+EDC x Claude Code — vi starter tirsdag
+
+Hej allesammen,
+
+På tirsdag den 5. maj kl. 11:00 går vi i gang med vores Claude Code-workshop. 1 time pr. gang, tirsdage og torsdage de næste 5 uger.
+
+Hvor: Fysisk Mynstersvej 5
+
+Forberedelse: Ingen denne gang — bare mød op. Fremadrettet sender vi pre-work ud inden hver session (typisk en kort video).
+
+Hvad sker der på første gang?
+- Velkomst
+- Hvordan de næste 5 uger kommer til at foregå
+- Dagens emne: gode vs. dårlige prompts, vist live i terminalen
+- Par-øvelse hvor I prøver det selv på jeres egen kode (Tag jeres computer med)
+
+Format fremadrettet: Fra session 2 vil én deltager fra workshoppen præsentere dagens emne — vi roterer hvem der står for det. Første gang er der ingen præsentationer fra jer — den kører Michael og jeg.
+
+Vi glæder os til at se jer.
+
+/Matias
