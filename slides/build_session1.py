@@ -435,11 +435,11 @@ def s_next(s):
              size=28, bold=True, color=EDC_NAVY)
     add_text(s, Inches(2.6), Inches(3.55),
              Inches(10), Inches(0.5),
-             'Torsdag · uge 1 · 1 time',
+             'Torsdag · uge 1',
              size=18, color=MUTED)
     add_rich_text(s, Inches(2.6), Inches(4.3),
                   Inches(10), Inches(1.2),
-                  'Jeg sender slide-skabelon og pre-work-video **senest mandag eftermiddag**, så I står ikke alene med det. Hvis ingen melder sig, vælger vi én — og vi gentager øvelsen i slutningen af hver session.',
+                  'Jeg sender slide-skabelon og pre-work-video **senest dagen før**, så du står ikke alene med det. Hvis ingen melder sig, vælger vi én — og vi gentager øvelsen i starten af hver session.',
                   size=15, color=INK, line_spacing=1.5)
 
 
@@ -465,7 +465,7 @@ def s_core(s):
     sub.fill.fore_color.rgb = EDC_LIGHT_BG
     sub.line.fill.background()
     add_text(s, Inches(0.6), Inches(5.5), Inches(12.13), Inches(1.0),
-             'Forskellen er hvor meget kontekst du giver Claude.',
+             'Forskellen er hvor præcist du beskriver opgaven.',
              size=22, color=EDC_NAVY, align=PP_ALIGN.CENTER,
              anchor=MSO_ANCHOR.MIDDLE)
 
@@ -878,7 +878,7 @@ NOTES = [
     "─── LÆS ───\n"
     "Akavet øjeblik · 0:10–0:13. Stil spørgsmålet og hold mund. Lad stilheden virke. Hvis ingen melder sig efter 10 sek: vælg én du ved godt har lyst — eller én der ser frisk ud.\n\n"
     "─── SIG ───\n"
-    "\"Hvem vil tage session 2 om Plan mode? Det er torsdag, jeg hjælper jer med slides senest mandag eftermiddag.\"\n\n"
+    "\"Hvem vil tage session 2 om Plan mode? Det er torsdag, jeg sender slide-skabelon og pre-work-video senest dagen før.\"\n\n"
     "[Vent. Tæl til 10 i hovedet.]\n\n"
     "Hvis ingen melder sig:\n"
     "\"[Navn] — vil du tage den?\"\n\n"
@@ -891,7 +891,7 @@ NOTES = [
     "─── SIG ───\n"
     "\"En dårlig prompt giver generisk kode.\"\n\n"
     "\"En god prompt giver produktionsklar kode.\"\n\n"
-    "\"Forskellen er kontekst. Det er det vi træner i dag.\"",
+    "\"Forskellen er hvor præcist du beskriver opgaven for Claude. Det er det vi træner i dag.\"",
 
     # 6. De 4 byggeklodser
     "─── LÆS ───\n"

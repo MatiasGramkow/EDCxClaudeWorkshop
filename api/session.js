@@ -54,7 +54,7 @@ const SESSIONS = [
             '5 uger · tirsdag + torsdag · 1 time pr. session, 9 sessioner i alt',
             'Fast format fra session 2: recap → deltager-præsentation → vælg næste præsentant → Matias-demo (hvis tid)',
             '**Vores rolle: facilitatorer, ikke eksperter.** Michael og jeg står for selve faciliteringen alle 5 uger. Men fra session 2 er det ÉN deltager fra holdet der præsenterer dagens emne. Vi hjælper med at bygge slides ugen før, så ingen står alene med det.',
-            '**Vælg næste præsentant nu:** Hvem vil tage session 2 (Plan mode)? Hvis ingen melder sig, vælger vi én. Vi gentager øvelsen i slutningen af hver session for sessionen efter.',
+            '**Vælg næste præsentant nu:** Hvem vil tage session 2 (Plan mode)? Hvis ingen melder sig, vælger vi én. Vi gentager øvelsen i starten af hver session for sessionen efter. Slide-skabelon og pre-work-video sendes senest dagen før.',
             'Pre-work: fra session 2 sender vi en kort video ud inden hver gang. Ingen pre-work til i dag.',
             'Dagens kerne: en dårlig prompt giver generisk kode. En god prompt giver produktionsklar kode.',
             'De 4 byggeklodser: [Kontekst] + [Opgave] + [Begrænsninger] + [Forventet output]',
