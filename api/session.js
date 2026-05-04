@@ -91,8 +91,8 @@ Rør intet andet. Ingen commit eller push.`,
             },
             {
                 heading: 'Pointe — hvad ændrede sig? (1 min)',
-                say: 'Den dårlige prompt nævnte kun symptomet ("priser vises som dollars"). Den gode prompt sagde HVOR i koden (de 3 filer), HVAD strukturen skal være (én helper) og HVORDAN den skal se ud (\'da-DK\', \'DKK\', 0 decimaler). Det fjernede alle de andre måder Claude kunne have "fixet" det.',
-                body: 'Dette er mønstret vi træner de næste 4 sessioner: **[Fil] + [Opgave] + [Begrænsninger] + [Forventet output]**. Når Claude ved hvilke filer der er i spil og hvilken arkitektur du vil have, kan den ikke gætte sig til et fix der er enten ufuldstændigt eller over-engineeret.'
+                say: 'Den dårlige prompt nævnte kun symptomet. Den gode sagde HVOR (3 filer), HVAD (én helper) og HVORDAN (\'da-DK\', \'DKK\', 0 decimaler). Begge fixes virker visuelt — men den dårlige duplikerede koden 3 steder, den gode lavede én helper.',
+                body: '**Vigtigt forbehold:** På denne lille demo med Opus 4.7 (få filer, ét tydeligt symptom) er forskellen mellem dårlig og god prompt subtil — Claude er smart nok til at finde *et* fix der virker, selv når prompten er vag. Det er nemt at tænke "det er da fint nok".\n\nMen i jeres rigtige projekter — 100k+ linjer kode, 10+ års historik, mange overlappende mønstre, DTO\'er, mappere, migrations, konventioner der ikke er skrevet ned — eksploderer det. En vag prompt kan: ramme den forkerte fil, glemme halvdelen af kæden (DTO opdateres ikke, migration ender i forkert projekt), introducere et abstraktionslag der konflikter med jeres eksisterende, eller sprede fixet på en måde der bryder konventionen. I får ofte en PR der "virker" men efterlader 5 nye små problemer.\n\nDet er derfor vi træner mønstret **[Fil] + [Opgave] + [Begrænsninger] + [Forventet output]** her hvor det er sikkert at fejle — så det sidder i fingrene når I er midt i en rigtig PR mandag morgen.'
             },
             {
                 heading: 'Bonus — performance-prompt (2 min)',
