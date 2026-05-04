@@ -599,21 +599,40 @@ def s_esc(s):
 @slide
 def s_divider_demo(s):
     fill_bg(s, EDC_NAVY)
-    if os.path.exists(LOGO_PATH):
-        logo_w = Inches(1.6)
-        s.shapes.add_picture(LOGO_PATH,
-                             (SLIDE_W - logo_w) / 2, Inches(1.8),
-                             width=logo_w, height=logo_w)
-    add_text(s, Inches(0), Inches(4.0), SLIDE_W, Inches(0.6),
+    add_text(s, Inches(0), Inches(1.4), SLIDE_W, Inches(0.6),
              'Punkt 2', size=22, color=EDC_YELLOW,
              align=PP_ALIGN.CENTER, font='Menlo')
-    add_text(s, Inches(0), Inches(4.7), SLIDE_W, Inches(1.0),
-             'Live demo', size=44, bold=True, color=WHITE,
+    add_text(s, Inches(0), Inches(2.1), SLIDE_W, Inches(1.2),
+             'Live demo', size=54, bold=True, color=WHITE,
              align=PP_ALIGN.CENTER)
-    add_text(s, Inches(0), Inches(5.5), SLIDE_W, Inches(0.6),
+    add_text(s, Inches(0), Inches(3.2), SLIDE_W, Inches(0.6),
              'Samme opgave — dårlig prompt vs. god prompt',
-             size=18, color=RGBColor(0xC8, 0xD4, 0xE8),
+             size=20, color=RGBColor(0xC8, 0xD4, 0xE8),
              align=PP_ALIGN.CENTER)
+    # URL pill — what to do during the demo
+    pill_w = Inches(7.0)
+    pill_h = Inches(1.4)
+    pill = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
+                              (SLIDE_W - pill_w) / 2, Inches(4.6),
+                              pill_w, pill_h)
+    pill.adjustments[0] = 0.15
+    pill.fill.solid()
+    pill.fill.fore_color.rgb = EDC_YELLOW
+    pill.line.fill.background()
+    add_text(s, (SLIDE_W - pill_w) / 2, Inches(4.7),
+             pill_w, Inches(0.5),
+             'KOPIER PROMPTS FRA',
+             size=14, bold=True, color=EDC_NAVY,
+             align=PP_ALIGN.CENTER, font='Menlo')
+    add_text(s, (SLIDE_W - pill_w) / 2, Inches(5.15),
+             pill_w, Inches(0.8),
+             '/prompts',
+             size=44, bold=True, color=EDC_NAVY,
+             align=PP_ALIGN.CENTER, font='Menlo')
+    add_text(s, Inches(0), Inches(6.4), SLIDE_W, Inches(0.5),
+             'Skærmen er min — kig med på terminal og /demo',
+             size=15, color=RGBColor(0xC8, 0xD4, 0xE8),
+             align=PP_ALIGN.CENTER, italic=True)
     bot = s.shapes.add_shape(MSO_SHAPE.RECTANGLE,
                              0, Inches(7.32), SLIDE_W, Inches(0.18))
     bot.fill.solid()
@@ -621,104 +640,7 @@ def s_divider_demo(s):
     bot.line.fill.background()
 
 
-# --- 9. Bug'en på /demo ---
-@slide
-def s_bug(s):
-    fill_bg(s, WHITE)
-    add_title(s, "Bug'en på /demo", 'Priser i USD med cents på en dansk side')
-    col_w = Inches(5.85)
-    left_x = Inches(0.7)
-    right_x = Inches(6.85)
-    top_y = Inches(2.3)
-    box_h = Inches(3.7)
-    # NU
-    bug = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, left_x, top_y, col_w, box_h)
-    bug.fill.solid()
-    bug.fill.fore_color.rgb = RED_BG
-    bug.line.fill.background()
-    add_text(s, left_x + Inches(0.4), top_y + Inches(0.3),
-             col_w - Inches(0.8), Inches(0.4),
-             'NU (BUG)', size=14, bold=True, color=RED_INK)
-    add_text(s, left_x + Inches(0.4), top_y + Inches(0.95),
-             col_w - Inches(0.8), Inches(2.5),
-             '$8,500,000.00\n$4,250,000.00\n$6,900,000.00',
-             size=30, bold=True, color=RED_INK, font='Menlo',
-             line_spacing=1.3)
-    # ØNSKET
-    ok = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, right_x, top_y, col_w, box_h)
-    ok.fill.solid()
-    ok.fill.fore_color.rgb = GREEN_BG
-    ok.line.fill.background()
-    add_text(s, right_x + Inches(0.4), top_y + Inches(0.3),
-             col_w - Inches(0.8), Inches(0.4),
-             'ØNSKET', size=14, bold=True, color=GREEN_INK)
-    add_text(s, right_x + Inches(0.4), top_y + Inches(0.95),
-             col_w - Inches(0.8), Inches(2.5),
-             '8.500.000 kr.\n4.250.000 kr.\n6.900.000 kr.',
-             size=30, bold=True, color=GREEN_INK, font='Menlo',
-             line_spacing=1.3)
-    # Note below
-    add_text(s, Inches(0.7), Inches(6.25),
-             Inches(12.0), Inches(0.5),
-             'Pris-formateringen ligger inline 3 steder uden helper — typisk consequence af "hurtigt fix".',
-             size=14, italic=True, color=MUTED,
-             align=PP_ALIGN.CENTER)
-
-
-# --- 10. Dårlig prompt ---
-@slide
-def s_bad_prompt(s):
-    fill_bg(s, WHITE)
-    add_title(s, 'Forsøg 1', 'Dårlig prompt — "realistisk dårlig"')
-    add_code_block(s, Inches(0.7), Inches(2.2), Inches(11.93), Inches(2.0),
-                   'Priserne på /demo vises som amerikanske dollars med cents\n'
-                   '(fx "$8,500,000.00") overalt. Det er en dansk side.\n'
-                   'Fix det. Ingen commit eller push.',
-                   size=18)
-    # Hvad sker der
-    add_text(s, Inches(0.7), Inches(4.5), Inches(12), Inches(0.5),
-             'Hvad sker der?', size=20, bold=True, color=EDC_NAVY)
-    add_bullets(s, Inches(0.7), Inches(5.0), Inches(12.0), Inches(2.0), [
-        'Claude finder *et* fix — men forskelligt hver gang du kører prompten',
-        'Inline-duplikering 3 steder, eller patch kun én fil og misser resten',
-        'Det "virker" — men efterlader kode der er svær at vedligeholde',
-    ], size=16, line_spacing=1.5)
-
-
-# --- 11. God prompt ---
-@slide
-def s_good_prompt(s):
-    fill_bg(s, WHITE)
-    add_title(s, 'Forsøg 2', 'God prompt — samme opgave, med kontekst')
-    add_code_block(s, Inches(0.7), Inches(1.9), Inches(11.93), Inches(4.4),
-                   "Pris-formateringen ligger inline tre steder med\n"
-                   "Intl.NumberFormat('en-US', { style: 'currency',\n"
-                   "currency: 'USD', maximumFractionDigits: 2 }):\n"
-                   '\n'
-                   '- lib/propertyService.ts (i getAll, formattedPrice)\n'
-                   '- components/PropertyCard.tsx\n'
-                   '- app/properties/[id]/page.tsx (formattedPrice)\n'
-                   '\n'
-                   "Lav en formatPrice(price: number)-helper i\n"
-                   "lib/propertyService.ts der bruger 'da-DK', 'DKK' og\n"
-                   "maximumFractionDigits: 0. Brug den fra alle tre steder.\n"
-                   '\n'
-                   'Rør intet andet. Ingen commit eller push.',
-                   size=14)
-    # Result
-    note = s.shapes.add_shape(MSO_SHAPE.RECTANGLE,
-                              Inches(0.7), Inches(6.5),
-                              Inches(11.93), Inches(0.65))
-    note.fill.solid()
-    note.fill.fore_color.rgb = EDC_LIGHT_BG
-    note.line.fill.background()
-    add_text(s, Inches(0.7), Inches(6.5), Inches(11.93), Inches(0.65),
-             'Resultat: én helper, brugt 3 steder. Deterministisk.',
-             size=16, bold=True, color=EDC_NAVY,
-             align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
-
-
-# --- 12. Pointen ---
+# --- 9. Pointen ---
 @slide
 def s_point(s):
     fill_bg(s, WHITE)
@@ -766,7 +688,7 @@ def s_point(s):
     ], size=15, line_spacing=1.5, bullet_color=GREEN_INK)
 
 
-# --- 13. Vigtigt forbehold ---
+# --- 10. Vigtigt forbehold ---
 @slide
 def s_caveat(s):
     fill_bg(s, WHITE)
@@ -792,7 +714,7 @@ def s_caveat(s):
     ], size=15, line_spacing=1.6)
 
 
-# --- 14. Section divider: Hands-on ---
+# --- 11. Section divider: Hands-on ---
 @slide
 def s_divider_handson(s):
     fill_bg(s, EDC_NAVY)
@@ -818,7 +740,7 @@ def s_divider_handson(s):
     bot.line.fill.background()
 
 
-# --- 15. Hands-on instructions ---
+# --- 12. Hands-on instructions ---
 @slide
 def s_handson(s):
     fill_bg(s, WHITE)
@@ -833,7 +755,7 @@ def s_handson(s):
     ], size=18, line_spacing=1.6)
 
 
-# --- 16. Hjemmeopgave + tak ---
+# --- 13. Hjemmeopgave + tak ---
 @slide
 def s_outro(s):
     fill_bg(s, EDC_NAVY)
@@ -943,62 +865,26 @@ NOTES = [
     "\"Det er det her der gør det trygt at lade Claude prøve noget vildt.\"\n\n"
     "\"I må gerne bruge det fra første prompt I skriver i dag.\"",
 
-    # 8. Live demo divider
+    # 8. Live demo divider — du deler din skærm her
     "─── LÆS ───\n"
-    "Skift til terminal · 0:20 — start.\n\n"
-    "TJEKLISTE FØR DU KØRER:\n"
+    "Skift til DIN skærm · 0:15–0:35 (ca. 20 min). Slidet med /prompts står på projektoren mens du kører hele demoen på din egen skærm (terminal + /demo).\n\n"
+    "TJEKLISTE FØR DU SKIFTER:\n"
     "  □ git status er clean\n"
     "  □ /demo er åben i browseren med USD-priser synlige\n"
-    "  □ claude --dangerously-skip-permissions kører i demo/-mappen\n"
-    "  □ Du kan se BÅDE terminal og browser samtidig på projektoren\n\n"
+    "  □ /prompts er åben i en anden tab — det er der du kopierer prompts fra\n"
+    "  □ claude --dangerously-skip-permissions kører i demo/-mappen\n\n"
     "─── SIG ───\n"
-    "\"OK — nu skifter vi til terminal og browser.\"\n\n"
-    "\"I de næste 15 minutter skriver jeg samme opgave til Claude — først dårligt, så godt.\"\n\n"
-    "\"Kig BÅDE på terminalen og på /demo i browseren ved siden af.\"",
+    "\"Nu deler jeg min skærm. I ser min terminal og /demo i browseren.\"\n\n"
+    "\"Jeg har en /prompts-side åben hvor jeg kopierer prompts fra. Jeg gør det i denne rækkefølge:\"\n\n"
+    "\"1) Vis bug'en — scroll ned ad /demo, klik på en bolig, søg demo@edc.dk i favoritter.\"\n\n"
+    "\"2) Kør den DÅRLIGE prompt — kopier fra /prompts, paste i Claude.\"\n\n"
+    "\"3) git checkout . + /clear for at rulle tilbage.\"\n\n"
+    "\"4) Kør den GODE prompt — samme opgave, men nu med kontekst.\"\n\n"
+    "\"Kig med på begge ændringer — vi samler op bagefter.\"\n\n"
+    "─── GØR (mellem prompts) ───\n"
+    "Refresh /demo i browseren mellem hver kørsel så de ser hvad der sker visuelt.",
 
-    # 9. Bug'en
-    "─── LÆS ───\n"
-    "Vis bug'en · 0:20–0:22.\n\n"
-    "─── GØR ───\n"
-    "Skift til browseren. Scroll ned ad /demo. Peg eksplicit på priserne.\n"
-    "Klik på en bolig — vis at detaljesiden har samme problem.\n"
-    "Søg \"demo@edc.dk\" i favorit-widgeten — også USD-priser.\n\n"
-    "─── SIG ───\n"
-    "\"Det her er en dansk bolig-side. Priserne er i amerikanske dollars MED cents. Hele sitet er i stykker visuelt.\"\n\n"
-    "\"Pris-formateringen ligger inline 3 steder uden helper. Det er ikke konstrueret — det er typisk consequence af 'hurtigt fix' nogen lavede engang.\"\n\n"
-    "\"Det er det her vi vil have Claude til at fixe.\"",
-
-    # 10. Dårlig prompt
-    "─── LÆS ───\n"
-    "Realistisk dårlig · 0:22–0:26. Vi har kørt det her 3 gange — den lander forskelligt hver gang.\n\n"
-    "─── SIG ───\n"
-    "\"Det her ligner en prompt de fleste skriver på autopilot — vi nævner symptomet, men ikke hvor i koden det skal fixes.\"\n\n"
-    "\"Det er IKKE en stråmand, det er hverdag.\"\n\n"
-    "─── GØR ───\n"
-    "Kopier prompten fra slidet ind i Claude. Tryk enter.\n\n"
-    "─── SIG (mens Claude arbejder) ───\n"
-    "\"Forventning: den finder ET fix der virker. Men hold den her i baghovedet — vi har kørt det 3 gange, den lander forskelligt hver gang.\"\n\n"
-    "─── GØR ───\n"
-    "Når Claude er færdig: vis hvad den gjorde, refresh /demo.\n\n"
-    "─── SIG ───\n"
-    "\"Det virker! Men hold det her i baghovedet.\"",
-
-    # 11. God prompt
-    "─── LÆS ───\n"
-    "Samme opgave, med kontekst · 0:26–0:31.\n\n"
-    "─── GØR ───\n"
-    "Rul tilbage i terminalen (vis det højt mens du gør det):\n"
-    "  git checkout .\n"
-    "  /clear\n\n"
-    "─── SIG ───\n"
-    "\"Nu siger vi præcis HVOR (3 filer), HVAD (én helper), og HVORDAN (da-DK, DKK, 0 decimaler).\"\n\n"
-    "─── GØR ───\n"
-    "Kopier den gode prompt ind. Tryk enter.\n"
-    "Når den er færdig: vis at den lavede ÉN helper i propertyService.ts, og at de andre 2 filer importerer den. Refresh /demo.\n\n"
-    "─── SIG ───\n"
-    "\"Samme visuelle resultat. Helt anden kode-struktur.\"",
-
-    # 12. Pointen
+    # 9. Pointen
     "─── LÆS ───\n"
     "Sig det højt · 0:31–0:33. Det her er momentet hvor du SKAL sige det højt — ikke bare lade slidet tale. Det er hele dagen i én sætning.\n\n"
     "─── SIG ───\n"
@@ -1007,7 +893,7 @@ NOTES = [
     "\"Den gode lavede én helper, brugt 3 steder.\"\n\n"
     "\"Om 3 måneder, når en designer beder om at vise øre i favorit-listen, er det den forskel der bestemmer om I bruger 5 minutter eller 30.\"",
 
-    # 13. Vigtigt forbehold
+    # 10. Vigtigt forbehold
     "─── LÆS ───\n"
     "Forsikring · 0:33–0:35. Det her slide er forsikring mod den deltager der siger \"jamen den dårlige fungerede jo fint\". Anerkend det direkte — det er ærligt.\n\n"
     "─── SIG ───\n"
@@ -1016,7 +902,7 @@ NOTES = [
     "\"En vag prompt rammer den forkerte fil, glemmer halvdelen af kæden, eller introducerer et abstraktionslag der konflikter med jeres eksisterende.\"\n\n"
     "\"Vi træner mønsteret her hvor det er sikkert at fejle — så det sidder i fingrene når I er midt i en rigtig PR mandag morgen.\"",
 
-    # 14. Hands-on divider
+    # 11. Hands-on divider
     "─── LÆS ───\n"
     "Korte instrukser · 0:35 — start. De skal i gang.\n\n"
     "─── SIG ───\n"
@@ -1024,7 +910,7 @@ NOTES = [
     "\"Solo på din egen maskine — du skal selv mærke forskellen i fingrene.\"\n\n"
     "\"I har 20 minutter.\"",
 
-    # 15. Hands-on instructions
+    # 12. Hands-on instructions
     "─── LÆS ───\n"
     "Mens de arbejder · 0:35–0:55. Gå rundt. Hjælp dem der sidder fast. Lyt efter en god 'aha'-bemærkning du kan bede dem dele bagefter.\n\n"
     "─── SIG (i starten) ───\n"
@@ -1034,7 +920,7 @@ NOTES = [
     "─── SIG (med 5 min tilbage) ───\n"
     "\"Saml jer — én indsigt højt fra hver. Den der overraskede jer mest.\"",
 
-    # 16. Outro
+    # 13. Outro
     "─── LÆS ───\n"
     "Afslutning · 0:55–1:00. Hjemmeopgave nem. Bekræft næste præsentant igen ved navn så de ved det er reelt.\n\n"
     "─── SIG ───\n"
@@ -1048,14 +934,15 @@ NOTES = [
 
 # ---------- Build deck ----------------------------------------------------
 total = len(SLIDES)
-content_pages = {0, 7, 13, total - 1}  # cover + dividers + outro have own chrome
+# Cover (0), demo-divider (7), hands-on-divider (10), outro (last)
+# har egen chrome — resten får navy-stripes + logo + sidetal
+DIVIDER_INDEXES = {0, 7, 10, total - 1}
 
 for idx, builder in enumerate(SLIDES):
     s = prs.slides.add_slide(blank)
     builder(s)
     page_num = idx + 1
-    # Add chrome only to standard content slides
-    if idx not in {0, 7, 13, total - 1}:
+    if idx not in DIVIDER_INDEXES:
         add_chrome(s, page_num)
     if idx < len(NOTES):
         set_notes(s, NOTES[idx])

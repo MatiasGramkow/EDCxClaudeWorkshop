@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session 1 — Demo prompts</title>
+    <style>
+        :root {
+            --edc-blue: #003366;
+            --edc-light: #e8f0fe;
+            --edc-accent: #0066cc;
+            --edc-green: #28a745;
+            --edc-red: #dc3545;
+            --edc-yellow: #f5b81c;
+            --bg: #f7f8fa;
+            --card: #ffffff;
+            --text: #1a1a2e;
+            --muted: #6b7280;
+            --border: #e2e8f0;
+            --code-bg: #0f1f3d;
+            --code-text: #e2e8f0;
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            background: var(--edc-blue);
+            color: white;
+            padding: 28px 0;
+            border-bottom: 4px solid var(--edc-yellow);
+        }
+
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .kicker {
+            font-family: 'Menlo', monospace;
+            font-size: 13px;
+            color: var(--edc-yellow);
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 15px;
+            color: #c8d4e8;
+            margin-top: 4px;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        .step {
+            margin-bottom: 36px;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--edc-blue);
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--edc-blue);
+        }
+
+        .step-meta {
+            font-size: 13px;
+            color: var(--muted);
+            margin-left: 44px;
+            margin-bottom: 12px;
+        }
+
+        .prompt-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--edc-accent);
+            margin-left: 44px;
+            overflow: hidden;
+        }
+
+        .prompt-card.bad { border-left-color: var(--edc-red); }
+        .prompt-card.good { border-left-color: var(--edc-green); }
+
+        .prompt-header {
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fafbfc;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .prompt-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--edc-blue);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .badge.bad {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge.good {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .badge.reset {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .copy-btn {
+            background: var(--edc-blue);
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+
+        .copy-btn:hover { background: var(--edc-accent); }
+        .copy-btn.copied { background: var(--edc-green); }
+
+        pre {
+            margin: 0;
+            padding: 18px;
+            background: var(--code-bg);
+            color: var(--code-text);
+            font-family: 'Menlo', 'Monaco', monospace;
+            font-size: 13.5px;
+            line-height: 1.55;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .reset-row {
+            margin-left: 44px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            background: #fffbeb;
+            border-radius: 8px;
+            border: 1px dashed #fcd34d;
+            font-size: 13.5px;
+            color: #78350f;
+        }
+
+        .reset-row code {
+            background: rgba(120, 53, 15, 0.1);
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-family: 'Menlo', monospace;
+            font-size: 12.5px;
+        }
+
+        .footer-note {
+            max-width: 1100px;
+            margin: 40px auto 0;
+            padding: 0 24px;
+            color: var(--muted);
+            font-size: 13px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        .footer-note a {
+            color: var(--edc-accent);
+            text-decoration: none;
+        }
+
+        .footer-note a:hover { text-decoration: underline; }
+
+        h2.section-divider {
+            margin: 48px 0 24px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+            color: var(--edc-blue);
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        h2.section-divider .label {
+            display: inline-block;
+            background: var(--edc-yellow);
+            color: var(--edc-blue);
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-right: 10px;
+            vertical-align: middle;
+            font-family: 'Menlo', monospace;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <div class="kicker">SESSION 1 · LIVE DEMO</div>
+            <h1>Demo prompts — kopier herfra</h1>
+            <p>Klik på "Kopier" og paste direkte i Claude Code.</p>
+        </div>
+    </header>
+
+    <main>
+        <h2 class="section-divider"><span class="label">SETUP</span> Kør først dette i terminalen</h2>
+
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">0</div>
+                <div class="step-title">Clone, install, start Claude</div>
+            </div>
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <div class="prompt-label">Bash</div>
+                    <button class="copy-btn" data-target="cmd-setup">Kopier</button>
+                </div>
+                <pre id="cmd-setup">git clone https://github.com/MatiasGramkow/EDCxClaudeWorkshop.git
+cd EDCxClaudeWorkshop/demo
+npm install
+claude --dangerously-skip-permissions</pre>
+            </div>
+        </div>
+
+        <h2 class="section-divider"><span class="label">DEMO 1</span> Pris-bug — dårlig vs. god prompt</h2>
+
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">1</div>
+                <div class="step-title">Dårlig prompt — "realistisk dårlig"</div>
+            </div>
+            <div class="step-meta">Vi nævner symptomet, men ikke hvor i koden det skal fixes.</div>
+            <div class="prompt-card bad">
+                <div class="prompt-header">
+                    <div class="prompt-label">
+                        <span class="badge bad">DÅRLIG</span>
+                        Kopier til Claude
+                    </div>
+                    <button class="copy-btn" data-target="prompt-bad">Kopier</button>
+                </div>
+                <pre id="prompt-bad">Priserne på /demo vises som amerikanske dollars med cents (fx "$8,500,000.00") overalt. Det er en dansk side. Fix det. Ingen commit eller push.</pre>
+            </div>
+        </div>
+
+        <div class="reset-row">
+            <span class="badge reset">RESET</span>
+            Mellem dårlig og god: kør <code>git checkout .</code> og derefter <code>/clear</code> i Claude.
+        </div>
+
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">2</div>
+                <div class="step-title">God prompt — samme opgave, med kontekst</div>
+            </div>
+            <div class="step-meta">Vi siger HVOR (3 filer), HVAD (én helper), og HVORDAN ('da-DK', 'DKK', 0 decimaler).</div>
+            <div class="prompt-card good">
+                <div class="prompt-header">
+                    <div class="prompt-label">
+                        <span class="badge good">GOD</span>
+                        Kopier til Claude
+                    </div>
+                    <button class="copy-btn" data-target="prompt-good">Kopier</button>
+                </div>
+                <pre id="prompt-good">Pris-formateringen ligger inline tre steder med Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }):
+
+- lib/propertyService.ts (i getAll, feltet formattedPrice)
+- components/PropertyCard.tsx
+- app/properties/[id]/page.tsx (variablen formattedPrice)
+
+Lav en formatPrice(price: number)-helper i lib/propertyService.ts der bruger 'da-DK', 'DKK' og maximumFractionDigits: 0. Brug den fra alle tre steder (importér i de to komponenter).
+
+Rør intet andet. Ingen commit eller push.</pre>
+            </div>
+        </div>
+
+        <h2 class="section-divider"><span class="label">BONUS</span> Performance — analyse-først</h2>
+
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">3</div>
+                <div class="step-title">Dårlig performance-prompt</div>
+            </div>
+            <div class="prompt-card bad">
+                <div class="prompt-header">
+                    <div class="prompt-label">
+                        <span class="badge bad">DÅRLIG</span>
+                        Kopier til Claude
+                    </div>
+                    <button class="copy-btn" data-target="prompt-perf-bad">Kopier</button>
+                </div>
+                <pre id="prompt-perf-bad">getAll i propertyService.ts er langsom. Kan du optimere den? Ingen commit eller push.</pre>
+            </div>
+        </div>
+
+        <div class="reset-row">
+            <span class="badge reset">RESET</span>
+            <code>git checkout .</code> og <code>/clear</code> mellem hver kørsel.
+        </div>
+
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">4</div>
+                <div class="step-title">God performance-prompt — analyse uden kode</div>
+            </div>
+            <div class="prompt-card good">
+                <div class="prompt-header">
+                    <div class="prompt-label">
+                        <span class="badge good">GOD</span>
+                        Kopier til Claude
+                    </div>
+                    <button class="copy-btn" data-target="prompt-perf-good">Kopier</button>
+                </div>
+                <pre id="prompt-perf-good">Læs lib/propertyService.ts.
+
+Funktionen getAll laver flere passes over arrayet (filter → map → sort → map). Det er fint på 5 boliger, men hvis listen vokser til 50k+ er det N gange flere iterations end nødvendigt.
+
+Opgave:
+1. Foreslå 2-3 konkrete ændringer — ranger dem efter forventet effekt på store datasæt
+2. Forklar fordele/ulemper for hver (læsbarhed vs. allocations vs. CPU)
+3. Rør INGEN kode endnu — jeg vælger hvilken ændring vi laver først
+
+Tag højde for at filen også eksporterer findById og formatPrice — de skal stadig virke. Ingen commit eller push.</pre>
+            </div>
+        </div>
+
+        <h2 class="section-divider"><span class="label">BONUS</span> @-tricket — referér filer i stedet for at paste</h2>
+
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">5</div>
+                <div class="step-title">@-reference</div>
+            </div>
+            <div class="prompt-card good">
+                <div class="prompt-header">
+                    <div class="prompt-label">Kopier til Claude</div>
+                    <button class="copy-btn" data-target="prompt-at">Kopier</button>
+                </div>
+                <pre id="prompt-at">Forklar @lib/userService.ts i 3 bullets. Ingen kode.</pre>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            EDC × Claude Code · Workshop session 1 · Skærmen er din.
+            <a href="/workshop">/workshop</a> for fuld facilitator-guide.
+        </div>
+    </main>
+
+    <script>
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const id = btn.getAttribute('data-target');
+                const text = document.getElementById(id).textContent;
+                try {
+                    await navigator.clipboard.writeText(text);
+                    btn.textContent = 'Kopieret ✓';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.textContent = 'Kopier';
+                        btn.classList.remove('copied');
+                    }, 1500);
+                } catch (err) {
+                    btn.textContent = 'Fejl';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
