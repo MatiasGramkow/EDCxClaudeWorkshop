@@ -63,14 +63,14 @@ const SESSIONS = [
         demo: [
             {
                 heading: 'Setup — vis den synlige bug på /demo (1 min)',
-                say: 'Åbn /demo. Alle priser er i amerikanske dollars med cents — "$8,500,000.00" — på en dansk bolig-side. Det er bug\'en. Lad Claude fixe den.',
-                body: '**Setup-trin (gør dette inden mødet):**\n\n1. `git clone https://github.com/MatiasGramkow/EDCxClaudeWorkshop.git`\n2. `cd EDCxClaudeWorkshop/demo && npm install`\n3. `claude --dangerously-skip-permissions` — start Claude Code i `demo/`-mappen\n4. Åbn `/demo` i browseren ved siden af så deltagerne kan se den live\n\n**Vis bug\'en:** Bare scroll ned ad forsiden. Hver eneste pris vises som "$8,500,000.00" i stedet for "8.500.000 kr." Klik på en bolig — samme problem på detaljesiden. Søg `demo@edc.dk` i favorit-widget\'en — favoritterne har også USD-priser. Hele sitet er i stykker visuelt.'
+                say: 'Åbn /demo. Alle priser er i amerikanske dollars med cents — fx "$8,500,000.00" — på en dansk bolig-side. Det er bug\'en. Lad Claude fixe den.',
+                body: '**Setup-trin (gør dette inden mødet):**\n\n1. `git clone https://github.com/MatiasGramkow/EDCxClaudeWorkshop.git`\n2. `cd EDCxClaudeWorkshop/demo && npm install`\n3. `claude --dangerously-skip-permissions` — start Claude Code i `demo/`-mappen\n4. Åbn `/demo` i browseren ved siden af så deltagerne kan se den live\n\n**Vis bug\'en:** Bare scroll ned ad forsiden. Hver eneste pris vises i USD-format med cents (fx "$8,500,000.00", "$4,250,000.00", "$6,900,000.00") i stedet for danske kroner ("8.500.000 kr."). Klik på en bolig — samme problem på detaljesiden. Søg `demo@edc.dk` i favorit-widget\'en — favoritterne har også USD-priser. Hele sitet er i stykker visuelt.'
             },
             {
                 heading: 'Dårlig prompt — "realistisk dårlig" (2 min)',
                 body: 'Forklar: "det her ligner en prompt de fleste skriver på autopilot — vi nævner symptomet, men ikke hvor i koden det skal fixes". Det er IKKE en stråmand, det er hverdag.',
                 promptLabel: 'Dårlig prompt — kopier til Claude',
-                prompt: 'Priserne på /demo vises som amerikanske dollars ("$8,500,000.00") overalt. Det er en dansk side. Fix det. Ingen commit eller push.',
+                prompt: 'Priserne på /demo vises som amerikanske dollars med cents (fx "$8,500,000.00") overalt. Det er en dansk side. Fix det. Ingen commit eller push.',
                 expected: 'Claude kan vælge MANGE veje: rette én linje i formatPrice, lave en valuta-context/provider, tilføje en hook, søg-erstat "$" → "kr." i UI-strings, eller patche hver komponent for sig. Du får måske et fix der virker, men det kan være spredt over 3+ filer eller introducere et nyt abstraktionslag du ikke bad om.'
             },
             {
@@ -83,7 +83,7 @@ const SESSIONS = [
 Ret 'en-US' til 'da-DK', 'USD' til 'DKK', og maximumFractionDigits fra 2 til 0.
 
 Rør intet andet. Ingen commit eller push.`,
-                expected: 'Claude læser præcis den ene fil, ændrer 3 værdier (én linje hver), og stopper. Refresh /demo: alle priser overalt på siden skifter samtidig fra "$8,500,000.00" til "8.500.000 kr." — fordi al pris-formatering går gennem den ene funktion.'
+                expected: 'Claude læser præcis den ene fil, ændrer 3 værdier (én linje hver), og stopper. Refresh /demo: alle priser overalt på siden skifter samtidig fra USD-format ("$8,500,000.00") til danske kroner ("8.500.000 kr.") — fordi al pris-formatering går gennem den ene funktion.'
             },
             {
                 heading: 'Pointe — hvad ændrede sig? (1 min)',
@@ -176,7 +176,7 @@ claude`
             {
                 label: 'Dårlig prompt — eksempel 1 ("realistisk dårlig")',
                 language: 'text',
-                text: 'Priserne på /demo vises som amerikanske dollars ("$8,500,000.00") overalt. Det er en dansk side. Fix det. Ingen commit eller push.'
+                text: 'Priserne på /demo vises som amerikanske dollars med cents (fx "$8,500,000.00") overalt. Det er en dansk side. Fix det. Ingen commit eller push.'
             },
             {
                 label: 'God prompt — samme opgave (efter `git checkout . && /clear`)',
