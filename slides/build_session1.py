@@ -715,62 +715,6 @@ def s_divider_handson(s):
     bot.line.fill.background()
 
 
-# --- 12. Hands-on instructions ---
-@slide
-def s_handson(s):
-    fill_bg(s, WHITE)
-    add_title(s, 'Hands-on', 'Prøv begge prompt-typer på samme opgave')
-    add_bullets(s, Inches(0.7), Inches(2.2), Inches(12.0), Inches(4.5), [
-        '**git clone** + **npm install** + **claude** i `demo/`-mappen',
-        'Vælg én opgave fra demoen (pris-bug, performance, eller favorit-knap)',
-        'Skriv først en **hurtig prompt** — som du ville skrive på en travl dag',
-        '**git checkout .** og **/clear** for at rulle tilbage',
-        'Skriv så en prompt med **alle 4 byggeklodser**',
-    ], size=19, line_spacing=1.7)
-
-
-# --- 13. Hjemmeopgave + tak ---
-@slide
-def s_outro(s):
-    fill_bg(s, EDC_NAVY)
-    if os.path.exists(LOGO_PATH):
-        logo_w = Inches(1.2)
-        s.shapes.add_picture(LOGO_PATH,
-                             (SLIDE_W - logo_w) / 2, Inches(0.7),
-                             width=logo_w, height=logo_w)
-    add_text(s, Inches(0), Inches(2.1), SLIDE_W, Inches(0.6),
-             'Hjemmeopgave inden torsdag', size=18, color=EDC_YELLOW,
-             align=PP_ALIGN.CENTER, font='Menlo')
-    add_text(s, Inches(0), Inches(2.7), SLIDE_W, Inches(1.0),
-             'Brug Claude Code', size=44, bold=True, color=WHITE,
-             align=PP_ALIGN.CENTER)
-    add_text(s, Inches(0), Inches(3.5), SLIDE_W, Inches(0.7),
-             'på mindst én rigtig opgave', size=28, color=RGBColor(0xC8, 0xD4, 0xE8),
-             align=PP_ALIGN.CENTER)
-    # Box with details
-    box = s.shapes.add_shape(MSO_SHAPE.RECTANGLE,
-                             Inches(2.0), Inches(4.7),
-                             Inches(9.33), Inches(2.0))
-    box.fill.solid()
-    box.fill.fore_color.rgb = RGBColor(0x1B, 0x36, 0x6B)
-    box.line.fill.background()
-    add_text(s, Inches(2.4), Inches(4.85),
-             Inches(8.5), Inches(0.5),
-             'Tag med til torsdag:', size=16, bold=True, color=EDC_YELLOW,
-             font='Menlo')
-    add_bullets(s, Inches(2.4), Inches(5.4),
-                Inches(8.5), Inches(1.3), [
-        'Én prompt der virkede godt',
-        'Én der ikke gjorde — vi lærer mest af de fejlede',
-    ], size=18, color=WHITE, line_spacing=1.4,
-                bullet_color=EDC_YELLOW)
-    bot = s.shapes.add_shape(MSO_SHAPE.RECTANGLE,
-                             0, Inches(7.32), SLIDE_W, Inches(0.18))
-    bot.fill.solid()
-    bot.fill.fore_color.rgb = EDC_YELLOW
-    bot.line.fill.background()
-
-
 # ---------- Speaker notes -------------------------------------------------
 # Format-konvention:
 #   ─── LÆS ─── = baggrund/kontekst du skanner med øjnene
@@ -876,32 +820,22 @@ NOTES = [
     "\"En vag prompt rammer den forkerte fil, glemmer halvdelen af kæden, eller introducerer et abstraktionslag der konflikter med jeres eksisterende.\"\n\n"
     "\"Vi træner mønsteret her hvor det er sikkert at fejle — så det sidder i fingrene når I er midt i en rigtig PR mandag morgen.\"",
 
-    # 11. Hands-on divider
+    # 11. Hands-on divider — sidste slide, dækker hands-on + afslutning
     "─── LÆS ───\n"
-    "Korte instrukser · 0:35 — start. De skal i gang.\n\n"
-    "─── SIG ───\n"
-    "\"Nu jer.\"\n\n"
-    "\"Solo på din egen maskine — du skal selv mærke forskellen i fingrene.\"\n\n"
-    "\"I har 20 minutter.\"",
-
-    # 12. Hands-on instructions
-    "─── LÆS ───\n"
-    "Mens de arbejder · 0:35–0:55. Gå rundt. Hjælp dem der sidder fast. Lyt efter en god 'aha'-bemærkning du kan bede dem dele bagefter.\n\n"
-    "─── SIG (i starten) ───\n"
-    "\"Læs trinene på slidet: clone, npm install, claude i demo. Vælg én opgave fra demoen.\"\n\n"
-    "\"Det vigtigste: prøv BEGGE prompts — ikke bare den gode. Læg mærke til forskellen.\"\n\n"
+    "Hands-on (0:35–0:55) + afslutning (0:55–1:00). Slidet bliver siddende mens deltagerne arbejder. Du forklarer hands-on verbalt, går rundt, samler op, og runder af — alt sammen uden at skifte slide.\n\n"
+    "─── SIG (start hands-on, 0:35) ───\n"
+    "\"Nu jer. Solo på din egen maskine — du skal selv mærke forskellen i fingrene. I har 20 minutter.\"\n\n"
+    "\"Kør git clone fra README'en, npm install, og claude i demo-mappen. Vælg én opgave fra demoen — pris-bug, performance, eller favorit-knap.\"\n\n"
+    "\"Skriv først en hurtig prompt som I ville skrive på en travl dag. Så git checkout og /clear for at rulle tilbage. Så samme opgave med alle 4 byggeklodser.\"\n\n"
     "\"Hvis du sidder fast, ræk hånden op — vi går rundt.\"\n\n"
-    "─── SIG (med 5 min tilbage) ───\n"
-    "\"Saml jer — én indsigt højt fra hver. Den der overraskede jer mest.\"",
-
-    # 13. Outro
-    "─── LÆS ───\n"
-    "Afslutning · 0:55–1:00. Hjemmeopgave nem. Bekræft næste præsentant igen ved navn så de ved det er reelt.\n\n"
-    "─── SIG ───\n"
-    "\"Hjemmeopgaven er nem. Brug Claude Code på MINDST én rigtig opgave inden torsdag — i et af jeres rigtige projekter, ikke demoen.\"\n\n"
-    "\"Tag to prompts med til torsdag: én der virkede godt, og én der ikke gjorde.\"\n\n"
-    "\"Vi starter session 2 med at dele dem. Vi lærer mest af de fejlede prompts.\"\n\n"
-    "\"[Navn] tager session 2 om Plan mode. Jeg sender slide-skabelon og pre-work-video senest mandag.\"\n\n"
+    "─── GØR (mens de arbejder) ───\n"
+    "Gå rundt. Hjælp dem der sidder fast. Lyt efter en god 'aha'-bemærkning du kan bede dem dele bagefter.\n\n"
+    "─── SIG (med 5 min tilbage, ~0:50) ───\n"
+    "\"Saml jer — én indsigt højt fra hver. Den der overraskede jer mest.\"\n\n"
+    "─── SIG (afslutning, 0:55) ───\n"
+    "\"Hjemmeopgaven er nem: brug Claude Code på mindst én rigtig opgave inden torsdag — i et af jeres rigtige projekter, ikke demoen.\"\n\n"
+    "\"Tag to prompts med til torsdag: én der virkede godt, og én der ikke gjorde. Vi starter session 2 med at dele dem.\"\n\n"
+    "\"[Navn] tager session 2 om Plan mode. Jeg sender slide-skabelon og pre-work-video senest dagen før.\"\n\n"
     "\"Tak for i dag.\"",
 ]
 
