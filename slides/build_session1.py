@@ -474,19 +474,23 @@ def s_core(s):
 @slide
 def s_blocks(s):
     fill_bg(s, WHITE)
-    add_title(s, 'De 4 byggeklodser', 'En god prompt har altid disse fire dele')
+    add_title(s, 'De 4 byggeklodser', 'Tænk i fire dele når du skriver en prompt')
     blocks = [
-        ('1', 'Kontekst', 'Hvilke filer skal\nClaude læse?'),
-        ('2', 'Opgave', 'Hvad vil du have\ngjort? Verbum først.'),
-        ('3', 'Begrænsninger', 'Hvad må Claude\nIKKE røre?'),
-        ('4', 'Forventet output', 'Hvad ser "done"\nud som?'),
+        ('1', 'Kontekst', None,
+         'Hvilke filer skal\nClaude læse?'),
+        ('2', 'Opgave', None,
+         'Hvad vil du have\ngjort? Fx "Lav en\nhelper", "Tilføj knap".'),
+        ('3', 'Begrænsninger', 'Når relevant',
+         'Hvad må Claude\nIKKE røre?'),
+        ('4', 'Forventet output', None,
+         'Hvad ser "done"\nud som?'),
     ]
-    box_w = Inches(2.85)
-    box_h = Inches(3.4)
-    gap = Inches(0.18)
-    start_x = Inches(0.7)
-    top = Inches(2.3)
-    for i, (num, head, body) in enumerate(blocks):
+    box_w = Inches(2.95)
+    box_h = Inches(3.6)
+    gap = Inches(0.13)
+    start_x = Inches(0.65)
+    top = Inches(2.2)
+    for i, (num, head, badge, body) in enumerate(blocks):
         x = start_x + (box_w + gap) * i
         b = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, x, top, box_w, box_h)
         b.fill.solid()
@@ -513,16 +517,42 @@ def s_blocks(s):
         cr.font.size = Pt(20)
         cr.font.bold = True
         cr.font.color.rgb = WHITE
-        # heading
-        add_text(s, x + Inches(0.4), top + Inches(1.3),
-                 box_w - Inches(0.8), Inches(0.7),
-                 head, size=21, bold=True, color=EDC_NAVY)
+        # optional "Når relevant" badge top-right
+        if badge:
+            badge_w = Inches(1.2)
+            badge_h = Inches(0.3)
+            bx = x + box_w - badge_w - Inches(0.25)
+            by = top + Inches(0.55)
+            badge_box = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
+                                           bx, by, badge_w, badge_h)
+            badge_box.adjustments[0] = 0.5
+            badge_box.fill.solid()
+            badge_box.fill.fore_color.rgb = EDC_YELLOW
+            badge_box.line.fill.background()
+            bt = badge_box.text_frame
+            bt.margin_left = 0
+            bt.margin_right = 0
+            bt.margin_top = 0
+            bt.margin_bottom = 0
+            bt.vertical_anchor = MSO_ANCHOR.MIDDLE
+            bp = bt.paragraphs[0]
+            bp.alignment = PP_ALIGN.CENTER
+            br = bp.add_run()
+            br.text = badge
+            br.font.name = 'Helvetica'
+            br.font.size = Pt(11)
+            br.font.bold = True
+            br.font.color.rgb = EDC_NAVY
+        # heading (smaller font so "Begrænsninger" fits one line)
+        add_text(s, x + Inches(0.3), top + Inches(1.3),
+                 box_w - Inches(0.6), Inches(0.7),
+                 head, size=18, bold=True, color=EDC_NAVY)
         # body
-        add_text(s, x + Inches(0.4), top + Inches(2.1),
-                 box_w - Inches(0.8), Inches(1.2),
+        add_text(s, x + Inches(0.3), top + Inches(2.0),
+                 box_w - Inches(0.6), Inches(1.4),
                  body, size=14, color=INK, line_spacing=1.4)
     # mantra
-    add_text(s, Inches(0.6), Inches(6.05),
+    add_text(s, Inches(0.6), Inches(6.15),
              Inches(12.13), Inches(0.6),
              '[Kontekst] + [Opgave] + [Begrænsninger] + [Forventet output]',
              size=15, color=MUTED, align=PP_ALIGN.CENTER, font='Menlo')
@@ -895,14 +925,14 @@ NOTES = [
 
     # 6. De 4 byggeklodser
     "─── LÆS ───\n"
-    "Mønsteret · 0:15–0:18. Det her skal de kunne udenad efter session 1. Læs dem op én af gangen og giv et lille eksempel for hver.\n\n"
+    "Mønsteret · 0:15–0:18. Det her skal de kunne udenad efter session 1. Læs dem op én af gangen og giv et lille eksempel for hver. Vigtigt: BEGRÆNSNINGER er markeret \"når relevant\" — det er ikke nødvendigt for hver prompt (fx ikke for \"forklar denne fil\"), men ved kode-ændringer er det guld værd.\n\n"
     "─── SIG ───\n"
-    "\"En god prompt har altid 4 dele.\"\n\n"
-    "\"1. Kontekst — fx: Læs lib/propertyService.ts og components/PropertyCard.tsx.\"\n\n"
-    "\"2. Opgave — fx: Lav en formatPrice-helper og brug den i begge filer.\"\n\n"
-    "\"3. Begrænsninger — fx: Rør intet andet. Ingen commit.\"\n\n"
-    "\"4. Forventet output — fx: Priser vises som 8.500.000 kr. — alle 3 steder.\"\n\n"
-    "\"Vi vender tilbage til de 4 byggeklodser hver eneste session de næste 5 uger.\"",
+    "\"Tænk i fire dele når du skriver en prompt:\"\n\n"
+    "\"1. Kontekst — fx: 'Læs lib/propertyService.ts og components/PropertyCard.tsx'.\"\n\n"
+    "\"2. Opgave — konkret, fx: 'Lav en formatPrice-helper og brug den i begge filer'. Ikke 'der er noget med priserne...'.\"\n\n"
+    "\"3. Begrænsninger — når relevant. Fx: 'Rør intet andet. Ingen commit.' Hvis du bare vil have Claude til at forklare en fil, kan du droppe det her.\"\n\n"
+    "\"4. Forventet output — fx: 'Priser vises som 8.500.000 kr. alle 3 steder.'\"\n\n"
+    "\"Vi vender tilbage til mønsteret hver eneste session de næste 5 uger.\"",
 
     # 7. Esc Esc
     "─── LÆS ───\n"
