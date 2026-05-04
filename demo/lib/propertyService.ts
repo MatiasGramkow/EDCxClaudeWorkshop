@@ -40,18 +40,14 @@ export function getAll(query?: string): PropertyListItem[] {
     title: `${p.address}, ${p.city}`,
     city: p.city,
     pricePerSqm: p.pricePerSqm,
-    formattedPrice: formatPrice(p.price)
+    formattedPrice: new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 2
+    }).format(p.price)
   }));
 }
 
 export function findById(id: string): Property | null {
   return properties.find(p => p.id === id) ?? null;
-}
-
-export function formatPrice(price: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 2
-  }).format(price);
 }

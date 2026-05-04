@@ -71,24 +71,28 @@ const SESSIONS = [
                 body: 'Forklar: "det her ligner en prompt de fleste skriver på autopilot — vi nævner symptomet, men ikke hvor i koden det skal fixes". Det er IKKE en stråmand, det er hverdag.',
                 promptLabel: 'Dårlig prompt — kopier til Claude',
                 prompt: 'Priserne på /demo vises som amerikanske dollars med cents (fx "$8,500,000.00") overalt. Det er en dansk side. Fix det. Ingen commit eller push.',
-                expected: 'Claude kan vælge MANGE veje: rette én linje i formatPrice, lave en valuta-context/provider, tilføje en hook, søg-erstat "$" → "kr." i UI-strings, eller patche hver komponent for sig. Du får måske et fix der virker, men det kan være spredt over 3+ filer eller introducere et nyt abstraktionslag du ikke bad om.'
+                expected: 'Pris-formateringen ligger inline tre steder (PropertyCard, detalje-siden, propertyService.getAll) — ingen helper. Claude kan vælge MANGE veje: patche kun én af de tre filer (delvis fix — siden ser stadig forkert ud), patche alle tre med samme NumberFormat-call (duplikering), lave en ny helper og refaktorere, tilføje en valuta-context, eller søg-erstat "$" → "kr." i strings. Kør prompten 2-3 gange — den lander forskelligt hver gang, og nogle gange er fixet ufuldstændigt.'
             },
             {
                 heading: 'God prompt — samme opgave, med kontekst (3 min)',
                 say: 'Nu siger vi præcis hvor og hvad.',
                 body: 'Først: `git checkout .` for at rulle den dårlige ændring tilbage. Så `/clear` så Claude starter forfra.',
                 promptLabel: 'God prompt — kopier til Claude',
-                prompt: `I lib/propertyService.ts: funktionen formatPrice bruger Intl.NumberFormat med 'en-US' og 'USD'. Det er en dansk side.
+                prompt: `Pris-formateringen ligger inline tre steder med Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }):
 
-Ret 'en-US' til 'da-DK', 'USD' til 'DKK', og maximumFractionDigits fra 2 til 0.
+- lib/propertyService.ts (i getAll, feltet formattedPrice)
+- components/PropertyCard.tsx
+- app/properties/[id]/page.tsx (variablen formattedPrice)
+
+Lav en formatPrice(price: number)-helper i lib/propertyService.ts der bruger 'da-DK', 'DKK' og maximumFractionDigits: 0. Brug den fra alle tre steder (importér i de to komponenter).
 
 Rør intet andet. Ingen commit eller push.`,
-                expected: 'Claude læser præcis den ene fil, ændrer 3 værdier (én linje hver), og stopper. Refresh /demo: alle priser overalt på siden skifter samtidig fra USD-format ("$8,500,000.00") til danske kroner ("8.500.000 kr.") — fordi al pris-formatering går gennem den ene funktion.'
+                expected: 'Claude tilføjer formatPrice i lib/propertyService.ts, og erstatter de 3 inline-kald med kald til helperen. Refresh /demo: alle priser overalt skifter samtidig til "8.500.000 kr." — og fra nu af går al pris-formatering gennem den ene funktion. Sammenlign med den dårlige prompt: nu er der ingen tvivl om HVOR fixet skal hen og HVORDAN det skal se ud.'
             },
             {
                 heading: 'Pointe — hvad ændrede sig? (1 min)',
-                say: 'Den dårlige prompt nævnte symptomet ("priser vises som dollars"). Den gode prompt sagde HVOR i koden ("formatPrice i lib/propertyService.ts") og HVAD ("3 værdier ændres"). Det fjernede alle de andre måder Claude kunne have "fixet" det.',
-                body: 'Dette er mønstret vi træner de næste 4 sessioner: **[Fil] + [Opgave] + [Begrænsninger] + [Forventet output]**. Når Claude ved hvilken funktion og hvilken linje, kan den ikke gætte på et større fix end nødvendigt.'
+                say: 'Den dårlige prompt nævnte kun symptomet ("priser vises som dollars"). Den gode prompt sagde HVOR i koden (de 3 filer), HVAD strukturen skal være (én helper) og HVORDAN den skal se ud (\'da-DK\', \'DKK\', 0 decimaler). Det fjernede alle de andre måder Claude kunne have "fixet" det.',
+                body: 'Dette er mønstret vi træner de næste 4 sessioner: **[Fil] + [Opgave] + [Begrænsninger] + [Forventet output]**. Når Claude ved hvilke filer der er i spil og hvilken arkitektur du vil have, kan den ikke gætte sig til et fix der er enten ufuldstændigt eller over-engineeret.'
             },
             {
                 heading: 'Bonus — performance-prompt (2 min)',
@@ -181,9 +185,13 @@ claude`
             {
                 label: 'God prompt — samme opgave (efter `git checkout . && /clear`)',
                 language: 'text',
-                text: `I lib/propertyService.ts: funktionen formatPrice bruger Intl.NumberFormat med 'en-US' og 'USD'. Det er en dansk side.
+                text: `Pris-formateringen ligger inline tre steder med Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }):
 
-Ret 'en-US' til 'da-DK', 'USD' til 'DKK', og maximumFractionDigits fra 2 til 0.
+- lib/propertyService.ts (i getAll, feltet formattedPrice)
+- components/PropertyCard.tsx
+- app/properties/[id]/page.tsx (variablen formattedPrice)
+
+Lav en formatPrice(price: number)-helper i lib/propertyService.ts der bruger 'da-DK', 'DKK' og maximumFractionDigits: 0. Brug den fra alle tre steder (importér i de to komponenter).
 
 Rør intet andet. Ingen commit eller push.`
             },

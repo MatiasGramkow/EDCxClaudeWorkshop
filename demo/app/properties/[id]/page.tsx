@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { findProperty } from '@/lib/properties';
-import { formatPrice } from '@/lib/propertyService';
 import { ArrowLeft, Home, Ruler, Calendar } from 'lucide-react';
 
 interface PageProps {
@@ -13,7 +12,11 @@ export default async function PropertyDetailPage({ params }: PageProps) {
   const property = findProperty(id);
   if (!property) notFound();
 
-  const formattedPrice = formatPrice(property.price);
+  const formattedPrice = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 2
+  }).format(property.price);
 
   const pricePerSqm = Math.round(property.price / property.squareMeters);
 
