@@ -686,8 +686,7 @@ def s_caveat(s):
         '**Her:** 5 filer, ét tydeligt symptom, Opus 4.7 — Claude finder *et* fix uanset hvor vag prompten er',
         '**På jeres codebases:** 100k+ linjer, 10+ års historik, DTO\'er, mappere, migrations, uskrevne konventioner',
         '**Konsekvens af vag prompt:** forkert fil · glemt halvdel af kæden · konfliktende abstraktion · brudt konvention',
-        '**Vi træner mønsteret HER** — så det sidder i fingrene mandag morgen i en rigtig PR',
-    ], size=15, line_spacing=1.6)
+    ], size=16, line_spacing=1.7)
 
 
 # --- 11. Section divider: Hands-on ---
@@ -727,8 +726,7 @@ def s_handson(s):
         'Skriv først en **hurtig prompt** — som du ville skrive på en travl dag',
         '**git checkout .** og **/clear** for at rulle tilbage',
         'Skriv så en prompt med **alle 4 byggeklodser**',
-        'Sammenlign: hvad var forskellen? Hvilken ville du committe?',
-    ], size=18, line_spacing=1.6)
+    ], size=19, line_spacing=1.7)
 
 
 # --- 13. Hjemmeopgave + tak ---
