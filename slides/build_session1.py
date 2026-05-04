@@ -302,6 +302,113 @@ def s_cover(s):
     bot.fill.fore_color.rgb = EDC_YELLOW
     bot.line.fill.background()
 
+    # Optional background music — drop an .mp3 at slides/cover/music.mp3
+    # and the script embeds it with autoplay + loop while slide 1 is shown.
+    music = os.path.join(HERE, 'cover', 'music.mp3')
+    if os.path.exists(music):
+        _embed_autoplay_loop_audio(s, music)
+
+
+def _embed_autoplay_loop_audio(slide, audio_path):
+    """Add an audio file to the slide configured to autoplay and loop.
+
+    python-pptx exposes add_movie() but doesn't set the timing XML needed
+    for autoplay+loop, so we patch the slide-level timing tree directly.
+    """
+    from pptx.util import Inches as _In
+    from lxml import etree
+
+    # Tiny "speaker" icon offscreen so it doesn't show
+    movie = slide.shapes.add_movie(
+        audio_path,
+        left=_In(-0.5), top=_In(-0.5),
+        width=_In(0.4), height=_In(0.4),
+        mime_type='audio/mpeg',
+    )
+    pic_id = movie._element.nvPicPr.cNvPr.get('id')
+
+    # Build the timing XML that drives autoplay + loop
+    nsmap = {
+        'a': 'http://schemas.openxmlformats.org/drawingml/2006/main',
+        'p': 'http://schemas.openxmlformats.org/presentationml/2006/main',
+    }
+    timing_xml = f'''
+    <p:timing xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+              xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+      <p:tnLst>
+        <p:par>
+          <p:cTn id="1" dur="indefinite" restart="never" nodeType="tmRoot">
+            <p:childTnLst>
+              <p:seq concurrent="1" nextAc="seek">
+                <p:cTn id="2" dur="indefinite" nodeType="mainSeq">
+                  <p:childTnLst>
+                    <p:par>
+                      <p:cTn id="3" fill="hold">
+                        <p:stCondLst>
+                          <p:cond delay="indefinite"/>
+                        </p:stCondLst>
+                        <p:childTnLst>
+                          <p:par>
+                            <p:cTn id="4" fill="hold">
+                              <p:stCondLst>
+                                <p:cond delay="0"/>
+                              </p:stCondLst>
+                              <p:childTnLst>
+                                <p:par>
+                                  <p:cTn id="5" presetID="1" presetClass="mediacall" presetSubtype="0" fill="hold" nodeType="afterEffect">
+                                    <p:stCondLst>
+                                      <p:cond delay="0"/>
+                                    </p:stCondLst>
+                                    <p:childTnLst>
+                                      <p:cmd type="call" cmd="playFrom(0.0)">
+                                        <p:cBhvr>
+                                          <p:cTn id="6" dur="indefinite"/>
+                                          <p:tgtEl>
+                                            <p:spTgt spid="{pic_id}"/>
+                                          </p:tgtEl>
+                                        </p:cBhvr>
+                                      </p:cmd>
+                                    </p:childTnLst>
+                                  </p:cTn>
+                                </p:par>
+                              </p:childTnLst>
+                            </p:cTn>
+                          </p:par>
+                        </p:childTnLst>
+                      </p:cTn>
+                      <p:nextCondLst>
+                        <p:cond evt="onNext" delay="0">
+                          <p:tgtEl><p:sldTgt/></p:tgtEl>
+                        </p:cond>
+                      </p:nextCondLst>
+                    </p:par>
+                  </p:childTnLst>
+                </p:cTn>
+              </p:seq>
+              <p:audio>
+                <p:cMediaNode vol="80000">
+                  <p:cTn id="7" repeatCount="indefinite" fill="hold" display="0">
+                    <p:stCondLst>
+                      <p:cond delay="indefinite"/>
+                    </p:stCondLst>
+                  </p:cTn>
+                  <p:tgtEl>
+                    <p:spTgt spid="{pic_id}"/>
+                  </p:tgtEl>
+                </p:cMediaNode>
+              </p:audio>
+            </p:childTnLst>
+          </p:cTn>
+        </p:par>
+      </p:tnLst>
+    </p:timing>
+    '''
+    # Replace any existing timing element on the slide
+    sld = slide._element
+    for old in sld.findall('p:timing', nsmap):
+        sld.remove(old)
+    sld.append(etree.fromstring(timing_xml))
+
 
 # --- 2. Dagsorden ---
 @slide
