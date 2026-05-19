@@ -8,6 +8,12 @@ const START_DATE_ISO = '2026-05-05T09:00:00Z'; // 11:00 Europe/Copenhagen (CEST,
 const SESSION_DURATION_MIN = 60;
 
 function sessionUnlockAt(n) {
+    // Allow per-session override via SESSIONS[n-1].startsAtIso — used when
+    // a session's clock-time differs from session 1 (fx session 2 = 10:00).
+    const session = SESSIONS && SESSIONS[n - 1];
+    if (session && session.startsAtIso) {
+        return new Date(session.startsAtIso).getTime();
+    }
     const start = new Date(START_DATE_ISO);
     const weekIdx = Math.floor((n - 1) / 2); // 0..4
     const isThursday = (n - 1) % 2 === 1;
@@ -270,13 +276,19 @@ Svar i punktform. Rør ikke koden.`
         subtitle: 'Hvornår skal Claude tænke før den koder? — og hele mode-cyklen (Shift+Tab)',
         theme: 'Fundamentet',
         day: 'Torsdag · Uge 1',
-        presenters: [],
-        prework: { videoUrl: '', note: '' },
+        // Session 2 starter 10:00 dansk tid (08:00 UTC under sommertid CEST).
+        startsAtIso: '2026-05-07T08:00:00Z',
+        presenters: ['Claus Pedersen'],
+        prework: {
+            videoUrl: 'https://www.youtube.com/watch?v=FoRIj5qcslg',
+            note: 'Se denne ~10-min video om Plan Mode inden torsdag — den giver det bedste afsæt for Claus\' præsentation og hands-on-øvelsen.'
+        },
         schedule: [
-            { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
-            { t: '0:10–0:45', what: 'Deltager-præsentation: Plan mode (1 person, dagens emne)' },
-            { t: '0:45–0:50', what: 'Beslut: hvem præsenterer næste gang?' },
-            { t: '0:50–1:00', what: 'Matias-demo (hvis tid)' }
+            { t: '0:00–0:10', what: 'Recap fra session 1 + dele hjemmeopgave (hvad virkede / hvad gik galt?)' },
+            { t: '0:10–0:15', what: 'Vælg næste præsentant (session 3 — Kontekst er konge)' },
+            { t: '0:15–0:40', what: 'Claus præsenterer: Plan mode vs. ikke plan mode' },
+            { t: '0:40–0:55', what: 'Hands-on: prøv plan mode på egen kode med en god prompt — sammenlign resultatet' },
+            { t: '0:55–1:00', what: 'Saml op + take-home + hjemmeopgave' }
         ],
         foredrag: [
             'Plan mode = Shift+Tab. Claude skriver en plan men rører ikke filer endnu.',
@@ -519,7 +531,7 @@ alias claude-yolo="claude --permission-mode bypassPermissions"  # kun i sandbox`
             ]
         },
         hjemmeopgave: [
-            'Brug plan mode på mindst én ægte opgave i weekenden',
+            'Brug plan mode på mindst én ægte opgave inden tirsdag',
             'Gem planen Claude foreslog (screenshot / kopier)',
             'Tag den med til session 3 — vi kigger på dem sammen'
         ]
@@ -1525,10 +1537,186 @@ Aktiveres kun når Claude rører frontend-filer.
     // ---- Session 5 ----------------------------------------------------------
     {
         number: 5,
+        title: 'Subagents og parallelle opgaver',
+        subtitle: 'Isolerede Claude-instanser med eget context — kør research, review og opgaver parallelt',
+        theme: 'Avancerede features',
+        day: 'Tirsdag · Uge 3',
+        presenters: ['Jacob'],
+        prework: { videoUrl: '', note: '' },
+        schedule: [
+            { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
+            { t: '0:10–0:45', what: 'Deltager-præsentation: Subagents og parallelle opgaver (Jacob)' },
+            { t: '0:45–0:50', what: 'Beslut: hvem præsenterer næste gang?' },
+            { t: '0:50–1:00', what: 'Matias-demo (hvis tid)' }
+        ],
+        foredrag: [
+            '**Hvad er en subagent?** En isoleret Claude-instans med sit EGET context-vindue. Den ødelægger ikke jeres hovedsamtale, og I kan have flere kørende parallelt.',
+            '**Hvorfor subagents?** Tre grunde: (1) hold hovedsamtalen ren når en opgave kræver at læse 10+ filer, (2) kør flere uafhængige opgaver parallelt (fx review 3 PRs), (3) gem en specialopgave I bruger ofte (`.claude/agents/<navn>.md`).',
+            '**Built-in agents:** Explore (research uden context-spild), Plan (lav en implementation plan). De er der ud af boksen.',
+            '**Custom agents:** markdown-fil i `.claude/agents/<navn>.md` med `name`, `description`, `tools`, `model` i frontmatter. Committes — hele teamet får samme review-/research-kvalitet.',
+            '**Hvornår IKKE bruge subagent:** når opgaven har brug for context fra jeres samtale (subagenten starter blank), når det er en enkelt prompt (bare prompt direkte), når I skal have kontrol step-by-step (subagent kører autonomt indtil færdig).'
+        ],
+        demo: [
+            {
+                heading: '`/agents`-picker — vis hvad der er tilgængeligt (2 min)',
+                say: 'Subagents bor i `/agents`-pickeren. Built-in (Explore, Plan) + jeres custom-agents fra `.claude/agents/`.',
+                promptLabel: 'Slash command — agent picker',
+                prompt: '/agents',
+                expected: 'En liste over tilgængelige agents. Vis hvordan I navigerer med pile. Forklar: hver agent får sit eget context-vindue når den invokeres.'
+            },
+            {
+                heading: 'Built-in Explore — research uden context-spild (3 min)',
+                say: 'Explore er den I rækker efter når I tænker "find alle steder hvor X". Den browser codebasen, men kun resultatet kommer tilbage til hovedsamtalen.',
+                promptLabel: 'Research via Explore-subagent',
+                prompt: 'Brug Explore-agenten til at finde alle steder i denne codebase hvor vi instantierer HttpClient direkte (i stedet for at injecte IHttpClientFactory). Svar med filsti og linjenummer.',
+                expected: 'Claude spawner en subagent der browser codebasen. Main-samtalen får kun det endelige resultat tilbage — ikke alle browsing-trin. Hovedcontexten forbliver ren. Pointe: brug Explore når I tænker "find alle steder hvor X".'
+            },
+            {
+                heading: 'Parallelle subagents — skaler review (3 min)',
+                say: 'I kan spawne flere subagents samtidig. Linær speedup på uafhængige opgaver.',
+                promptLabel: 'Parallel review-prompt',
+                prompt: 'Spawn tre parallelle review-subagents, én pr. af disse branches: feature/favorites, feature/search-v2, fix/null-guard. Hver skal svare med maks 3 findings i prioriteret rækkefølge. Kombinér output i én tabel til sidst.',
+                expected: 'Claude kører de 3 reviews parallelt i stedet for sekventielt. Typisk 3x hurtigere. Pointe: subagents er forskellen mellem "Claude som smart notesblok" og "Claude som team af assistenter".'
+            },
+            {
+                heading: 'Custom subagent — code-archaeologist (3 min)',
+                body: 'Opret `.claude/agents/code-archaeologist.md`:',
+                promptLabel: '.claude/agents/code-archaeologist.md',
+                prompt: `---
+name: code-archaeologist
+description: Find ud af hvorfor en linje kode ser ud som den gør — git blame + commit-historik + relateret context
+tools: Read, Grep, Glob, Bash
+model: sonnet
+---
+
+Du er kode-arkæolog. Når du får en fil + linje (eller en kodestump), gør du følgende:
+
+1. \`git blame\` på linjen → hvem rørte den senest, hvilken commit
+2. \`git log --follow\` på filen → tidligere commits der rørte den
+3. Læs commit-beskederne — find den der introducerede koden
+4. Se i README/CLAUDE.md/CHANGELOG om der er kontekst
+5. Sammenfat på 5 punkter:
+   - Hvem skrev koden, hvornår
+   - Hvilken commit-besked sagde de
+   - Hvilken issue/PR (hvis nævnt)
+   - Hvilken anden kode blev ændret samtidig
+   - Sandsynlig grund til den nuværende form
+
+Du svarer kortfattet. Ingen fix-forslag — kun arkæologi.`,
+                expected: 'Filen ligger i `.claude/agents/`. Genstart Claude. Nu kan I kalde agenten via `/agents` eller bede Claude om at delegere: "brug code-archaeologist på @PropertyService.cs#L42". Pointe: delegér en specialopgave så hovedsamtalen forbliver fokuseret.'
+            },
+            {
+                heading: 'Hvornår delegere til subagent? (1 min)',
+                body: '**Brug subagent når:**\n- Opgaven kræver at læse 10+ filer og I kun vil have summary tilbage\n- Flere uafhængige opgaver kan køre parallelt (fx review 3 PRs)\n- Det er en specialopgave I gerne vil isolere fra hovedsamtalen\n\n**IKKE subagent når:**\n- Opgaven har brug for context fra jeres samtale (subagenten starter blank)\n- Det kun er en enkelt prompt — bare prompt direkte\n- I skal have kontrol step-by-step (subagent kører autonomt indtil færdig)'
+            }
+        ],
+        handsOn: {
+            aSpor: {
+                title: 'A-spor (begynder) — prøv Explore på jeres eget repo',
+                steps: [
+                    'Åbn Claude Code i et EDC-repo I kender',
+                    'Kør `/agents` og find Explore i listen',
+                    'Bed Explore: "find alle steder hvor vi bruger [X-pattern] — fx direct DbContext access, eller HttpClient new-up"',
+                    'Sammenlign: hvor meget context fyldte det i hovedsamtalen? (svar: kun resultatet)'
+                ]
+            },
+            bSpor: {
+                title: 'B-spor (advanced) — byg en custom subagent',
+                steps: [
+                    'Opret `.claude/agents/test-reviewer.md` (eller en agent der passer jeres workflow)',
+                    'Genstart Claude. Tjek at agenten dukker op i `/agents`-pickeren',
+                    'Invokér: "Brug test-reviewer-agenten på @MyService.Tests.cs"',
+                    'Spawn 2-3 parallelle review-subagents på forskellige PRs/filer — mål tid vs. sekventielt'
+                ]
+            }
+        },
+        prompts: [
+            {
+                label: '/agents — vis tilgængelige subagents',
+                language: 'text',
+                text: `/agents
+
+# Vælg med pile. Hver agent får sit eget context-vindue når den invokeres.`
+            },
+            {
+                label: 'Eksplicit Explore-invocation',
+                language: 'text',
+                text: `Brug Explore-agenten til at finde alle steder hvor vi [mønster].
+Svar med filsti og linjenummer. Ingen analyse — bare lokationer.`
+            },
+            {
+                label: 'Parallel review — flere subagents på én gang',
+                language: 'text',
+                text: `Spawn N parallelle review-subagents, én pr. af disse branches/filer:
+- [branch/fil 1]
+- [branch/fil 2]
+- [branch/fil 3]
+
+Hver svarer med maks 3 findings i prioriteret rækkefølge.
+Kombinér output i én tabel til sidst.`
+            },
+            {
+                label: 'Custom subagent — minimal skabelon',
+                language: 'markdown',
+                text: `---
+name: <kort-navn>
+description: <hvad agenten gør og hvornår den skal vælges>
+tools: Read, Grep, Glob, Bash
+model: sonnet
+---
+
+Du er <rolle>. Når du får <input>, gør du følgende:
+
+1. <trin>
+2. <trin>
+3. <trin>
+
+Output-format:
+- <hvad agenten returnerer>
+
+Vær konkret. Ingen <ting agenten ikke skal gøre>.`
+            }
+        ],
+        handout: {
+            title: 'Subagents — kickstart',
+            content: [
+                '**Hvad:** isolerede Claude-instanser med eget context.',
+                '**Hvor:** built-in via `/agents` (Explore, Plan) + custom i `.claude/agents/<navn>.md`.',
+                '',
+                '**Brug subagent når:**',
+                '- Opgaven kræver at læse 10+ filer og I kun vil have summary',
+                '- Flere uafhængige opgaver kan køre parallelt',
+                '- Specialopgave I bruger igen og igen',
+                '',
+                '**Brug IKKE subagent når:**',
+                '- Opgaven har brug for context fra hovedsamtalen',
+                '- Det er en enkelt prompt',
+                '- I skal have kontrol step-by-step',
+                '',
+                '**Custom agent-frontmatter:**',
+                '- `name`: kort-navn',
+                '- `description`: hvornår agenten skal vælges (Claude læser dette for at beslutte)',
+                '- `tools`: hvilke tools agenten må bruge (Read, Grep, Bash, Edit, ...)',
+                '- `model`: sonnet (default), opus til arkitektur, haiku til hurtige opgaver',
+                '',
+                '**Pro-tip:** committee `.claude/agents/` — hele teamet får samme review-/research-kvalitet.'
+            ]
+        },
+        hjemmeopgave: [
+            'Kør Explore på et EDC-repo I kender — find ét mønster I gerne vil have overblik over',
+            'Byg én custom subagent (test-reviewer, security-checker, doc-finder, eller jeres egen)',
+            'Spawn 2+ parallelle subagents mindst én gang i ugen',
+            'Tag erfaringer med til session 6 (Git-workflow)'
+        ]
+    },
+
+    // ---- Session 6 ----------------------------------------------------------
+    {
+        number: 6,
         title: 'Git-workflow, commits og review',
         subtitle: 'Claude i dit daglige Git-flow + PAT/Azure DevOps-adgang — og hvornår du ikke skal stole på review',
         theme: 'Workflows der virker',
-        day: 'Tirsdag · Uge 3',
+        day: 'Torsdag · Uge 3',
         presenters: [],
         prework: { videoUrl: '', note: '' },
         schedule: [
@@ -1572,7 +1760,7 @@ Aktiveres kun når Claude rører frontend-filer.
 Eksempel på vores format: "fix(user): håndter tom email i GetUser"
 
 Opdater commit-beskeden.`,
-                expected: 'Claude retter beskeden. Pointe: dette er et signal om at I burde bygge en custom /commit — det gør vi i session 6.'
+                expected: 'Claude retter beskeden. Pointe: dette er et signal om at I burde bygge en custom /commit — det gør vi i session 7.'
             },
             {
                 heading: 'Brug /review på en åben PR (4 min)',
@@ -1841,22 +2029,22 @@ Vis kommandoen først. Vent på min accept før du kører den.`
             'Brug `/commit` eller `/review` mindst én gang på ægte arbejde',
             'Sæt PAT/az op hvis I ikke har det — så Claude kan klone og pushe mod EDC-repos',
             'Find én ting Claude fangede som du ikke ville have fanget selv',
-            'Tag den med til session 6'
+            'Tag den med til session 7'
         ]
     },
 
-    // ---- Session 6 ----------------------------------------------------------
+    // ---- Session 7 ----------------------------------------------------------
     {
-        number: 6,
-        title: 'Skills, agents og model-tuning',
-        subtitle: 'Automatisér dine gentagne workflows — skills, subagents, slash commands og model-/effort-tuning',
+        number: 7,
+        title: 'Skills og model-tuning',
+        subtitle: 'Automatisér dine gentagne workflows — skills, slash commands og model-/effort-tuning (subagents = session 5)',
         theme: 'Avancerede features',
-        day: 'Torsdag · Uge 3',
+        day: 'Tirsdag · Uge 4',
         presenters: [],
         prework: { videoUrl: '', note: '' },
         schedule: [
             { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
-            { t: '0:10–0:45', what: 'Deltager-præsentation: Skills, agents og model-tuning (1 person, dagens emne)' },
+            { t: '0:10–0:45', what: 'Deltager-præsentation: Skills og model-tuning (1 person, dagens emne)' },
             { t: '0:45–0:50', what: 'Beslut: hvem præsenterer næste gang?' },
             { t: '0:50–1:00', what: 'Matias-demo (hvis tid)' }
         ],
@@ -2370,7 +2558,7 @@ Kombinér output i én tabel til sidst.`
             }
         ],
         handout: {
-            title: 'Skills, agents, commands + model-tuning',
+            title: 'Skills, commands + model-tuning',
             content: [
                 '**Slash command** — `.claude/commands/[navn].md` → `/[navn]`',
                 'Med argumenter: `/[navn] foo` → `$ARGUMENTS` i markdown = "foo"',
@@ -2413,13 +2601,13 @@ Kombinér output i én tabel til sidst.`
         ]
     },
 
-    // ---- Session 7 ----------------------------------------------------------
+    // ---- Session 8 ----------------------------------------------------------
     {
-        number: 7,
+        number: 8,
         title: 'MCP og hooks',
         subtitle: 'Eksterne værktøjer + automatiske handlinger — Claude som integreret del af jeres pipeline',
         theme: 'Avancerede features',
-        day: 'Tirsdag · Uge 4',
+        day: 'Torsdag · Uge 4',
         presenters: [],
         prework: { videoUrl: '', note: '' },
         schedule: [
@@ -2721,17 +2909,17 @@ Kombinér output i én tabel til sidst.`
         hjemmeopgave: [
             'Vælg én: installer MCP, eller lav hook — aktiv i hele ugen',
             'Noter: én ting der sparede tid, én ting der var irriterende',
-            'Tag begge med til session 8'
+            'Tag begge med til session 9'
         ]
     },
 
-    // ---- Session 8 ----------------------------------------------------------
+    // ---- Session 9 ----------------------------------------------------------
     {
-        number: 8,
+        number: 9,
         title: 'Best practices og faldgruber',
         subtitle: 'Det vi har lært — og det vi IKKE skal gøre',
         theme: 'Mastery og deling',
-        day: 'Torsdag · Uge 4',
+        day: 'Tirsdag · Uge 5',
         presenters: [],
         prework: { videoUrl: '', note: '' },
         schedule: [
@@ -2901,185 +3089,10 @@ Svar med linjenumre. Kast ikke kode væk — bare liste.`
             ]
         },
         hjemmeopgave: [
-            'Forbered 3 min til session 9: "min bedste Claude Code-oplevelse" ELLER "det jeg bygger videre på"',
-            'Medbring 1 command / hook / CLAUDE.md I vil dele med andre teams'
-        ]
-    },
-
-    // ---- Session 9 ---------------------------------------------------------
-    {
-        number: 9,
-        title: 'Show & Tell + vejen frem',
-        subtitle: 'Del hvad I har bygget — og planlæg de næste 3 måneder',
-        theme: 'Mastery og deling',
-        day: 'Tirsdag · Uge 5',
-        presenters: [],
-        prework: { videoUrl: '', note: '' },
-        schedule: [
-            { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
-            { t: '0:10–0:45', what: 'Deltager-præsentation: Show & Tell + vejen frem (1 person, dagens emne)' },
-            { t: '0:45–0:50', what: 'Beslut: hvem præsenterer næste gang?' },
-            { t: '0:50–1:00', what: 'Matias-demo (hvis tid)' }
-        ],
-        foredrag: [
-            'Vi har dækket: prompting, plan mode, kontekst, CLAUDE.md, git, commands, MCP, hooks, faldgruber',
-            'De største aha-oplevelser på tværs af sessioner (kom tilbage til dette)',
-            'Hvad er det vi nu ved som organisation — og hvad mangler?',
-            '',
-            '**Som closer i dag — Claude er ikke bundet til jeres laptop.** `/remote-control` parrer din terminal-session med claude.ai så I kan fortsætte fra mobilen, en anden maskine, eller bilen til lufthavnen. Tag det med jer.'
-        ],
-        demo: [
-            {
-                heading: '`/remote-control` — par session med claude.ai (3 min)',
-                say: 'Forestil jer: I er midt i et stort refactor på laptoppen. I skal til møde. I lukker laptoppen, åbner mobilen, fortsætter samtalen som om I aldrig stoppede.',
-                body: 'Kør `/remote-control` i Claude Code. En QR-kode dukker op i terminalen. Scan den med kameraet på telefonen — den åbner claude.ai i browseren med samtalen pre-loaded.',
-                promptLabel: 'Slash command — start remote-control',
-                prompt: '/remote-control',
-                expected: 'QR-kode + URL i terminalen. Scan eller klik. claude.ai åbner med jeres aktive session. I kan nu prompte fra mobilen, og det kører fortsat på laptoppen — så Claude har jeres files, tools, og context. Pointe: dette er hvad der gør "Claude i lommen" rigtig.'
-            },
-            {
-                heading: '`/teleport` — flyt session til en anden maskine (2 min)',
-                say: 'Hvis I i stedet vil flytte sessionen helt over på en anden maskine — fx fra arbejds-laptop til hjemme-PC — så er `/teleport` måden.',
-                body: 'Kør `/teleport` på den nuværende maskine. Følg flowet (login med samme konto på den anden maskine).',
-                promptLabel: 'Slash command — teleport session',
-                prompt: '/teleport',
-                expected: 'Sessionen migrerer til den anden maskine. Pointe: det er ikke "remote-control fra mobilen". Det er FLYT samtalen så den kører LOKALT på den anden maskine. Use case: skifte mellem kontor og hjem uden at miste tråden.'
-            },
-            {
-                heading: 'Mobil-workflow — `/mobile` og hvornår det giver mening (2 min)',
-                body: '**Use cases hvor mobilen vinder:**\n- Mens I venter (tog, kø, møde-pause)\n- Hurtige spørgsmål om kode I så på i går: "hvad var det med null-checken i PropertyMapper?"\n- Code review-feedback fra ledelse mens I går i kantinen\n- Notere ideer mens hjernen arbejder\n\n**Use cases hvor det IKKE giver mening:**\n- Stor refactor (lille skærm = svært at læse diff)\n- Ny feature fra bunden (brug laptoppen)\n- Når I ikke har 4G/5G dækning',
-                promptLabel: 'Slash command — direkte til mobile-flow',
-                prompt: '/mobile',
-                expected: 'Genvej til mobile-pairing flow. Pointe: dette er hvad der gør at "tag det med dig" ikke er marketing-snak — det er et reelt arbejdsflow.'
-            },
-            {
-                heading: 'CLI-flag — `claude --remote-control` ved opstart (1 min)',
-                body: 'Hvis I ved fra start at I vil parre, kan I starte med flag\'et:',
-                promptLabel: 'Terminal-kommando',
-                prompt: 'claude --remote-control',
-                expected: 'Claude starter og viser remote-control QR med det samme — sparer ét keystroke. Pointe: kombineret med en shell-alias (`alias claude-go="claude --remote-control"`) er det ét tegn at starte mobile-pairet session.'
-            },
-            {
-                heading: 'Closer — pak det hele sammen (1 min)',
-                body: '**5 uger på én slide:**\n\n☑ Prompts med kontekst + dårlig vs. god prompt (session 1)\n☑ Plan mode + permissions + mode-cyklen (session 2)\n☑ Kontekst er konge — `@`-syntaks, /clear-flow, scope, chains, debug, /rewind (session 3)\n☑ CLAUDE.md + `.claude/rules/` + /memory (session 4)\n☑ Git-workflow + PAT/Azure DevOps (session 5)\n☑ Skills + subagents + model-tuning (session 6)\n☑ MCP + hooks (session 7)\n☑ Faldgruber + sikkerhed (session 8)\n☑ **Tag det med jer** — `/remote-control`, `/teleport`, `/mobile` (i dag)\n\nClaude er ikke et værktøj I henter ned. Det er en arbejdsmåde I tager med.'
-            }
-        ],
-        handsOn: {
-            aSpor: {
-                title: 'Show & Tell (alle, 3 min hver)',
-                steps: [
-                    'Vis din bedste Claude Code-oplevelse fra de 5 uger',
-                    'ELLER: vis et custom command / hook / CLAUDE.md du har bygget',
-                    'ELLER: del én ting du lærte som du vil anbefale andre',
-                    'Én takeaway pr. præsentation — ikke en lang tour'
-                ]
-            },
-            bSpor: {
-                title: '',
-                steps: []
-            }
-        },
-        prompts: [
-            {
-                label: '/remote-control — par session med claude.ai',
-                language: 'text',
-                text: `/remote-control
-
-# QR-kode dukker op i terminalen.
-# Scan med mobilens kamera → claude.ai åbner med jeres session.
-# Sessionen kører fortsat på laptoppen — mobilen er bare en fjernbetjening.
-# Kræver claude.ai-login.`
-            },
-            {
-                label: '/teleport — flyt session til anden maskine',
-                language: 'text',
-                text: `/teleport
-
-# Migrér sessionen til en anden maskine (samme claude.ai-konto).
-# Forskel fra /remote-control:
-#   - remote-control = mobil styrer LAPTOPPEN
-#   - teleport       = sessionen FLYTTER til anden maskine`
-            },
-            {
-                label: '/mobile — genvej til mobile-pairing',
-                language: 'text',
-                text: `/mobile
-
-# Direkte til mobile-pairing flow.
-# Brug når I VED I vil arbejde fra mobilen.`
-            },
-            {
-                label: 'claude --remote-control — start direkte med pairing',
-                language: 'bash',
-                text: `claude --remote-control
-
-# Eller med shell-alias for hurtigere flow:
-alias claude-go="claude --remote-control"`
-            },
-            {
-                label: 'Din personlige forpligtelse — skabelon',
-                language: 'text',
-                text: `Om 3 måneder vil jeg:
-
-☐ Bruge [specifik feature] dagligt
-☐ Have bygget [X] custom commands til mit team
-☐ Have opdateret CLAUDE.md i mine [N] aktive repos
-☐ Have delt [dét jeg er bedst til] med et andet team
-☐ Mit konkrete mål: _______________________________`
-            },
-            {
-                label: 'Fælles EDC CLAUDE.md-sektion (forslag)',
-                language: 'markdown',
-                text: `## EDC-fælles konventioner
-
-- Sprog i prompts: dansk ok, kode-kommentarer engelsk
-- Commit-beskeder: Conventional Commits på dansk
-- Tests: ingen mocks af databaser — brug testcontainers eller in-memory
-- Dependencies: ingen nye NuGet/npm-pakker uden team-godkendelse
-- Secrets: ALDRIG i repos. Brug Azure Key Vault / env vars.
-
-## Ting Claude ofte gætter forkert på i EDC
-- Vi bruger MediatR — ikke direct repository calls fra controllers
-- Vi bruger FluentAssertions i tests — ikke Assert.Equal
-- Tidszoner: Europe/Copenhagen, ALDRIG UTC i UI
-- Priser: decimal, ikke double/float`
-            }
-        ],
-        handout: {
-            title: 'EDC x Claude Code Playbook',
-            content: [
-                '**Alt vi har bygget, samlet ét sted:**',
-                '',
-                '1. Prompting cheatsheet + `Esc Esc` undo (session 1)',
-                '2. Plan mode + hele mode-cyklen (session 2)',
-                '3. Kontekst-checklist + `@`-cheat sheet + /clear-flow + scope/chain/debug + /rewind + Ctrl+B (session 3)',
-                '4. CLAUDE.md + `.claude/rules/` + `/memory` (session 4)',
-                '5. Review-checklist + Azure DevOps PAT/az-setup (session 5)',
-                '6. Skills + subagents + commands + model-/effort-tuning (session 6)',
-                '7. MCP + hooks snippets (session 7)',
-                '8. Do & don\'t-liste (session 8)',
-                '9. `/remote-control` + `/teleport` + mobile (session 9 — i dag)',
-                '',
-                '**Tag det med dig:**',
-                '- `/remote-control` — par mobilen med din session (kræver claude.ai-login)',
-                '- `/teleport` — flyt sessionen mellem maskiner',
-                '- `/mobile` — direkte til mobile-flow',
-                '- `claude --remote-control` — start med QR allerede vist',
-                '',
-                '**Næste skridt:**',
-                '- #claude-code kanal i Teams for løbende deling',
-                '- Månedligt Show & Tell (30 min, frivilligt)',
-                '- Fælles EDC CLAUDE.md-standard (i org-repo)',
-                '',
-                '**Kontakt:** Matias eller Michael for spørgsmål og bidrag til standard'
-            ]
-        },
-        hjemmeopgave: [
-            'Hold din 3-måneders forpligtelse (del den med din team-lead!)',
-            'Deltag i #claude-code kanalen',
-            'Se dig selv som EDC-ambassadør for dem der ikke har været med endnu'
+            'Medbring 1 command / hook / CLAUDE.md I vil dele med andre teams — fælles EDC-standard tager form herfra'
         ]
     }
+
 ];
 
 // ---------------------------------------------------------------------------
