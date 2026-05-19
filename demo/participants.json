@@ -1,11 +1,33 @@
 {
   "_comment": "Deltager-registry for /lab. Tilføj én linje pr. deltager. Slug er URL'en (kun små bogstaver, bindestreg, ingen æøå).",
   "participants": [
-    {
-      "slug": "eksempel",
-      "name": "Eksempel-deltager",
-      "team": "facilitator",
-      "tagline": "Sådan ser en deltager-side ud — kopiér mig som start"
-    }
+    { "slug": "eksempel", "name": "Eksempel-deltager", "team": "facilitator", "tagline": "Sådan ser en deltager-side ud — kopiér mig som start" },
+    { "slug": "michael", "name": "Michael Nygaard", "team": "facilitator", "tagline": "Co-facilitator" },
+    { "slug": "rune", "name": "Rune Kobberø", "team": "edc", "tagline": "Workshop-deltager" },
+    { "slug": "magloire", "name": "Magloire Sendegeya", "team": "edc", "tagline": "Workshop-deltager" },
+    { "slug": "cecilie", "name": "Cecilie Maria Hernig", "team": "edc", "tagline": "Workshop-deltager" },
+    { "slug": "weronika", "name": "Weronika Wendowski", "team": "edc", "tagline": "Workshop-deltager" },
+    { "slug": "christian", "name": "Christian Thomas Møller", "team": "edc", "tagline": "Workshop-deltager" },
+    { "slug": "nikolaj", "name": "Nikolaj Poulsen Larsen", "team": "edc", "tagline": "Workshop-deltager" },
+    { "slug": "edvard", "name": "Edvard Larsen", "team": "edc", "tagline": "Workshop-deltager" },
+    { "slug": "yonas", "name": "Yonas Valentin Kristensen", "team": "edc", "tagline": "Præsenterer session 4 — CLAUDE.md og projekt-hukommelse" },
+    { "slug": "valdemar", "name": "Valdemar Carl Johansen", "team": "edc", "tagline": "Workshop-deltager" },
+    { "slug": "kevin", "name": "Kevin Srirangathurai", "team": "edc", "tagline": "Workshop-deltager" },
+    { "slug": "joes", "name": "Joes Hasselriis Nicolaisen", "team": "edc", "tagline": "Workshop-deltager" },
+    { "slug": "brian", "name": "Brian Albertsen", "team": "edc", "tagline": "Workshop-deltager" },
+    { "slug": "alexander", "name": "Alexander Møller", "team": "edc", "tagline": "Workshop-deltager" },
+    { "slug": "claus-w", "name": "Claus Bødker Wind", "team": "edc", "tagline": "Workshop-deltager" },
+    { "slug": "troels", "name": "Troels Ford Helbo", "team": "edc", "tagline": "Workshop-deltager" },
+    { "slug": "thomas", "name": "Thomas Sandvær Jørgensen", "team": "edc", "tagline": "Præsenterede session 3 — Kontekst er konge" },
+    { "slug": "oliver", "name": "Oliver Pasha Rasoli", "team": "edc", "tagline": "Præsenterer session 7 — Skills og model-tuning" },
+    { "slug": "john", "name": "John Larsen", "team": "edc", "tagline": "Workshop-deltager" },
+    { "slug": "jacob-r", "name": "Jacob Riis Jensen", "team": "edc", "tagline": "Præsenterer session 5 — Subagents og parallelle opgaver" },
+    { "slug": "claus-p", "name": "Claus Pedersen", "team": "edc", "tagline": "Præsenterede session 2 — Plan mode" },
+    { "slug": "jacob-w", "name": "Jacob Welin", "team": "edc", "tagline": "Workshop-deltager" },
+    { "slug": "johan", "name": "Johan Holmsteen", "team": "edc", "tagline": "Workshop-deltager" },
+    { "slug": "caroline", "name": "Caroline Friis", "team": "feriepartner", "tagline": "Workshop-deltager" },
+    { "slug": "jannick", "name": "Jannick Jensen", "team": "feriepartner", "tagline": "Workshop-deltager" },
+    { "slug": "mikkel", "name": "Mikkel Yde Engquist", "team": "feriepartner", "tagline": "Workshop-deltager" },
+    { "slug": "esengul", "name": "Esengül Yildirim", "team": "feriepartner", "tagline": "Workshop-deltager" }
   ]
 }
