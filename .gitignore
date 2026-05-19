@@ -8,3 +8,6 @@ node_modules/
 ~$*.pptx
 ~$*.docx
 ~$*.xlsx
+
+# Lokale Claude-regler (facilitator-bypass m.fl.) — kun på facilitator-maskiner
+demo/.claude/rules/

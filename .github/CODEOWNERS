@@ -1,0 +1,15 @@
+# CODEOWNERS — beskytter showcase-koden, frigiver lab'en
+#
+# Reglen er: alt har Matias som default-owner og kræver review.
+# UNDTAGEN under demo/app/lab/* og demo/participants.json — det er
+# deltager-zone hvor I selv har frit spil.
+#
+# Syntaks: senere regler overstyrer tidligere. Sidste match vinder.
+
+# Default: alt kræver Matias som review
+*                                @MatiasGramkow
+
+# Deltager-zoner — INGEN ejer = ingen review-krav, alle med write-adgang
+# kan merge PRs der KUN rører disse stier.
+/demo/app/lab/
+/demo/participants.json

@@ -1,0 +1,11 @@
+{
+  "_comment": "Deltager-registry for /lab. Tilføj én linje pr. deltager. Slug er URL'en (kun små bogstaver, bindestreg, ingen æøå).",
+  "participants": [
+    {
+      "slug": "eksempel",
+      "name": "Eksempel-deltager",
+      "team": "facilitator",
+      "tagline": "Sådan ser en deltager-side ud — kopiér mig som start"
+    }
+  ]
+}

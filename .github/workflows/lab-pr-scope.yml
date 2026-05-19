@@ -1,0 +1,118 @@
+name: lab-pr-scope
+
+# Tjekker at en PR fra en lab/<slug> branch KUN rører
+# demo/app/lab/<slug>/ og maks. én linje i demo/participants.json.
+#
+# Hvis branchen ikke er en lab-branch (fx feature/* eller fix/*) springer
+# vi tjekket over og lader CODEOWNERS + manuel review håndtere det.
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  scope-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tjek ud
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Udled slug fra branch-navn
+        id: slug
+        run: |
+          BRANCH="${{ github.head_ref }}"
+          echo "Branch: $BRANCH"
+          if [[ "$BRANCH" =~ ^lab/([a-z0-9-]+)$ ]]; then
+            SLUG="${BASH_REMATCH[1]}"
+            echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
+            echo "is_lab=true" >> "$GITHUB_OUTPUT"
+            echo "Detected lab slug: $SLUG"
+          else
+            echo "is_lab=false" >> "$GITHUB_OUTPUT"
+            echo "Ikke en lab-branch — springer scope-tjek over."
+          fi
+
+      - name: Hent ændrede filer
+        if: steps.slug.outputs.is_lab == 'true'
+        id: changed
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          echo "Ændrede filer:"
+          echo "$FILES"
+          {
+            echo 'files<<EOF'
+            echo "$FILES"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Valider at ændringer kun rører eget lab-område
+        if: steps.slug.outputs.is_lab == 'true'
+        run: |
+          SLUG="${{ steps.slug.outputs.slug }}"
+          ALLOWED_PREFIX="demo/app/lab/$SLUG/"
+          ALLOWED_FILE="demo/participants.json"
+
+          OUTSIDE=""
+          while IFS= read -r f; do
+            if [[ -z "$f" ]]; then continue; fi
+            if [[ "$f" == "$ALLOWED_FILE" ]]; then continue; fi
+            if [[ "$f" == "$ALLOWED_PREFIX"* ]]; then continue; fi
+            OUTSIDE+="$f"$'\n'
+          done <<< "${{ steps.changed.outputs.files }}"
+
+          if [[ -n "$OUTSIDE" ]]; then
+            echo "❌ Følgende filer er udenfor din lab-zone ($ALLOWED_PREFIX):"
+            echo "$OUTSIDE"
+            echo ""
+            echo "Du må kun røre filer under $ALLOWED_PREFIX og $ALLOWED_FILE."
+            echo "Se demo/CLAUDE.md for spillereglerne."
+            exit 1
+          fi
+
+          echo "✅ Alle ændringer er inden for $ALLOWED_PREFIX (+ evt. $ALLOWED_FILE)"
+
+      - name: Valider at kun egen indgang i participants.json er ændret
+        if: steps.slug.outputs.is_lab == 'true'
+        env:
+          SLUG: ${{ steps.slug.outputs.slug }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          FILES="${{ steps.changed.outputs.files }}"
+
+          if ! echo "$FILES" | grep -q "^demo/participants.json$"; then
+            echo "ℹ️ participants.json er ikke ændret — springer sub-check over."
+            exit 0
+          fi
+
+          BASE_JSON=$(git show "origin/$BASE_REF":demo/participants.json 2>/dev/null || echo '{"participants":[]}')
+          HEAD_JSON=$(cat demo/participants.json)
+
+          BASE="$BASE_JSON" HEAD="$HEAD_JSON" SLUG="$SLUG" node <<'EOF'
+          const base = JSON.parse(process.env.BASE).participants || [];
+          const head = JSON.parse(process.env.HEAD).participants || [];
+          const slug = process.env.SLUG;
+
+          const byslug = (arr) => Object.fromEntries(arr.map(p => [p.slug, p]));
+          const baseMap = byslug(base);
+          const headMap = byslug(head);
+
+          const allSlugs = new Set([...Object.keys(baseMap), ...Object.keys(headMap)]);
+          const changed = [];
+          for (const s of allSlugs) {
+            if (s === slug) continue;
+            const a = JSON.stringify(baseMap[s] || null);
+            const b = JSON.stringify(headMap[s] || null);
+            if (a !== b) changed.push(s);
+          }
+
+          if (changed.length) {
+            console.error('❌ Du har ændret andre deltageres indgang i participants.json:');
+            changed.forEach(c => console.error('  - ' + c));
+            console.error('Du må kun ændre din egen (' + slug + ').');
+            process.exit(1);
+          }
+          console.log('✅ Kun din egen entry (' + slug + ') er ændret.');
+          EOF

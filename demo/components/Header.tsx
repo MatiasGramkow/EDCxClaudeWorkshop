@@ -11,6 +11,7 @@ export default function Header() {
         </Link>
         <nav className="flex items-center gap-6 text-sm">
           <Link href="/" className="hover:text-edc-warm">Boliger</Link>
+          <Link href="/lab" className="hover:text-edc-warm">🧪 Lab</Link>
           <a
             href="https://edc-x-claude-workshops.vercel.app/workshop"
             className="hover:text-edc-warm opacity-70"
