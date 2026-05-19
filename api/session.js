@@ -2040,7 +2040,7 @@ Vis kommandoen først. Vent på min accept før du kører den.`
         subtitle: 'Automatisér dine gentagne workflows — skills, slash commands og model-/effort-tuning (subagents = session 5)',
         theme: 'Avancerede features',
         day: 'Tirsdag · Uge 4',
-        presenters: [],
+        presenters: ['Oliver Pasha Rasoli'],
         prework: { videoUrl: '', note: '' },
         schedule: [
             { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
