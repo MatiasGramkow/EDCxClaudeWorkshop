@@ -46,7 +46,7 @@ const SESSIONS = [
         title: 'Kickoff + Gode vs. dårlige prompts',
         subtitle: 'Sådan foregår de næste 5 uger — og hvorfor en prompt er alt',
         theme: 'Fundamentet',
-        day: 'Tirsdag · Uge 1',
+        day: 'Tirsdag d. 5. maj',
         presenters: ['Matias', 'Michael'],
         prework: { videoUrl: '', note: '' },
         schedule: [
@@ -275,7 +275,7 @@ Svar i punktform. Rør ikke koden.`
         title: 'Plan mode vs. ikke plan mode',
         subtitle: 'Hvornår skal Claude tænke før den koder? — og hele mode-cyklen (Shift+Tab)',
         theme: 'Fundamentet',
-        day: 'Torsdag · Uge 1',
+        day: 'Torsdag d. 7. maj',
         // Session 2 starter 10:00 dansk tid (08:00 UTC under sommertid CEST).
         startsAtIso: '2026-05-07T08:00:00Z',
         presenters: ['Claus Pedersen'],
@@ -543,7 +543,7 @@ alias claude-yolo="claude --permission-mode bypassPermissions"  # kun i sandbox`
         title: 'Kontekst er konge',
         subtitle: 'Den første prompt er alt — kontekst, /clear-flow, scope-lock, chains, debug og /rewind',
         theme: 'Prompting er en superkraft',
-        day: 'Tirsdag · Uge 2',
+        day: 'Tirsdag d. 12. maj',
         presenters: ['Thomas Sandvær'],
         prework: { videoUrl: '', note: '' },
         schedule: [
@@ -1089,7 +1089,9 @@ npm run dev
         title: 'CLAUDE.md og projekt-hukommelse',
         subtitle: 'Gør Claude klogere på lige præcis jeres kode',
         theme: 'Workflows der virker',
-        day: 'Torsdag · Uge 2',
+        day: 'Tirsdag d. 19. maj',
+        // Session 4 flyttet til tirsdag uge 3 pga. Kristi Himmelfart (torsdag uge 2).
+        startsAtIso: '2026-05-19T08:00:00Z',
         presenters: ['Yonas Valentin Kristensen'],
         prework: { videoUrl: '', note: '' },
         schedule: [
@@ -1540,7 +1542,8 @@ Aktiveres kun når Claude rører frontend-filer.
         title: 'Subagents og parallelle opgaver',
         subtitle: 'Isolerede Claude-instanser med eget context — kør research, review og opgaver parallelt',
         theme: 'Avancerede features',
-        day: 'Tirsdag · Uge 3',
+        day: 'Torsdag d. 21. maj',
+        startsAtIso: '2026-05-21T08:00:00Z',
         presenters: ['Jacob Riis Jensen'],
         prework: { videoUrl: '', note: '' },
         schedule: [
@@ -1716,7 +1719,8 @@ Vær konkret. Ingen <ting agenten ikke skal gøre>.`
         title: 'Git-workflow, commits og review',
         subtitle: 'Claude i dit daglige Git-flow + PAT/Azure DevOps-adgang — og hvornår du ikke skal stole på review',
         theme: 'Workflows der virker',
-        day: 'Torsdag · Uge 3',
+        day: 'Tirsdag d. 26. maj',
+        startsAtIso: '2026-05-26T08:30:00Z',
         presenters: [],
         prework: { videoUrl: '', note: '' },
         schedule: [
@@ -2039,7 +2043,8 @@ Vis kommandoen først. Vent på min accept før du kører den.`
         title: 'Skills og model-tuning',
         subtitle: 'Automatisér dine gentagne workflows — skills, slash commands og model-/effort-tuning (subagents = session 5)',
         theme: 'Avancerede features',
-        day: 'Tirsdag · Uge 4',
+        day: 'Torsdag d. 28. maj',
+        startsAtIso: '2026-05-28T08:30:00Z',
         presenters: ['Oliver Pasha Rasoli'],
         prework: { videoUrl: '', note: '' },
         schedule: [
@@ -2607,7 +2612,8 @@ Kombinér output i én tabel til sidst.`
         title: 'MCP og hooks',
         subtitle: 'Eksterne værktøjer + automatiske handlinger — Claude som integreret del af jeres pipeline',
         theme: 'Avancerede features',
-        day: 'Torsdag · Uge 4',
+        day: 'Tirsdag d. 2. juni',
+        startsAtIso: '2026-06-02T08:30:00Z',
         presenters: [],
         prework: { videoUrl: '', note: '' },
         schedule: [
@@ -2919,7 +2925,8 @@ Kombinér output i én tabel til sidst.`
         title: 'Best practices og faldgruber',
         subtitle: 'Det vi har lært — og det vi IKKE skal gøre',
         theme: 'Mastery og deling',
-        day: 'Tirsdag · Uge 5',
+        day: 'Torsdag d. 4. juni',
+        startsAtIso: '2026-06-04T08:30:00Z',
         presenters: [],
         prework: { videoUrl: '', note: '' },
         schedule: [
