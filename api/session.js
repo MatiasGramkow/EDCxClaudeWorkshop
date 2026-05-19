@@ -544,7 +544,7 @@ alias claude-yolo="claude --permission-mode bypassPermissions"  # kun i sandbox`
         subtitle: 'Den første prompt er alt — kontekst, /clear-flow, scope-lock, chains, debug og /rewind',
         theme: 'Prompting er en superkraft',
         day: 'Tirsdag · Uge 2',
-        presenters: [],
+        presenters: ['Thomas Sandvær'],
         prework: { videoUrl: '', note: '' },
         schedule: [
             { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
@@ -1090,7 +1090,7 @@ npm run dev
         subtitle: 'Gør Claude klogere på lige præcis jeres kode',
         theme: 'Workflows der virker',
         day: 'Torsdag · Uge 2',
-        presenters: [],
+        presenters: ['Yonas Valentin Kristensen'],
         prework: { videoUrl: '', note: '' },
         schedule: [
             { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
@@ -1541,11 +1541,11 @@ Aktiveres kun når Claude rører frontend-filer.
         subtitle: 'Isolerede Claude-instanser med eget context — kør research, review og opgaver parallelt',
         theme: 'Avancerede features',
         day: 'Tirsdag · Uge 3',
-        presenters: ['Jacob'],
+        presenters: ['Jacob Riis Jensen'],
         prework: { videoUrl: '', note: '' },
         schedule: [
             { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
-            { t: '0:10–0:45', what: 'Deltager-præsentation: Subagents og parallelle opgaver (Jacob)' },
+            { t: '0:10–0:45', what: 'Deltager-præsentation: Subagents og parallelle opgaver (Jacob Riis Jensen)' },
             { t: '0:45–0:50', what: 'Beslut: hvem præsenterer næste gang?' },
             { t: '0:50–1:00', what: 'Matias-demo (hvis tid)' }
         ],

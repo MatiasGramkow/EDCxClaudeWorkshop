@@ -1,0 +1,34 @@
+Emne: Tak for en god session 4!
+
+Tak for en god session 4 i dag.
+På torsdag den 21. maj kl. 10:00–11:00 kører vi session 5. Det er Jacob Riis Jensen som præsenterer dagens emne: Subagents og parallelle opgaver. Tak til Jacob for at melde sig!
+
+Hvor: Fysisk Mynstersvej 5
+
+Pre-work (~10 min): Se denne intro inden vi mødes — den giver det bedste afsæt for Jacobs præsentation og hands-on-øvelsen:
+https://docs.claude.com/en/docs/claude-code/sub-agents
+
+Tag også med fra session 4:
+- En CLAUDE.md (ny eller opdateret) i et af jeres projekter
+- Notér ét sted hvor Claude tidligere har gættet forkert — vi bruger det som test-case for en subagent
+
+Agenda for torsdag:
+- 0:00–0:10  Recap fra session 4 — hvordan virkede jeres CLAUDE.md?
+- 0:10–0:15  Vælg næste præsentant (session 6 — Git-workflow, commits og review)
+- 0:15–0:40  Jacob præsenterer: Subagents og parallelle opgaver
+- 0:40–0:55  Hands-on — byg din første custom subagent ELLER kør Explore på dit eget repo
+- 0:55–1:00  Saml op + take-home + hjemmeopgave
+
+Tag jeres computer med — sidste 15 minutter er hands-on, og I skal arbejde i jeres eget projekt.
+
+PS — vi mangler stadig præsentanter til de sidste fire emner:
+- Session 6 — Git-workflow, commits og review (torsdag uge 3)
+- Session 7 — Skills og model-tuning (tirsdag uge 4)
+- Session 8 — MCP og hooks (torsdag uge 4)
+- Session 9 — Best practices og faldgruber (tirsdag uge 5)
+
+Find et emne der trigger dig, og skriv til mig — Michael og jeg hjælper med slides og pre-work ugen før, så ingen står alene med det. Først til mølle.
+
+Vi glæder os.
+
+/Matias

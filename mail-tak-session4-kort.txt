@@ -1,0 +1,20 @@
+Emne: Tak for en god session 4
+
+Vedhæftet: claude-md-og-projekt-hukommelse.pdf
+
+Hej allesammen,
+
+Tusind tak for en rigtig god session 4 i dag og tak til Yonas Valentin Kristensen for præsentationen. 
+
+Næste præsentant:
+Jacob Riis Jensen vil præsentere til session 5 — "Subagents og parallelle opgaver" — torsdag (21. maj).
+
+Prework til næste gang: https://docs.claude.com/en/docs/claude-code/sub-agents
+
+Jeg glæder mig til at se jer igen!
+Med venlig hilsen
+
+Matias Gramkow
+Head of edc.dk Development
+EDC Gruppen a/s
+Mynstersvej 5
