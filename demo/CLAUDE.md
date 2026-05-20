@@ -4,28 +4,52 @@ Dette repo bruges som hands-on legeplads i EDC × Claude Code workshoppen.
 Reglerne nedenfor gælder for **alle** der arbejder her — og Claude SKAL
 overholde dem uden undtagelse.
 
-## 🟢 Allerførste handling i en session — spørg om identitet
+## 🟢 Allerførste handling i en session — identificér brugeren
 
-Som det aller første i en ny samtale i dette projekt SKAL Claude spørge:
+Som det aller første i en ny samtale i dette projekt SKAL Claude:
 
-> "Hej! Hvad er din slug? (fx 'yonas', 'jacob' — det matcher din
-> indgang i `demo/participants.json`)"
+1. **Læs `demo/participants.json`** for at få den aktuelle deltager-liste.
+2. **Vis listen** for brugeren i et terminal-venligt format —
+   nummereret, grupperet pr. team, fx:
 
-Du må ikke redigere nogen fil før brugeren har svaret. Når brugeren har
-oplyst sin slug:
+   ```
+   Hej! Hvem er du? Skriv enten dit navn (delvist er fint),
+   din slug, eller nummeret fra listen.
 
-1. Tjek at slug'en findes i `demo/participants.json` — hvis ikke, bed
-   brugeren tilføje sig selv først (se "Sådan tilføjer du dig selv"
-   længere nede).
-2. Husk slug'en for resten af samtalen.
-3. Begræns ALLE redigeringer til `demo/app/lab/<slug>/**` og den ene
-   relevante linje i `demo/participants.json`. Afvis alt andet —
-   medmindre der findes en lokal regelfil under `demo/.claude/rules/`
-   der eksplicit udvider tilladelserne for den slug.
+   Facilitatorer:
+      1. Michael Nygaard            (michael)
 
-Hvis brugeren ikke vil opgive en slug eller siger "jeg er bare på
-besøg", så svar venligt at de er velkomne til at læse koden, men at du
-ikke kan hjælpe med at redigere uden en registreret slug.
+   EDC:
+      2. Rune Kobberø               (rune)
+      3. Magloire Sendegeya         (magloire)
+      ...
+
+   Feriepartner:
+     25. Caroline Friis             (caroline)
+     ...
+   ```
+
+3. **Accepter fuzzy match** på brugerens svar:
+   - Eksakt slug → match
+   - Eksakt navn → match
+   - Nummer fra listen → match
+   - Delvist fornavn (fx "yo" eller "yonas") → match hvis unik
+   - Flere mulige matches → spørg: "Mente du X eller Y?"
+   - Intet match → vis listen igen og spørg på ny
+
+4. **Bekræft kort**: "Hej Yonas — jeg holder dig til
+   `demo/app/lab/yonas/`. Hvad skal vi bygge?"
+
+5. **Husk slug'en** for resten af samtalen og begræns ALLE redigeringer
+   til `demo/app/lab/<slug>/**` og deltagerens egen linje i
+   `demo/participants.json`. Afvis alt andet — medmindre der findes en
+   lokal regelfil under `demo/.claude/rules/` der eksplicit udvider
+   tilladelserne for den slug.
+
+Du må ikke redigere nogen fil før brugeren er identificeret. Hvis
+brugeren siger "jeg er bare på besøg", så svar venligt at de er
+velkomne til at læse koden, men at du ikke kan hjælpe med at redigere
+uden en registreret deltager-slug.
 
 ## 🚨 Vigtigste regel — rør KUN din egen folder
 

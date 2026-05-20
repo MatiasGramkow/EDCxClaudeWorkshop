@@ -1,6 +1,6 @@
 # LAB.md — sådan tilføjer du din egen side i workshop-lab'en
 
-10 minutter fra du står med tomme hænder til du har en side live på din
+15 minutter fra du står med tomme hænder til du har en side live på din
 egen URL.
 
 ## Spillereglerne (læs disse først)
@@ -14,49 +14,45 @@ egen URL.
 biblioteker, eller produktions-demoet på `/`. CI-checken vil afvise
 PR'en automatisk hvis du gør. Detaljer i `demo/CLAUDE.md`.
 
+Din slug er allerede oprettet i `participants.json`. Find dig selv på
+listen — Claude spørger dig om identitet første gang du starter en
+session i `demo/`.
+
 ## Trin-for-trin
 
-### 1. Vælg din slug
+### 1. Fork repoet
 
-Slug'en bliver din URL: `/lab/<din-slug>`. Konventioner:
+Du har ikke direkte skrive-adgang til `MatiasGramkow/EDCxClaudeWorkshop`.
+Du skal arbejde fra din egen fork:
 
-- Kun små bogstaver (a-z), tal og bindestreg
-- Ingen mellemrum, ingen æøå
-- Dit fornavn er typisk fint (`yonas`, `jacob`, `oliver`)
-- Hvis to har samme fornavn, tilføj initialer (`thomas-s`, `thomas-l`)
+1. Gå til `https://github.com/MatiasGramkow/EDCxClaudeWorkshop`
+2. Tryk **Fork** øverst til højre
+3. Du har nu `github.com/<dit-handle>/EDCxClaudeWorkshop`
 
-### 2. Lav en branch
+### 2. Klon din fork lokalt
+
+```bash
+git clone git@github.com:<dit-handle>/EDCxClaudeWorkshop.git
+cd EDCxClaudeWorkshop
+git remote add upstream git@github.com:MatiasGramkow/EDCxClaudeWorkshop.git
+```
+
+`origin` = din fork. `upstream` = Matias' repo. Du henter ændringer
+fra `upstream`, du pusher til `origin`.
+
+### 3. Lav en branch
 
 ```bash
 git checkout main
-git pull
+git pull upstream main
 git checkout -b lab/<din-slug>
 ```
 
-### 3. Registrér dig i participants.json
-
-Åbn `demo/participants.json` og tilføj én linje til
-`participants`-arrayet:
-
-```json
-{
-  "slug": "din-slug",
-  "name": "Dit Fulde Navn",
-  "team": "dit-team",
-  "tagline": "én sætning om hvad du laver"
-}
-```
-
-Husk komma efter den forrige indgang.
-
-### 4. Kopiér eksempel-folderen
+### 4. Kopiér eksempel-folderen som startpunkt
 
 ```bash
 cp -r demo/app/lab/eksempel demo/app/lab/<din-slug>
 ```
-
-Åbn `demo/app/lab/<din-slug>/page.tsx` og ret indholdet til dit. Brug
-`getParticipant('din-slug')` til at hente dit eget navn fra registry.
 
 ### 5. Start dev-serveren
 
@@ -72,7 +68,9 @@ for at se din kode.
 
 ### 6. Brug Claude
 
-Det her er hele pointen med workshoppen. Eksempler:
+Det her er hele pointen med workshoppen. Start Claude Code i
+`demo/`-mappen — den læser `CLAUDE.md` automatisk og spørger om din
+identitet før den redigerer noget. Eksempler:
 
 - "Tilføj en filter-knap der viser kun boliger over X kr."
 - "Lav et lille kort med statistik over boligerne fra `@/lib/properties`"
@@ -80,10 +78,7 @@ Det her er hele pointen med workshoppen. Eksempler:
 - "Brug subagent til at scanne `@/lib/properties` og foreslå hvad jeg
   kan bygge"
 
-Husk: `demo/CLAUDE.md` fortæller Claude hvad I må røre. Den læser den
-automatisk.
-
-### 7. Push og åbn PR
+### 7. Push til DIN fork og åbn PR
 
 ```bash
 git add demo/app/lab/<din-slug>/ demo/participants.json
@@ -91,19 +86,23 @@ git commit -m "lab(<din-slug>): første version"
 git push -u origin lab/<din-slug>
 ```
 
-På GitHub: tryk "Compare & pull request". Inden for ~30 sekunder
-postet Vercel-bot en preview-URL som kommentar.
+På GitHub: gå til din fork → tryk **Contribute** → **Open pull
+request**. Det opretter en PR fra `<dit-handle>:lab/<din-slug>` ind i
+`MatiasGramkow:main`. Inden for ~30 sekunder poster Vercel-bot en
+preview-URL som kommentar (første gang skal Matias godkende at preview
+må køre — det er en engangs-ting pr. fork).
 
-### 8. Mergé
+### 8. Vent på merge
 
-Hvis PR'en kun rører `demo/app/lab/<din-slug>/` og din egen linje i
-`participants.json` består CI-checken automatisk og PR'en kan merges
-uden review.
+CI-checken (`scope-check`) kører på PR'en. Hvis den kun rører din
+lab-folder + din egen linje i `participants.json` består den
+automatisk, og Matias eller du selv merger.
 
 Hvis CI fejler: tjek hvilke filer du har ændret. Hvis du har rørt noget
-udenfor din zone (selv ved et uheld), så ret det og force-push.
+udenfor din zone (selv ved et uheld), så ret det og push igen — PR'en
+opdateres automatisk.
 
-### 9. Se dig selv på den live workshop
+### 9. Se dig selv live
 
 Når main har merget bygger Vercel produktions-deployet. Find dig selv
 på:
@@ -111,6 +110,17 @@ på:
 - Lokalt: `http://localhost:3000/lab/<din-slug>`
 - Live: `https://edc-x-claude-workshops.vercel.app/lab/<din-slug>`
 - Facilitator-overblik: `https://edc-x-claude-workshops.vercel.app/lab`
+
+### 10. Næste session — hold din fork opdateret
+
+Før hver session, hent nyeste main fra upstream:
+
+```bash
+git checkout main
+git pull upstream main
+git push origin main         # hold din fork up-to-date
+git checkout -b lab/<din-slug>-session-<n>
+```
 
 ## Hvad du har til rådighed i din folder
 
