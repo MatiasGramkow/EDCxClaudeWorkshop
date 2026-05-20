@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import { getAllParticipants, getParticipant } from '@/lib/participants';
+import StarterTemplate from '../_starter/StarterTemplate';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -21,11 +21,13 @@ export async function generateMetadata({ params }: Props) {
 }
 
 /**
- * Fallback-side for deltagere som er registreret i participants.json
- * men endnu ikke har lavet deres egen app/lab/<slug>/page.tsx.
+ * Default-side for alle registrerede deltagere der endnu ikke har
+ * lavet deres egen page.tsx under app/lab/<slug>/.
  *
- * Når en deltager opretter app/lab/<slug>/page.tsx, vinder den
- * statiske rute automatisk over [slug] og denne fil bliver bypasset.
+ * Renderer den fælles startskabelon med deres egen slug, så hver
+ * deltager ser en populeret side fra dag ét. Når en deltager opretter
+ * app/lab/<slug>/page.tsx, vinder den statiske rute automatisk over
+ * denne dynamiske og overstyrer fallback'en.
  */
 export default async function ParticipantFallbackPage({ params }: Props) {
   const { slug } = await params;
@@ -35,37 +37,5 @@ export default async function ParticipantFallbackPage({ params }: Props) {
     notFound();
   }
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <Link href="/lab" className="text-sm text-edc-warm hover:underline">
-          ← Tilbage til lab-oversigten
-        </Link>
-        <h1 className="text-3xl font-bold text-edc-blue mt-2">
-          {participant.name}
-        </h1>
-        <p className="text-sm text-slate-500 mt-1">
-          {participant.team} · {participant.tagline}
-        </p>
-      </div>
-
-      <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-600 space-y-3">
-        <p className="text-lg font-semibold text-edc-blue">
-          Tom workspace
-        </p>
-        <p className="text-sm max-w-md mx-auto">
-          {participant.name} har ikke lavet sin side endnu. Når der ligger en{' '}
-          <code className="text-edc-warm">page.tsx</code> under{' '}
-          <code className="text-edc-warm">
-            demo/app/lab/{participant.slug}/
-          </code>{' '}
-          vises den her.
-        </p>
-        <p className="text-xs text-slate-400 pt-2">
-          Kopiér <code>demo/app/lab/eksempel/page.tsx</code> som startpunkt og
-          ret indholdet til dit eget.
-        </p>
-      </div>
-    </div>
-  );
+  return <StarterTemplate slug={slug} />;
 }
