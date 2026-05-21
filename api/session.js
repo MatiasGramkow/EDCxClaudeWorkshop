@@ -1721,7 +1721,7 @@ Vær konkret. Ingen <ting agenten ikke skal gøre>.`
         theme: 'Workflows der virker',
         day: 'Tirsdag d. 26. maj',
         startsAtIso: '2026-05-26T08:30:00Z',
-        presenters: [],
+        presenters: ['Troels Ford Helbo'],
         prework: { videoUrl: '', note: '' },
         schedule: [
             { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
