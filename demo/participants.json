@@ -2,6 +2,7 @@
   "_comment": "Deltager-registry for /lab. Tilføj én linje pr. deltager. Slug er URL'en (kun små bogstaver, bindestreg, ingen æøå).",
   "participants": [
     { "slug": "eksempel", "name": "Eksempel-deltager", "team": "facilitator", "tagline": "Sådan ser en deltager-side ud — kopiér mig som start" },
+    { "slug": "test", "name": "Test-deltager", "team": "facilitator", "tagline": "Sandkasse til at verificere identitet-flowet og scope-enforcement" },
     { "slug": "michael", "name": "Michael Nygaard", "team": "facilitator", "tagline": "Co-facilitator" },
     { "slug": "rune", "name": "Rune Kobberø", "team": "edc", "tagline": "Workshop-deltager" },
     { "slug": "magloire", "name": "Magloire Sendegeya", "team": "edc", "tagline": "Workshop-deltager" },
