@@ -1716,8 +1716,8 @@ Vær konkret. Ingen <ting agenten ikke skal gøre>.`
     // ---- Session 6 ----------------------------------------------------------
     {
         number: 6,
-        title: 'Git-workflow, commits og review',
-        subtitle: 'Claude i dit daglige Git-flow + PAT/Azure DevOps-adgang — og hvornår du ikke skal stole på review',
+        title: 'Git, commits, review og PAT',
+        subtitle: 'Claude i daglig git (branches, commits, review) + PAT mod Azure DevOps så Claude kan læse work items',
         theme: 'Workflows der virker',
         day: 'Tirsdag d. 26. maj',
         startsAtIso: '2026-05-26T08:30:00Z',
@@ -1725,7 +1725,7 @@ Vær konkret. Ingen <ting agenten ikke skal gøre>.`
         prework: { videoUrl: '', note: '' },
         schedule: [
             { t: '0:00–0:10', what: 'Recap af hjemmeopgave' },
-            { t: '0:10–0:45', what: 'Deltager-præsentation: Git-workflow, commits og review (1 person, dagens emne)' },
+            { t: '0:10–0:45', what: 'Deltager-præsentation: Git, commits, review og PAT (1 person, dagens emne)' },
             { t: '0:45–0:50', what: 'Beslut: hvem præsenterer næste gang?' },
             { t: '0:50–1:00', what: 'Matias-demo (hvis tid)' }
         ],

@@ -18,7 +18,7 @@
     { "slug": "brian", "name": "Brian Albertsen", "team": "edc", "tagline": "Workshop-deltager" },
     { "slug": "alexander", "name": "Alexander Møller", "team": "edc", "tagline": "Workshop-deltager" },
     { "slug": "claus-w", "name": "Claus Bødker Wind", "team": "edc", "tagline": "Workshop-deltager" },
-    { "slug": "troels", "name": "Troels Ford Helbo", "team": "edc", "tagline": "Præsenterer session 6 — Git-workflow, commits og review" },
+    { "slug": "troels", "name": "Troels Ford Helbo", "team": "edc", "tagline": "Præsenterer session 6 — Git, commits, review og PAT" },
     { "slug": "thomas", "name": "Thomas Sandvær Jørgensen", "team": "edc", "tagline": "Præsenterede session 3 — Kontekst er konge" },
     { "slug": "oliver", "name": "Oliver Pasha Rasoli", "team": "edc", "tagline": "Præsenterer session 7 — Skills og model-tuning" },
     { "slug": "john", "name": "John Larsen", "team": "edc", "tagline": "Workshop-deltager" },
