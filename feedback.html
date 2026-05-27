@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>EDC x Claude Code — Anonym feedback</title>
+    <style>
+        :root {
+            --edc-blue: #003366;
+            --edc-accent: #0066cc;
+            --edc-green: #28a745;
+            --edc-red: #dc3545;
+            --bg: #f7f8fa;
+            --card: #ffffff;
+            --text: #1a1a2e;
+            --muted: #6b7280;
+            --border: #e2e8f0;
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--edc-blue) 0%, #005599 100%);
+            color: white;
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .header p { font-size: 1rem; opacity: 0.9; max-width: 640px; margin: 0 auto; }
+
+        .container { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+        .anon-banner {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .anon-banner strong { display: block; margin-bottom: 0.25rem; }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.75rem;
+            margin-bottom: 1.25rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .question-label {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: var(--text);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .question-hint {
+            font-size: 0.875rem;
+            color: var(--muted);
+            margin-bottom: 0.9rem;
+        }
+
+        .rating-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .rating-btn {
+            flex: 1;
+            padding: 0.75rem 0.5rem;
+            border: 1.5px solid var(--border);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--muted);
+            transition: all 0.12s;
+        }
+
+        .rating-btn:hover {
+            border-color: var(--edc-accent);
+            color: var(--edc-accent);
+        }
+
+        .rating-btn.selected {
+            background: var(--edc-accent);
+            border-color: var(--edc-accent);
+            color: white;
+        }
+
+        .rating-scale-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 0.5rem;
+        }
+
+        .choice-row {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .choice-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid var(--border);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text);
+            transition: all 0.12s;
+        }
+
+        .choice-btn:hover {
+            border-color: var(--edc-accent);
+        }
+
+        .choice-btn.selected {
+            background: var(--edc-accent);
+            border-color: var(--edc-accent);
+            color: white;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 110px;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text);
+            resize: vertical;
+            background: white;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--edc-accent);
+        }
+
+        .char-count {
+            font-size: 0.78rem;
+            color: var(--muted);
+            text-align: right;
+            margin-top: 0.25rem;
+        }
+
+        .submit-row {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .submit-btn {
+            background: var(--edc-blue);
+            color: white;
+            border: none;
+            padding: 0.95rem 2.5rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: #002244;
+        }
+
+        .submit-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .error-msg {
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .error-msg.show { display: block; }
+
+        .success-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 3rem 2rem;
+            text-align: center;
+            border: 1px solid var(--border);
+            display: none;
+        }
+
+        .success-card.show { display: block; }
+
+        .success-card .checkmark {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #ecfdf5;
+            color: var(--edc-green);
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .success-card h2 {
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            font-size: 1.4rem;
+        }
+
+        .success-card p {
+            color: var(--muted);
+        }
+
+        .form-hidden { display: none; }
+
+        @media (max-width: 600px) {
+            .header { padding: 2rem 1rem 1.5rem; }
+            .header h1 { font-size: 1.4rem; }
+            .container { padding: 1.25rem 1rem 3rem; }
+            .card { padding: 1.25rem; }
+            .rating-btn { padding: 0.6rem 0.25rem; font-size: 0.95rem; }
+            .choice-btn { min-width: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Ærlig feedback på workshoppen</h1>
+        <p>Vi er nået midtvejs i forløbet — fortæl os hvordan det går, så vi kan justere det der ikke virker.</p>
+    </div>
+
+    <div class="container">
+        <div class="anon-banner" id="anonBanner">
+            <strong>Helt anonymt</strong>
+            Vi gemmer ikke navn, e-mail, IP-adresse eller præcist klokkeslæt. Skriv frit.
+        </div>
+
+        <form id="feedbackForm">
+            <div class="card">
+                <label class="question-label">Hvor tilfreds er du med workshoppen indtil nu?</label>
+                <div class="question-hint">1 = slet ikke tilfreds · 5 = meget tilfreds</div>
+                <div class="rating-row" data-field="overall">
+                    <button type="button" class="rating-btn" data-value="1">1</button>
+                    <button type="button" class="rating-btn" data-value="2">2</button>
+                    <button type="button" class="rating-btn" data-value="3">3</button>
+                    <button type="button" class="rating-btn" data-value="4">4</button>
+                    <button type="button" class="rating-btn" data-value="5">5</button>
+                </div>
+                <div class="rating-scale-labels">
+                    <span>Slet ikke</span>
+                    <span>Meget</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <label class="question-label">Hvordan oplever du tempoet?</label>
+                <div class="choice-row" data-field="pace">
+                    <button type="button" class="choice-btn" data-value="for_langsomt">For langsomt</button>
+                    <button type="button" class="choice-btn" data-value="tilpas">Tilpas</button>
+                    <button type="button" class="choice-btn" data-value="for_hurtigt">For hurtigt</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <label class="question-label">Hvordan oplever du sværhedsgraden?</label>
+                <div class="choice-row" data-field="difficulty">
+                    <button type="button" class="choice-btn" data-value="for_let">For let</button>
+                    <button type="button" class="choice-btn" data-value="tilpas">Tilpas</button>
+                    <button type="button" class="choice-btn" data-value="for_svaer">For svær</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <label class="question-label">Hvor sikker føler du dig i at bruge Claude Code selv nu?</label>
+                <div class="question-hint">1 = slet ikke sikker · 5 = meget sikker</div>
+                <div class="rating-row" data-field="confidence">
+                    <button type="button" class="rating-btn" data-value="1">1</button>
+                    <button type="button" class="rating-btn" data-value="2">2</button>
+                    <button type="button" class="rating-btn" data-value="3">3</button>
+                    <button type="button" class="rating-btn" data-value="4">4</button>
+                    <button type="button" class="rating-btn" data-value="5">5</button>
+                </div>
+                <div class="rating-scale-labels">
+                    <span>Slet ikke</span>
+                    <span>Meget</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <label class="question-label" for="works_well">Hvad fungerer godt?</label>
+                <div class="question-hint">Hvad skal vi blive ved med?</div>
+                <textarea id="works_well" maxlength="2000" placeholder="Eksempler, formater, tempo, øvelser, facilitering..."></textarea>
+                <div class="char-count"><span id="works_well_count">0</span> / 2000</div>
+            </div>
+
+            <div class="card">
+                <label class="question-label" for="works_less_well">Hvad fungerer mindre godt eller kunne forbedres?</label>
+                <div class="question-hint">Vær gerne konkret — vi kan ikke fikse det vi ikke kender til.</div>
+                <textarea id="works_less_well" maxlength="2000" placeholder="Det der har gjort dig frustreret, kedet dig, eller spildt din tid..."></textarea>
+                <div class="char-count"><span id="works_less_well_count">0</span> / 2000</div>
+            </div>
+
+            <div class="card">
+                <label class="question-label" for="other">Andet du gerne vil sige?</label>
+                <div class="question-hint">Valgfrit — alt fra ønsker til resten af forløbet til hilsner.</div>
+                <textarea id="other" maxlength="2000" placeholder="(valgfrit)"></textarea>
+                <div class="char-count"><span id="other_count">0</span> / 2000</div>
+            </div>
+
+            <div class="error-msg" id="errorMsg"></div>
+
+            <div class="submit-row">
+                <button type="submit" class="submit-btn" id="submitBtn">Send anonymt svar</button>
+            </div>
+        </form>
+
+        <div class="success-card" id="successCard">
+            <div class="checkmark">✓</div>
+            <h2>Tak for dit svar</h2>
+            <p>Vi læser alle svar inden næste session og bruger det til at justere forløbet.</p>
+        </div>
+    </div>
+
+    <script>
+        const state = {
+            overall: null,
+            confidence: null,
+            pace: null,
+            difficulty: null
+        };
+
+        function selectButton(group, value) {
+            const buttons = group.querySelectorAll('button');
+            buttons.forEach(b => b.classList.remove('selected'));
+            const target = group.querySelector(`button[data-value="${value}"]`);
+            if (target) target.classList.add('selected');
+        }
+
+        document.querySelectorAll('[data-field]').forEach(group => {
+            const field = group.dataset.field;
+            group.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const v = btn.dataset.value;
+                    state[field] = ['overall', 'confidence'].includes(field) ? parseInt(v, 10) : v;
+                    selectButton(group, v);
+                });
+            });
+        });
+
+        ['works_well', 'works_less_well', 'other'].forEach(id => {
+            const el = document.getElementById(id);
+            const counter = document.getElementById(`${id}_count`);
+            el.addEventListener('input', () => {
+                counter.textContent = el.value.length;
+            });
+        });
+
+        const form = document.getElementById('feedbackForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const errorMsg = document.getElementById('errorMsg');
+        const successCard = document.getElementById('successCard');
+
+        function showError(msg) {
+            errorMsg.textContent = msg;
+            errorMsg.classList.add('show');
+        }
+
+        function clearError() {
+            errorMsg.classList.remove('show');
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearError();
+
+            if (state.overall == null) return showError('Vælg en samlet tilfredshedsscore.');
+            if (state.pace == null) return showError('Vælg hvordan tempoet føles.');
+            if (state.difficulty == null) return showError('Vælg hvordan sværhedsgraden føles.');
+            if (state.confidence == null) return showError('Vælg hvor sikker du føler dig i Claude Code.');
+
+            const payload = {
+                overall: state.overall,
+                confidence: state.confidence,
+                pace: state.pace,
+                difficulty: state.difficulty,
+                works_well: document.getElementById('works_well').value,
+                works_less_well: document.getElementById('works_less_well').value,
+                other: document.getElementById('other').value
+            };
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sender...';
+
+            try {
+                const resp = await fetch('/api/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await resp.json();
+                if (!resp.ok || !data.ok) {
+                    throw new Error(data.error || 'unknown_error');
+                }
+                form.classList.add('form-hidden');
+                document.getElementById('anonBanner').style.display = 'none';
+                successCard.classList.add('show');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (err) {
+                showError('Kunne ikke sende svaret. Prøv igen om et øjeblik.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send anonymt svar';
+            }
+        });
+    </script>
+</body>
+</html>

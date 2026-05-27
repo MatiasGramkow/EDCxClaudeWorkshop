@@ -2,6 +2,8 @@
     "rewrites": [
         { "source": "/workshop", "destination": "/workshop.html" },
         { "source": "/prompts", "destination": "/prompts.html" },
+        { "source": "/feedback", "destination": "/feedback.html" },
+        { "source": "/feedback-results", "destination": "/feedback-results.html" },
         { "source": "/demo", "destination": "https://edcxclaudeworkshop-demo.vercel.app/demo" },
         { "source": "/demo/:path*", "destination": "https://edcxclaudeworkshop-demo.vercel.app/demo/:path*" }
     ]

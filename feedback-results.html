@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Feedback — facilitator-view</title>
+    <style>
+        :root {
+            --edc-blue: #003366;
+            --edc-accent: #0066cc;
+            --edc-green: #28a745;
+            --edc-red: #dc3545;
+            --bg: #f7f8fa;
+            --card: #ffffff;
+            --text: #1a1a2e;
+            --muted: #6b7280;
+            --border: #e2e8f0;
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--edc-blue) 0%, #005599 100%);
+            color: white;
+            padding: 2rem 2rem 1.5rem;
+            text-align: center;
+        }
+
+        .header h1 { font-size: 1.6rem; font-weight: 700; }
+        .header p { font-size: 0.95rem; opacity: 0.85; margin-top: 0.4rem; }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+        .gate {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 2rem;
+            border: 1px solid var(--border);
+            max-width: 480px;
+            margin: 2rem auto;
+        }
+
+        .gate label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .gate input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .gate button {
+            width: 100%;
+            background: var(--edc-blue);
+            color: white;
+            border: none;
+            padding: 0.85rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .gate .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 0.6rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .gate .error.show { display: block; }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 1.25rem 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .stat-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--edc-blue);
+        }
+
+        .stat-meta {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-top: 0.2rem;
+        }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.4rem;
+            font-size: 0.88rem;
+        }
+
+        .bar-label {
+            flex: 0 0 110px;
+            color: var(--text);
+        }
+
+        .bar-track {
+            flex: 1;
+            background: #f1f5f9;
+            border-radius: 4px;
+            height: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            background: var(--edc-accent);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.25s;
+        }
+
+        .bar-count {
+            flex: 0 0 30px;
+            text-align: right;
+            color: var(--muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .section-heading {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            margin: 2rem 0 0.75rem;
+        }
+
+        .text-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--edc-accent);
+        }
+
+        .text-card.negative { border-left-color: var(--edc-red); }
+        .text-card.neutral { border-left-color: var(--muted); }
+
+        .text-card .meta {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-bottom: 0.35rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-weight: 600;
+        }
+
+        .text-card p {
+            color: var(--text);
+            white-space: pre-wrap;
+            font-size: 0.95rem;
+        }
+
+        .empty {
+            color: var(--muted);
+            font-style: italic;
+            padding: 1rem 0;
+        }
+
+        .loading {
+            text-align: center;
+            color: var(--muted);
+            padding: 3rem 0;
+        }
+
+        .hidden { display: none; }
+
+        @media (max-width: 600px) {
+            .header { padding: 1.5rem 1rem 1.2rem; }
+            .header h1 { font-size: 1.3rem; }
+            .container { padding: 1.25rem 1rem 3rem; }
+            .bar-label { flex: 0 0 90px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Feedback — facilitator-view</h1>
+        <p>Anonyme svar fra deltagere. Kun synligt med peek-token.</p>
+    </div>
+
+    <div class="container">
+        <div id="gate" class="gate">
+            <div class="error" id="gateError"></div>
+            <label for="peekToken">Peek-token</label>
+            <input type="password" id="peekToken" autocomplete="off" placeholder="WORKSHOP_PEEK_TOKEN">
+            <button id="gateBtn">Vis svar</button>
+        </div>
+
+        <div id="loading" class="loading hidden">Henter svar...</div>
+
+        <div id="results" class="hidden">
+            <div class="summary-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Antal svar</div>
+                    <div class="stat-value" id="statCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Samlet tilfredshed</div>
+                    <div class="stat-value" id="statOverall">–</div>
+                    <div class="stat-meta">gennemsnit (1–5)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Selvtillid i Claude Code</div>
+                    <div class="stat-value" id="statConfidence">–</div>
+                    <div class="stat-meta">gennemsnit (1–5)</div>
+                </div>
+            </div>
+
+            <div class="section-heading">Tempo</div>
+            <div class="stat-card" id="paceCard"></div>
+
+            <div class="section-heading" style="margin-top: 1.5rem;">Sværhedsgrad</div>
+            <div class="stat-card" id="difficultyCard"></div>
+
+            <div class="section-heading">Hvad fungerer godt?</div>
+            <div id="worksWellList"></div>
+
+            <div class="section-heading">Hvad fungerer mindre godt?</div>
+            <div id="worksLessWellList"></div>
+
+            <div class="section-heading">Andet</div>
+            <div id="otherList"></div>
+        </div>
+    </div>
+
+    <script>
+        const PACE_LABELS = {
+            for_langsomt: 'For langsomt',
+            tilpas: 'Tilpas',
+            for_hurtigt: 'For hurtigt'
+        };
+        const DIFFICULTY_LABELS = {
+            for_let: 'For let',
+            tilpas: 'Tilpas',
+            for_svaer: 'For svær'
+        };
+
+        const gate = document.getElementById('gate');
+        const gateBtn = document.getElementById('gateBtn');
+        const gateInput = document.getElementById('peekToken');
+        const gateError = document.getElementById('gateError');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+
+        function showGateError(msg) {
+            gateError.textContent = msg;
+            gateError.classList.add('show');
+        }
+
+        async function fetchResults(token) {
+            gateError.classList.remove('show');
+            gate.classList.add('hidden');
+            loading.classList.remove('hidden');
+
+            try {
+                const resp = await fetch(`/api/feedback-list?peek=${encodeURIComponent(token)}`);
+                const data = await resp.json();
+                if (!resp.ok || !data.ok) {
+                    loading.classList.add('hidden');
+                    gate.classList.remove('hidden');
+                    if (resp.status === 403) {
+                        showGateError('Forkert peek-token.');
+                    } else {
+                        showGateError('Kunne ikke hente svar (' + (data.error || resp.status) + ').');
+                    }
+                    return;
+                }
+                render(data.items || []);
+                loading.classList.add('hidden');
+                results.classList.remove('hidden');
+                try { sessionStorage.setItem('feedbackPeek', token); } catch {}
+            } catch (err) {
+                loading.classList.add('hidden');
+                gate.classList.remove('hidden');
+                showGateError('Netværksfejl.');
+            }
+        }
+
+        function avg(values) {
+            const nums = values.filter(v => typeof v === 'number');
+            if (nums.length === 0) return null;
+            const sum = nums.reduce((a, b) => a + b, 0);
+            return (sum / nums.length).toFixed(1);
+        }
+
+        function renderBars(container, labels, items, field) {
+            container.innerHTML = '';
+            const counts = {};
+            for (const k of Object.keys(labels)) counts[k] = 0;
+            for (const item of items) {
+                if (counts[item[field]] != null) counts[item[field]]++;
+            }
+            const total = items.length || 1;
+            for (const [key, label] of Object.entries(labels)) {
+                const count = counts[key];
+                const pct = Math.round((count / total) * 100);
+                const row = document.createElement('div');
+                row.className = 'bar-row';
+                row.innerHTML = `
+                    <div class="bar-label">${label}</div>
+                    <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+                    <div class="bar-count">${count}</div>
+                `;
+                container.appendChild(row);
+            }
+        }
+
+        function renderTextList(container, items, field, variant) {
+            container.innerHTML = '';
+            const filtered = items.filter(i => i[field] && i[field].trim().length > 0);
+            if (filtered.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'empty';
+                empty.textContent = 'Ingen svar endnu.';
+                container.appendChild(empty);
+                return;
+            }
+            for (const item of filtered) {
+                const card = document.createElement('div');
+                card.className = 'text-card' + (variant ? ' ' + variant : '');
+                const meta = [];
+                if (item.submittedDate) meta.push(item.submittedDate);
+                if (typeof item.overall === 'number') meta.push('tilfredshed ' + item.overall + '/5');
+                card.innerHTML = `
+                    <div class="meta">${meta.join(' · ')}</div>
+                    <p></p>
+                `;
+                card.querySelector('p').textContent = item[field];
+                container.appendChild(card);
+            }
+        }
+
+        function render(items) {
+            document.getElementById('statCount').textContent = items.length;
+            document.getElementById('statOverall').textContent =
+                avg(items.map(i => i.overall)) || '–';
+            document.getElementById('statConfidence').textContent =
+                avg(items.map(i => i.confidence)) || '–';
+
+            renderBars(document.getElementById('paceCard'), PACE_LABELS, items, 'pace');
+            renderBars(document.getElementById('difficultyCard'), DIFFICULTY_LABELS, items, 'difficulty');
+
+            renderTextList(document.getElementById('worksWellList'), items, 'works_well', '');
+            renderTextList(document.getElementById('worksLessWellList'), items, 'works_less_well', 'negative');
+            renderTextList(document.getElementById('otherList'), items, 'other', 'neutral');
+        }
+
+        gateBtn.addEventListener('click', () => {
+            const v = gateInput.value.trim();
+            if (!v) return showGateError('Indtast peek-token.');
+            fetchResults(v);
+        });
+        gateInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') gateBtn.click();
+        });
+
+        // URL-parameter eller cached token i sessionStorage
+        const urlToken = new URLSearchParams(window.location.search).get('peek');
+        let cachedToken = null;
+        try { cachedToken = sessionStorage.getItem('feedbackPeek'); } catch {}
+        if (urlToken) {
+            fetchResults(urlToken);
+        } else if (cachedToken) {
+            fetchResults(cachedToken);
+        }
+    </script>
+</body>
+</html>
