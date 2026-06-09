@@ -1,10 +1,11 @@
-// Best practices & faldgruber — facilitator-kontrol (gated).
-// Styrer afslut-knappen og nulstilling. Peek-gated som de øvrige bp-endpoints.
-//   close  -> sætter bp/state.json {closed:true} (udløser podie på alle skærme)
-//   open   -> genåbner afstemningen (closed:false) — til replay/test
-//   reset  -> sletter alle vælger-blobs (bp/votes/*) og genåbner. Emner bevares.
-//
-// Bemærk: 'reset' rører IKKE bp/topics/* — emnerne står, kun stemmerne nulstilles.
+// Best practices & faldgruber — facilitator-kontrol (gated, peek).
+// Styrer afstemningens tilstand i bp/state.json: { open, closed, round }.
+//   start  -> open=true, closed=false  (deltagere kan nu se Stem-fanen og stemme)
+//   close  -> closed=true              (udløser podie)
+//   reopen -> closed=false             (tilbage til afstemning fra podiet)
+//   reset  -> sletter alle stemmer, bumper round. Emner + open bevares.
+//   clear  -> sletter ALT (emner + stemmer), open=false. Starter blankt.
+//   ping   -> validerer blot peek-tokenet.
 
 const { put, del, list } = require('@vercel/blob');
 
@@ -27,29 +28,28 @@ function canPeek(token) {
         : !!token;
 }
 
-async function readRound() {
-    // 'round' bumpes ved hver nulstilling, så deltagernes klient kan rydde
-    // sine lokale picks når en ny runde starter.
+async function readState() {
     try {
         const listing = await list({ prefix: 'bp/state.json' });
         const blob = (listing.blobs || []).find(b => b.pathname === 'bp/state.json');
-        if (!blob) return 0;
-        const resp = await fetch(blob.url);
-        if (!resp.ok) return 0;
-        const data = await resp.json();
-        return Number.isInteger(data.round) ? data.round : 0;
+        if (!blob) return { open: false, closed: false, round: 0 };
+        const resp = await fetch(blob.url, { cache: 'no-store' });
+        if (!resp.ok) return { open: false, closed: false, round: 0 };
+        const d = await resp.json();
+        return {
+            open: !!d.open,
+            closed: !!d.closed,
+            round: Number.isInteger(d.round) ? d.round : 0
+        };
     } catch {
-        return 0;
+        return { open: false, closed: false, round: 0 };
     }
 }
 
-async function writeState(closed, round) {
-    const record = { closed, closedAt: closed ? new Date().toISOString() : '', round };
+async function writeState({ open, closed, round }) {
+    const record = { open: !!open, closed: !!closed, closedAt: closed ? new Date().toISOString() : '', round };
     await put('bp/state.json', JSON.stringify(record), {
-        access: 'public',
-        addRandomSuffix: false,
-        allowOverwrite: true, // afslut/genåbn/nulstil skifter samme state-blob
-        contentType: 'application/json'
+        access: 'public', addRandomSuffix: false, allowOverwrite: true, contentType: 'application/json'
     });
     return record;
 }
@@ -60,10 +60,6 @@ async function delByPrefix(prefix) {
     const urls = blobs.map(b => b.url).filter(Boolean);
     if (urls.length) await del(urls);
     return urls.length;
-}
-
-async function resetVotes() {
-    return delByPrefix('bp/votes/');
 }
 
 module.exports = async function handler(req, res) {
@@ -92,32 +88,34 @@ module.exports = async function handler(req, res) {
 
     const action = typeof body.action === 'string' ? body.action : '';
 
-    // Token er allerede valideret af canPeek ovenfor — 'ping' lader klienten
-    // tjekke om peek-tokenet er gyldigt uden at ændre noget.
     if (action === 'ping') {
         return res.status(200).json({ ok: true, valid: true });
     }
 
     try {
-        const round = await readRound();
-        if (action === 'close') {
-            const state = await writeState(true, round);
+        const cur = await readState();
+
+        if (action === 'start') {
+            const state = await writeState({ open: true, closed: false, round: cur.round });
             return res.status(200).json({ ok: true, ...state });
         }
-        if (action === 'open') {
-            const state = await writeState(false, round);
+        if (action === 'close') {
+            const state = await writeState({ open: true, closed: true, round: cur.round });
+            return res.status(200).json({ ok: true, ...state });
+        }
+        if (action === 'reopen') {
+            const state = await writeState({ open: true, closed: false, round: cur.round });
             return res.status(200).json({ ok: true, ...state });
         }
         if (action === 'reset') {
-            const deleted = await resetVotes();
-            const state = await writeState(false, round + 1); // ny runde → klienter rydder picks
+            const deleted = await delByPrefix('bp/votes/');
+            const state = await writeState({ open: cur.open, closed: false, round: cur.round + 1 });
             return res.status(200).json({ ok: true, deleted, ...state });
         }
         if (action === 'clear') {
-            // Nulstil ALT: emner + stemmer. Bruges til at starte blankt (fx før d. 16.).
-            const votes = await resetVotes();
+            const votes = await delByPrefix('bp/votes/');
             const topics = await delByPrefix('bp/topics/');
-            const state = await writeState(false, round + 1);
+            const state = await writeState({ open: false, closed: false, round: cur.round + 1 });
             return res.status(200).json({ ok: true, deletedVotes: votes, deletedTopics: topics, ...state });
         }
         return res.status(400).json({ ok: false, error: 'invalid_action' });

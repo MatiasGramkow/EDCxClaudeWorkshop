@@ -2,12 +2,12 @@
 // Læser ALT på én gang så både deltagernes telefoner og projektor-skærmen kan
 // polle dette ene endpoint:
 //   - emnerne (bp/topics/*)
-//   - afledte stemmetal ved at liste + aggregere vælger-blobs (bp/votes/*)
-//   - afslut-tilstand (bp/state.json)
+//   - stemmetal ved at liste + aggregere vælger-blobs (bp/votes/*) — autoritativt
+//   - tilstand (bp/state.json): { open, closed, round }
 //
-// Optællingen er autoritativ (regnes fra vælger-blobs hver gang), så den er
-// altid korrekt — vi gemmer ikke en delt tæller der kan komme i utakt.
-// Bemærk: fan-out skalerer med antal emner + vælgere; fint til ~25 deltagere.
+// Vercel Blob er eventually-consistent: nye emner/stemmer kan være et par
+// sekunder om at slå igennem. Klienten viser sin egen stemme optimistisk, så
+// selve klik-til-tal føles øjeblikkeligt; tværgående propagering er near-realtime.
 
 const { list } = require('@vercel/blob');
 
@@ -31,7 +31,7 @@ function canPeek(token) {
 
 async function fetchJson(url) {
     try {
-        const resp = await fetch(url);
+        const resp = await fetch(url, { cache: 'no-store' });
         if (!resp.ok) return null;
         return await resp.json();
     } catch {
@@ -39,16 +39,8 @@ async function fetchJson(url) {
     }
 }
 
-async function loadTopics() {
-    const listing = await list({ prefix: 'bp/topics/' });
-    const blobs = Array.isArray(listing && listing.blobs) ? listing.blobs : [];
-    const jsonBlobs = blobs.filter(b => typeof b.pathname === 'string' && b.pathname.endsWith('.json'));
-    const items = await Promise.all(jsonBlobs.map(b => fetchJson(b.url)));
-    return items.filter(Boolean);
-}
-
-async function loadVotes() {
-    const listing = await list({ prefix: 'bp/votes/' });
+async function loadByPrefix(prefix) {
+    const listing = await list({ prefix });
     const blobs = Array.isArray(listing && listing.blobs) ? listing.blobs : [];
     const jsonBlobs = blobs.filter(b => typeof b.pathname === 'string' && b.pathname.endsWith('.json'));
     const items = await Promise.all(jsonBlobs.map(b => fetchJson(b.url)));
@@ -59,10 +51,16 @@ async function loadState() {
     const listing = await list({ prefix: 'bp/state.json' });
     const blobs = Array.isArray(listing && listing.blobs) ? listing.blobs : [];
     const blob = blobs.find(b => b.pathname === 'bp/state.json');
-    if (!blob) return { closed: false, closedAt: '', round: 0 };
+    const fallback = { open: false, closed: false, closedAt: '', round: 0 };
+    if (!blob) return fallback;
     const data = await fetchJson(blob.url);
-    if (!data) return { closed: false, closedAt: '', round: 0 };
-    return { closed: !!data.closed, closedAt: data.closedAt || '', round: Number.isInteger(data.round) ? data.round : 0 };
+    if (!data) return fallback;
+    return {
+        open: !!data.open,
+        closed: !!data.closed,
+        closedAt: data.closedAt || '',
+        round: Number.isInteger(data.round) ? data.round : 0
+    };
 }
 
 module.exports = async function handler(req, res) {
@@ -76,19 +74,17 @@ module.exports = async function handler(req, res) {
         return res.status(405).json({ ok: false, error: 'method_not_allowed' });
     }
 
-    // personName vises på boblerne for alle. note er stadig kun for
-    // facilitatoren (peek) — det er facilitatorens egne detaljer fra oplægget.
+    // personName vises på boblerne for alle. note er kun for facilitatoren (peek).
     const includePrivate = canPeek(parseQuery(req).peek);
 
     try {
-        const [topics, votes, state] = await Promise.all([loadTopics(), loadVotes(), loadState()]);
+        const [topics, votes, state] = await Promise.all([
+            loadByPrefix('bp/topics/'), loadByPrefix('bp/votes/'), loadState()
+        ]);
 
         const counts = Object.create(null);
         for (const v of votes) {
-            const picks = Array.isArray(v.picks) ? v.picks : [];
-            for (const id of picks) {
-                counts[id] = (counts[id] || 0) + 1;
-            }
+            for (const id of (Array.isArray(v.picks) ? v.picks : [])) counts[id] = (counts[id] || 0) + 1;
         }
 
         const items = topics.map(t => ({
@@ -109,10 +105,11 @@ module.exports = async function handler(req, res) {
 
         return res.status(200).json({
             ok: true,
+            open: state.open,
             closed: state.closed,
             closedAt: state.closedAt,
             round: state.round,
-            voterCount: votes.length,
+            voterCount: votes.filter(v => Array.isArray(v.picks) && v.picks.length > 0).length,
             totalVotes: votes.reduce((n, v) => n + (Array.isArray(v.picks) ? v.picks.length : 0), 0),
             items
         });

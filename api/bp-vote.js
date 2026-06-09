@@ -1,10 +1,12 @@
 // Best practices & faldgruber — afstemning (deltager, åben/ikke-gated).
 // Hver deltager har op til 3 stemmer og kan ombestemme sig: vi gemmer ÉN blob
 // pr. vælger med dens nuværende picks (fuld overskrivning), så to der klikker
-// samtidig aldrig ødelægger hinandens tæller. Optællingen afledes i api/bp-list.js
-// ved at liste alle vælger-blobs. Ingen vælger-PII gemmes — kun et anonymt voterId.
+// samtidig aldrig ødelægger hinandens egen blob. Optællingen afledes i
+// api/bp-list.js ved at liste alle vælger-blobs. Ingen vælger-PII — kun voterId.
 //
-// Gemmes i Vercel Blob under bp/votes/{voterId}.json.
+// Bemærk: Vercel Blob er eventually-consistent, så tal kan være et par sekunder
+// om at slå igennem på tværs af enheder. Klienten viser derfor sin EGEN stemme
+// optimistisk med det samme; serveren afstemmer ved næste poll.
 
 const { put } = require('@vercel/blob');
 
@@ -54,11 +56,7 @@ module.exports = async function handler(req, res) {
         rawPicks.filter(p => typeof p === 'string' && TOPIC_ID_RE.test(p))
     )].slice(0, MAX_VOTES);
 
-    const record = {
-        voterId,
-        picks,
-        updatedAt: new Date().toISOString()
-    };
+    const record = { voterId, picks, updatedAt: new Date().toISOString() };
 
     try {
         await put(`bp/votes/${voterId}.json`, JSON.stringify(record), {

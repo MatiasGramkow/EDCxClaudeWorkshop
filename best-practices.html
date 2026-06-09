@@ -283,17 +283,32 @@
     </div>
 
     <div class="tabs">
-        <button class="tab active" data-view="live">🫧 Stem &amp; leaderboard</button>
+        <button class="tab active" data-view="live">🫧 Stem</button>
         <button class="tab hidden" data-view="admin" id="adminTab">✍️ Skriv emner ind</button>
-        <button class="tab" data-view="podie">🏆 Podie</button>
+        <button class="tab hidden" data-view="podie" id="podieTab">🏆 Podie</button>
     </div>
 
-    <!-- ===== LIVE ===== -->
+    <!-- ===== LIVE / STEM ===== -->
     <section class="view active" id="view-live">
-        <div id="liveMeta"></div>
-        <div id="budgetBar"></div>
-        <div id="stage">
-            <div id="emptyHint">Ingen emner endnu — facilitatoren skriver dem ind løbende. 🫧</div>
+        <!-- vises før afstemningen er åbnet -->
+        <div id="waitingScreen" style="display:none;text-align:center;padding:4rem 1.5rem">
+            <div style="font-size:3rem;margin-bottom:0.5rem">⏳</div>
+            <h2 style="color:var(--edc-blue);font-size:1.4rem;margin-bottom:0.4rem">Afstemningen er ikke åbnet endnu</h2>
+            <p style="color:var(--muted);max-width:420px;margin:0 auto">Vent på at facilitatoren åbner afstemningen — så dukker emnerne op her, og du kan stemme.</p>
+        </div>
+        <!-- vises når afstemningen er afsluttet (deltagere) -->
+        <div id="closedScreen" style="display:none;text-align:center;padding:4rem 1.5rem">
+            <div style="font-size:3rem;margin-bottom:0.5rem">🙌</div>
+            <h2 style="color:var(--edc-blue);font-size:1.4rem;margin-bottom:0.4rem">Tak for din stemme!</h2>
+            <p style="color:var(--muted);max-width:420px;margin:0 auto">Afstemningen er afsluttet. De 3 emner med flest stemmer præsenteres d. 30. juni.</p>
+        </div>
+        <!-- selve afstemningen -->
+        <div id="voteScreen" style="display:none">
+            <div id="liveMeta"></div>
+            <div id="budgetBar"></div>
+            <div id="stage">
+                <div id="emptyHint">Ingen emner endnu — facilitatoren skriver dem ind løbende. 🫧</div>
+            </div>
         </div>
     </section>
 
@@ -305,6 +320,30 @@
             </div>
             <div id="adminBody" style="display:none">
                 <div id="tokenStatus" style="display:none;border-radius:var(--radius);padding:0.7rem 1rem;margin-bottom:1rem;font-size:0.9rem;font-weight:600"></div>
+
+                <div class="card" id="votingCard">
+                    <h3 style="margin-bottom:0.2rem;color:var(--edc-blue)">Afstemning</h3>
+                    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:0.8rem">Skriv emnerne ind først. Tryk så <strong>Åbn afstemning</strong> — det er først dér deltagerne kan se og stemme.</p>
+                    <div id="phasePill" style="display:inline-block;padding:0.3rem 0.8rem;border-radius:999px;font-weight:700;font-size:0.85rem;margin-bottom:0.9rem"></div>
+                    <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+                        <button class="btn" id="startBtn" style="margin:0">▶️ Åbn afstemning</button>
+                        <button class="btn danger" id="closeBtn" style="margin:0">⏹ Afslut &amp; vis podie</button>
+                        <button class="btn ghost" id="reopenBtn" style="margin:0">↩︎ Genåbn afstemning</button>
+                        <button class="btn" id="resetBtn" style="margin:0;background:#555">🔄 Nulstil stemmer</button>
+                    </div>
+                    <div id="shareBox" style="display:none;margin-top:1.1rem;padding-top:1rem;border-top:1px solid var(--border)">
+                        <p style="font-weight:700;margin-bottom:0.6rem">📱 Deltagerne stemmer her — scan eller del linket:</p>
+                        <div style="display:flex;gap:1.2rem;align-items:center;flex-wrap:wrap">
+                            <img id="qrImg" alt="QR-kode til afstemningen" width="200" height="200"
+                                 style="border:1px solid var(--border);border-radius:10px;background:#fff;padding:6px">
+                            <div style="flex:1;min-width:220px">
+                                <code id="shareUrl" style="display:block;background:#f1f5f9;padding:0.6rem 0.8rem;border-radius:8px;word-break:break-all;font-size:0.95rem"></code>
+                                <button class="btn ghost" id="copyUrlBtn" style="margin-top:0.6rem">📋 Kopiér link</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card">
                     <h3 style="margin-bottom:0.4rem;color:var(--edc-blue)">Tilføj et emne</h3>
                     <p style="color:var(--muted);font-size:0.88rem">Skriv det ind mens deltageren præsenterer (5 min hver). Ét emne = én boble man kan stemme på.</p>
@@ -339,19 +378,11 @@
         </div>
         <div class="container" id="podieWaiting">
             <div class="card" style="text-align:center">
-                <p style="font-size:1.05rem">Podiet vises når facilitatoren trykker <strong>Afslut afstemning</strong>.</p>
-                <p style="color:var(--muted);margin-top:0.4rem">Indtil da kan I stemme videre under “Stem &amp; leaderboard”.</p>
+                <p style="font-size:1.05rem">Podiet vises når du trykker <strong>Afslut &amp; vis podie</strong> under “Skriv emner ind”.</p>
+                <p style="color:var(--muted);margin-top:0.4rem">Indtil da kører afstemningen under “Stem”.</p>
             </div>
         </div>
     </section>
-
-    <!-- ===== FACILITATOR ===== -->
-    <div id="facBar">
-        <span class="pill" id="facStatus">Live</span>
-        <button class="btn" style="margin:0;background:var(--edc-red)" id="closeBtn">⏹ Afslut afstemning</button>
-        <button class="btn ghost" style="margin:0;background:#fff;color:var(--edc-blue)" id="openBtn">↩︎ Genåbn</button>
-        <button class="btn" style="margin:0;background:#444" id="resetBtn">🗑 Nulstil stemmer</button>
-    </div>
 
     <div class="toast" id="toast"></div>
 
@@ -409,6 +440,12 @@ function loadPicks() {
 }
 let myPicks = loadPicks();
 function savePicks() { localStorage.setItem('bp_picks', JSON.stringify(myPicks)); }
+
+// Optimistisk tæller: confirmedPicks = de picks serverens tal pt. afspejler for MIG.
+// shownVotes = server-tal + (jeg har valgt) - (serveren afspejler mit valg) → tallet
+// går op MED DET SAMME jeg klikker, og afstemmes uden flimmer ved næste poll.
+let confirmedPicks = myPicks.slice();
+let pendingSnapshot = null;
 
 let latest = { items: [], closed: false, voterCount: 0, totalVotes: 0 };
 let positions = {};        // id -> {x,y} så bobler beholder cirka-position mellem polls
@@ -484,6 +521,16 @@ function bubbleSize(votes, maxVotes) {
 }
 
 function renderLive() {
+    // Hvilken skærm? Deltagere ser: venter → stem → tak. Facilitator ser altid
+    // afstemnings-skærmen på Stem-fanen (podiet ligger på Podie-fanen).
+    const isWaiting = !latest.open && !latest.closed;
+    const isClosed = latest.closed;
+    const showVote = IS_FAC || (latest.open && !latest.closed);
+    document.getElementById('waitingScreen').style.display = (!IS_FAC && isWaiting) ? 'block' : 'none';
+    document.getElementById('closedScreen').style.display = (!IS_FAC && isClosed) ? 'block' : 'none';
+    document.getElementById('voteScreen').style.display = showVote ? 'block' : 'none';
+    if (!showVote) return;
+
     const stage = document.getElementById('stage');
     const items = latest.items;
     const meta = document.getElementById('liveMeta');
@@ -541,7 +588,8 @@ function renderLive() {
         el.querySelector('.ttl').style.fontSize = fs + 'px';
         el.querySelector('.ttl').textContent = it.title;
         el.querySelector('.who').textContent = it.personName ? '— ' + it.personName : '';
-        el.querySelector('.cnt').textContent = it.votes;
+        const myDelta = (myPicks.includes(it.id) ? 1 : 0) - (confirmedPicks.includes(it.id) ? 1 : 0);
+        el.querySelector('.cnt').textContent = Math.max(0, it.votes + myDelta);
         el.querySelector('.rankbadge').textContent = it.votes > 0 ? ['👑','🥈','🥉'][rank] || '' : '';
     });
     // fjern bobler for slettede emner
@@ -581,6 +629,7 @@ async function scheduleVoteSave() {
                     body: JSON.stringify({ voterId: VOTER_ID, picks: snapshot })
                 });
                 if (!resp.ok) throw new Error('vote_failed');
+                pendingSnapshot = snapshot; // afstemmes mod serverens tal ved næste poll
             } catch {
                 voteSaveDirty = true;   // prøv igen
                 await new Promise(r => setTimeout(r, 800));
@@ -658,26 +707,29 @@ async function poll() {
         // ny runde (facilitatoren har nulstilt) → ryd egne picks
         const storedRound = parseInt(localStorage.getItem('bp_round') || '', 10);
         if (Number.isInteger(data.round)) {
-            if (Number.isInteger(storedRound) && data.round !== storedRound && myPicks.length) {
-                myPicks = []; savePicks();
+            if (Number.isInteger(storedRound) && data.round !== storedRound) {
+                myPicks = []; confirmedPicks = []; pendingSnapshot = null; savePicks();
             }
             localStorage.setItem('bp_round', String(data.round));
         }
+        // afstem optimistisk tæller: serveren afspejler nu sidst gemte snapshot
+        if (pendingSnapshot && !voteSaveInFlight) { confirmedPicks = pendingSnapshot; pendingSnapshot = null; }
         // ryd lokale picks for emner der er slettet
         const ids = new Set(data.items.map(i => i.id));
         const before = myPicks.length;
         myPicks = myPicks.filter(p => ids.has(p));
+        confirmedPicks = confirmedPicks.filter(p => ids.has(p));
         if (myPicks.length !== before) savePicks();
 
         renderLive();
         if (document.getElementById('view-podie').classList.contains('active')) renderPodium(false);
         if (IS_FAC) {
-            renderFacBar();
+            renderVotingControls();
             // hold admin-listen live (nye emner, opdaterede stemmetal) uden faneskift
             if (document.getElementById('view-admin').classList.contains('active')) renderAdminList();
         }
-        // auto-hop til podie på alle skærme når der lige er afsluttet
-        if (!wasClosed && data.closed && data.items.some(i => i.votes > 0)) {
+        // auto-hop til podie — kun facilitatorens skærm (deltagere ser "tak"-skærm)
+        if (IS_FAC && !wasClosed && data.closed) {
             switchTo('podie');
         }
     } catch { /* stille — næste poll prøver igen */ }
@@ -766,14 +818,30 @@ async function delTopic(id) {
     } catch { toast('Kunne ikke slette'); }
 }
 
-// ========== FACILITATOR BAR ==========
-function renderFacBar() {
-    const bar = document.getElementById('facBar');
-    bar.classList.add('show');
-    document.getElementById('facStatus').textContent =
-        latest.closed ? '🔒 Afsluttet' : `🟢 Live · ${latest.voterCount} har stemt`;
-    document.getElementById('closeBtn').style.display = latest.closed ? 'none' : '';
-    document.getElementById('openBtn').style.display = latest.closed ? '' : 'none';
+// ========== FACILITATOR-KONTROLLER ==========
+function renderVotingControls() {
+    const pill = document.getElementById('phasePill');
+    const start = document.getElementById('startBtn');
+    const close = document.getElementById('closeBtn');
+    const reopen = document.getElementById('reopenBtn');
+    const share = document.getElementById('shareBox');
+    if (!pill) return;
+    if (latest.closed) {
+        pill.textContent = '🔒 Afsluttet — podiet vises';
+        pill.style.background = '#fee2e2'; pill.style.color = '#991b1b';
+        start.style.display = 'none'; close.style.display = 'none'; reopen.style.display = '';
+        share.style.display = 'none';
+    } else if (latest.open) {
+        pill.textContent = `🟢 Åben — ${latest.voterCount} har stemt`;
+        pill.style.background = '#dcfce7'; pill.style.color = '#065f46';
+        start.style.display = 'none'; close.style.display = ''; reopen.style.display = 'none';
+        share.style.display = 'block';
+    } else {
+        pill.textContent = '⚪ Ikke åbnet — deltagere venter';
+        pill.style.background = '#e2e8f0'; pill.style.color = '#334155';
+        start.style.display = ''; close.style.display = 'none'; reopen.style.display = 'none';
+        share.style.display = 'none';
+    }
 }
 
 async function control(action, confirmMsg) {
@@ -785,8 +853,9 @@ async function control(action, confirmMsg) {
         });
         const data = await resp.json();
         if (!data.ok) throw new Error(data.error);
-        if (action === 'reset') { myPicks = []; savePicks(); toast('Stemmer nulstillet'); }
-        if (action === 'clear') { myPicks = []; savePicks(); toast('Alle emner ryddet'); }
+        if (action === 'reset') { myPicks = []; confirmedPicks = []; savePicks(); toast('Stemmer nulstillet'); }
+        if (action === 'clear') { myPicks = []; confirmedPicks = []; savePicks(); toast('Alle emner ryddet'); }
+        if (action === 'start') toast('Afstemningen er åben 🟢');
         podiumShown = false;
         poll();
     } catch (e) {
@@ -798,17 +867,32 @@ async function control(action, confirmMsg) {
 // ========== INIT ==========
 if (IS_FAC) {
     document.getElementById('adminTab').classList.remove('hidden');
+    document.getElementById('podieTab').classList.remove('hidden');
     document.getElementById('adminBody').style.display = 'block';
     document.getElementById('adminGate').style.display = 'none';
     initAdmin();
     validateToken();
+
+    // deltager-URL (uden peek) til QR + deling
+    const shareUrlValue = location.origin + location.pathname.replace(/\.html$/, '');
+    document.getElementById('shareUrl').textContent = shareUrlValue;
+    document.getElementById('qrImg').src =
+        'https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=10&data=' + encodeURIComponent(shareUrlValue);
+    document.getElementById('copyUrlBtn').addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(shareUrlValue); toast('Link kopieret 📋'); }
+        catch { toast('Kunne ikke kopiere — markér linket manuelt'); }
+    });
+
+    document.getElementById('startBtn').addEventListener('click', () => control('start'));
     document.getElementById('closeBtn').addEventListener('click', () => control('close', 'Afslut afstemningen og vis podiet?'));
-    document.getElementById('openBtn').addEventListener('click', () => control('open'));
+    document.getElementById('reopenBtn').addEventListener('click', () => control('reopen'));
     document.getElementById('resetBtn').addEventListener('click', () => control('reset', 'Nulstil ALLE stemmer? Emnerne bevares.'));
     document.getElementById('clearBtn').addEventListener('click', () => control('clear', 'Slet ALLE emner OG stemmer? Dette kan ikke fortrydes — brug det til at starte blankt.'));
     document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
-        if (t.dataset.view === 'admin') renderAdminList();
+        if (t.dataset.view === 'admin') { renderAdminList(); renderVotingControls(); }
     }));
+    switchTo('admin'); // facilitatoren starter på "Skriv emner ind"
+    renderVotingControls();
 }
 
 poll();
