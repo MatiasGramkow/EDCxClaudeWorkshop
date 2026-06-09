@@ -1,0 +1,62 @@
+Emne: Ny rytme for Claude Code-workshoppen — og I skal forberede én ting til d. 16. juni
+
+Hej allesammen,
+
+Tak fordi I har holdt så flot ved over de første sessioner. Vi har lyttet til jeres feedback om format og frekvens, og vi lægger nu om til en rytme der passer bedre ind i hverdagen.
+
+────────────────────────────────────
+NY STRUKTUR: HVER 14. DAG, 1 TIME
+────────────────────────────────────
+
+Vi mødes hver anden uge, én time ad gangen:
+
+  • Tirsdag d. 16. juni
+  • Tirsdag d. 30. juni
+  • Tirsdag d. 14. juli
+
+Så holder vi sommerferie, og vi starter op igen:
+
+  • Tirsdag d. 18. august
+
+Temaerne fremover er det I selv har efterspurgt mest: "best practices & faldgruber" (vi kører det to gange), og en genbesøg-runde på CLAUDE.md og hukommelse.
+
+────────────────────────────────────
+DET HER SKAL I FORBEREDE TIL D. 16. JUNI
+────────────────────────────────────
+
+D. 16. juni er det JER der har ordet. Alle skal medbringe to ting:
+
+  1. ÉN best practice — noget der virker for dig i Claude Code. En vane,
+     et trick, en arbejdsgang du er kommet til at holde af.
+  2. ÉN faldgrube — noget der gik galt, kostede tid, eller som du ville
+     ønske nogen havde advaret dig om.
+
+Det skal ikke være poleret. Det må gerne være lille og konkret — det er
+tit de små ting der flytter mest for de andre.
+
+Format på dagen:
+  • Du har 5 MINUTTER. Kort og godt — best practice + faldgrube.
+  • Jeg skriver jeres emner ind løbende mens I præsenterer.
+  • Til sidst stemmer vi: hver af jer har 3 stemmer og fordeler dem på de
+    emner I helst vil have gået i DYBDEN med.
+  • De 3 emner med flest stemmer bliver præsenteret igen — grundigere —
+    d. 30. juni.
+
+────────────────────────────────────
+AFSTEMNINGEN FOREGÅR LIVE
+────────────────────────────────────
+
+Vi prøver noget nyt: afstemningen kører på storskærmen i realtid, så I kan
+se emnerne stige og falde mens I stemmer. Til sidst trykker jeg "afslut",
+og de 3 vindere kommer op på et podie. I får et link på dagen — I stemmer
+bare fra jeres egen telefon eller laptop, helt anonymt.
+
+────────────────────────────────────
+
+Så til d. 16.: tænk over din ene best practice og din ene faldgrube. Det er
+alt hvad der kræves — resten klarer vi sammen.
+
+Vi ses!
+
+Bedste hilsner
+Matias & Michael
