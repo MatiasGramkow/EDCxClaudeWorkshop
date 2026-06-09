@@ -441,11 +441,10 @@ function loadPicks() {
 let myPicks = loadPicks();
 function savePicks() { localStorage.setItem('bp_picks', JSON.stringify(myPicks)); }
 
-// Optimistisk tæller: confirmedPicks = de picks serverens tal pt. afspejler for MIG.
-// shownVotes = server-tal + (jeg har valgt) - (serveren afspejler mit valg) → tallet
-// går op MED DET SAMME jeg klikker, og afstemmes uden flimmer ved næste poll.
-let confirmedPicks = myPicks.slice();
-let pendingSnapshot = null;
+// Serveren tæller ALLE andre end mig (via ?me=voterId); mine egne picks lægges
+// til lokalt. Så er mit eget tal øjeblikkeligt korrekt — uafhængigt af Blobs
+// propagering — og to skærme konvergerer til samme resultat.
+function displayVotes(it) { return it.votes + (myPicks.includes(it.id) ? 1 : 0); }
 
 let latest = { items: [], closed: false, voterCount: 0, totalVotes: 0 };
 let positions = {};        // id -> {x,y} så bobler beholder cirka-position mellem polls
@@ -532,10 +531,15 @@ function renderLive() {
     if (!showVote) return;
 
     const stage = document.getElementById('stage');
-    const items = latest.items;
+    // sortér efter VIST tal (server-tal + mine egne picks) så min stemme tæller med
+    const items = latest.items.slice().sort((a, b) => {
+        const d = displayVotes(b) - displayVotes(a);
+        return d !== 0 ? d : a.title.localeCompare(b.title, 'da');
+    });
+    const meVoted = myPicks.length > 0 ? 1 : 0;
     const meta = document.getElementById('liveMeta');
     meta.innerHTML = items.length
-        ? `<strong>${items.length}</strong> emner · <strong>${latest.voterCount}</strong> har stemt · <strong>${latest.totalVotes}</strong> stemmer afgivet`
+        ? `<strong>${items.length}</strong> emner · <strong>${latest.voterCount + meVoted}</strong> har stemt · <strong>${latest.totalVotes + myPicks.length}</strong> stemmer afgivet`
         : '';
 
     // budget-bar
@@ -553,14 +557,15 @@ function renderLive() {
     document.getElementById('emptyHint').style.display = items.length ? 'none' : 'flex';
     if (latest.closed) { renderPodium(false); }
 
-    const maxVotes = items.reduce((m, it) => Math.max(m, it.votes), 0);
+    const maxVotes = items.reduce((m, it) => Math.max(m, displayVotes(it)), 0);
     positions = rankLayout(items);
 
     const seen = new Set();
     items.forEach((it, rank) => {
         seen.add(it.id);
         let el = document.getElementById('bub-' + it.id);
-        const size = bubbleSize(it.votes, maxVotes);
+        const dv = displayVotes(it);
+        const size = bubbleSize(dv, maxVotes);
         const p = positions[it.id];
         if (!el) {
             el = document.createElement('div');
@@ -577,9 +582,9 @@ function renderLive() {
         el.classList.toggle('bp', it.kind !== 'faldgrube');
         el.classList.toggle('fald', it.kind === 'faldgrube');
         el.classList.toggle('picked', myPicks.includes(it.id));
-        el.classList.toggle('r0', rank === 0 && it.votes > 0);
-        el.classList.toggle('r1', rank === 1 && it.votes > 0);
-        el.classList.toggle('r2', rank === 2 && it.votes > 0);
+        el.classList.toggle('r0', rank === 0 && dv > 0);
+        el.classList.toggle('r1', rank === 1 && dv > 0);
+        el.classList.toggle('r2', rank === 2 && dv > 0);
         el.style.left = p.x + '%';
         el.style.top = p.y + '%';
         el.style.width = size + 'px';
@@ -588,9 +593,8 @@ function renderLive() {
         el.querySelector('.ttl').style.fontSize = fs + 'px';
         el.querySelector('.ttl').textContent = it.title;
         el.querySelector('.who').textContent = it.personName ? '— ' + it.personName : '';
-        const myDelta = (myPicks.includes(it.id) ? 1 : 0) - (confirmedPicks.includes(it.id) ? 1 : 0);
-        el.querySelector('.cnt').textContent = Math.max(0, it.votes + myDelta);
-        el.querySelector('.rankbadge').textContent = it.votes > 0 ? ['👑','🥈','🥉'][rank] || '' : '';
+        el.querySelector('.cnt').textContent = dv;
+        el.querySelector('.rankbadge').textContent = dv > 0 ? ['👑','🥈','🥉'][rank] || '' : '';
     });
     // fjern bobler for slettede emner
     stage.querySelectorAll('.bubble').forEach(el => {
@@ -629,7 +633,6 @@ async function scheduleVoteSave() {
                     body: JSON.stringify({ voterId: VOTER_ID, picks: snapshot })
                 });
                 if (!resp.ok) throw new Error('vote_failed');
-                pendingSnapshot = snapshot; // afstemmes mod serverens tal ved næste poll
             } catch {
                 voteSaveDirty = true;   // prøv igen
                 await new Promise(r => setTimeout(r, 800));
@@ -643,7 +646,9 @@ async function scheduleVoteSave() {
 
 // ========== PODIUM ==========
 function renderPodium(forceTab) {
-    const top3 = latest.items.filter(it => it.votes > 0).slice(0, 3);
+    const top3 = latest.items.slice()
+        .sort((a, b) => { const d = displayVotes(b) - displayVotes(a); return d !== 0 ? d : a.title.localeCompare(b.title, 'da'); })
+        .filter(it => displayVotes(it) > 0).slice(0, 3);
     const podium = document.getElementById('podium');
     const waiting = document.getElementById('podieWaiting');
     const showIt = latest.closed && top3.length > 0;
@@ -656,7 +661,7 @@ function renderPodium(forceTab) {
     const placeClass = ['p2', 'p1', 'p3'];
     const medals = ['🥈', '🥇', '🥉'];
     document.getElementById('podiumSub').textContent =
-        `Afsluttet · ${latest.voterCount} stemte · de ${top3.length} med flest stemmer går videre`;
+        `Afsluttet · ${latest.voterCount + (myPicks.length ? 1 : 0)} stemte · de ${top3.length} med flest stemmer går videre`;
 
     // genbyg kun hvis ændret antal
     if (row.childElementCount !== order.filter(Boolean).length || forceTab && !podiumShown) {
@@ -668,7 +673,7 @@ function renderPodium(forceTab) {
             pod.innerHTML = `<div class="medal">${medals[i]}</div>`
                 + `<div class="card-name"><div class="t">${esc(it.title)}</div>`
                 + (it.personName ? `<div class="w">${esc(it.personName)}</div>` : '')
-                + `<div class="v">${it.votes} stemmer</div></div>`
+                + `<div class="v">${displayVotes(it)} stemmer</div></div>`
                 + `<div class="bar">${i === 1 ? '1' : (i === 0 ? '2' : '3')}</div>`;
             row.appendChild(pod);
             // forskudt indtoning
@@ -696,8 +701,10 @@ function confetti() {
 // ========== POLL ==========
 async function poll() {
     try {
-        // facilitatoren sender peek så admin-listen kan vise navne; deltagere får intet navn
-        const url = IS_FAC ? '/api/bp-list?peek=' + encodeURIComponent(PEEK) : '/api/bp-list';
+        // me=voterId → serveren udelader mine egne stemmer (klienten lægger dem til lokalt)
+        // peek → facilitatoren får navne til admin-listen
+        let url = '/api/bp-list?me=' + encodeURIComponent(VOTER_ID);
+        if (IS_FAC) url += '&peek=' + encodeURIComponent(PEEK);
         const resp = await fetch(url);
         if (!resp.ok) return;
         const data = await resp.json();
@@ -708,17 +715,14 @@ async function poll() {
         const storedRound = parseInt(localStorage.getItem('bp_round') || '', 10);
         if (Number.isInteger(data.round)) {
             if (Number.isInteger(storedRound) && data.round !== storedRound) {
-                myPicks = []; confirmedPicks = []; pendingSnapshot = null; savePicks();
+                myPicks = []; savePicks();
             }
             localStorage.setItem('bp_round', String(data.round));
         }
-        // afstem optimistisk tæller: serveren afspejler nu sidst gemte snapshot
-        if (pendingSnapshot && !voteSaveInFlight) { confirmedPicks = pendingSnapshot; pendingSnapshot = null; }
         // ryd lokale picks for emner der er slettet
         const ids = new Set(data.items.map(i => i.id));
         const before = myPicks.length;
         myPicks = myPicks.filter(p => ids.has(p));
-        confirmedPicks = confirmedPicks.filter(p => ids.has(p));
         if (myPicks.length !== before) savePicks();
 
         renderLive();
@@ -751,7 +755,7 @@ function renderAdminList() {
             <span class="badge ${it.kind === 'faldgrube' ? 'fald' : 'bp'}">${it.kind === 'faldgrube' ? 'FALDGRUBE' : 'BEST PRACTICE'}</span>
             <div class="meta">
                 <div class="t">${esc(it.title)}</div>
-                <div class="n">${it.personName ? esc(it.personName) + ' · ' : ''}${it.votes} stemmer${it.note ? ' · ' + esc(it.note) : ''}</div>
+                <div class="n">${it.personName ? esc(it.personName) + ' · ' : ''}${displayVotes(it)} stemmer${it.note ? ' · ' + esc(it.note) : ''}</div>
             </div>
             <button data-del="${it.id}">Slet</button>
         </div>`).join('') || '<p style="color:var(--muted)">Ingen emner endnu.</p>';
@@ -853,8 +857,8 @@ async function control(action, confirmMsg) {
         });
         const data = await resp.json();
         if (!data.ok) throw new Error(data.error);
-        if (action === 'reset') { myPicks = []; confirmedPicks = []; savePicks(); toast('Stemmer nulstillet'); }
-        if (action === 'clear') { myPicks = []; confirmedPicks = []; savePicks(); toast('Alle emner ryddet'); }
+        if (action === 'reset') { myPicks = []; savePicks(); toast('Stemmer nulstillet'); }
+        if (action === 'clear') { myPicks = []; savePicks(); toast('Alle emner ryddet'); }
         if (action === 'start') toast('Afstemningen er åben 🟢');
         podiumShown = false;
         poll();

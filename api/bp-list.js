@@ -74,13 +74,19 @@ module.exports = async function handler(req, res) {
         return res.status(405).json({ ok: false, error: 'method_not_allowed' });
     }
 
+    const query = parseQuery(req);
     // personName vises på boblerne for alle. note er kun for facilitatoren (peek).
-    const includePrivate = canPeek(parseQuery(req).peek);
+    const includePrivate = canPeek(query.peek);
+    // 'me': den anmodende vælger udelades fra optællingen — klienten lægger sine
+    // EGNE picks til lokalt, så ens eget tal er øjeblikkeligt korrekt uanset
+    // Blobs propagering (og to skærme viser samme resultat).
+    const me = typeof query.me === 'string' ? query.me : '';
 
     try {
-        const [topics, votes, state] = await Promise.all([
+        const [topics, allVotes, state] = await Promise.all([
             loadByPrefix('bp/topics/'), loadByPrefix('bp/votes/'), loadState()
         ]);
+        const votes = me ? allVotes.filter(v => v.voterId !== me) : allVotes;
 
         const counts = Object.create(null);
         for (const v of votes) {
