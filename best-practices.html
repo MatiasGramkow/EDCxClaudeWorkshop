@@ -288,6 +288,7 @@
                 Du mangler et gyldigt peek-token for at skrive emner ind. Åbn siden med <code>?peek=DIT_TOKEN</code>.
             </div>
             <div id="adminBody" style="display:none">
+                <div id="tokenStatus" style="display:none;border-radius:var(--radius);padding:0.7rem 1rem;margin-bottom:1rem;font-size:0.9rem;font-weight:600"></div>
                 <div class="card">
                     <h3 style="margin-bottom:0.4rem;color:var(--edc-blue)">Tilføj et emne</h3>
                     <p style="color:var(--muted);font-size:0.88rem">Skriv det ind mens deltageren præsenterer (5 min hver). Ét emne = én boble man kan stemme på.</p>
@@ -403,6 +404,30 @@ function toast(msg) {
     clearTimeout(t._tm); t._tm = setTimeout(() => t.classList.remove('show'), 1800);
 }
 function hashCode(s) { let h = 0; for (let i = 0; i < s.length; i++) { h = (h * 31 + s.charCodeAt(i)) | 0; } return Math.abs(h); }
+
+function setTokenStatus(valid) {
+    const el = document.getElementById('tokenStatus');
+    if (!el) return;
+    el.style.display = 'block';
+    if (valid) {
+        el.style.background = '#ecfdf5'; el.style.color = '#065f46'; el.style.border = '1px solid #a7f3d0';
+        el.innerHTML = '✅ Peek-token gyldigt — du kan skrive emner ind og styre afstemningen.';
+    } else {
+        el.style.background = '#fef2f2'; el.style.color = '#991b1b'; el.style.border = '1px solid #fecaca';
+        el.innerHTML = '❌ Peek-token forkert eller mangler — admin-handlinger vil fejle med 403. '
+            + 'Tjek at <code>?peek=…</code> i URL\'en matcher <code>WORKSHOP_PEEK_TOKEN</code> i Vercel.';
+    }
+}
+
+async function validateToken() {
+    try {
+        const resp = await fetch('/api/bp-control', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ peek: PEEK, action: 'ping' })
+        });
+        setTokenStatus(resp.ok);
+    } catch { setTokenStatus(false); }
+}
 
 // ---------- tabs ----------
 document.querySelectorAll('.tab').forEach(tab => {
@@ -609,7 +634,11 @@ async function poll() {
 
         renderLive();
         if (document.getElementById('view-podie').classList.contains('active')) renderPodium(false);
-        if (IS_FAC) renderFacBar();
+        if (IS_FAC) {
+            renderFacBar();
+            // hold admin-listen live (nye emner, opdaterede stemmetal) uden faneskift
+            if (document.getElementById('view-admin').classList.contains('active')) renderAdminList();
+        }
         // auto-hop til podie på alle skærme når der lige er afsluttet
         if (!wasClosed && data.closed && data.items.some(i => i.votes > 0)) {
             switchTo('podie');
@@ -680,9 +709,10 @@ async function addTopic() {
         document.getElementById('titleIn').value = '';
         document.getElementById('noteIn').value = '';
         toast('Emne tilføjet 🫧');
-        poll();
+        await poll();
     } catch (e) {
-        toast('Kunne ikke gemme (' + (e.message || 'fejl') + ')');
+        if (e.message === 'forbidden') { setTokenStatus(false); toast('Forkert peek-token — se banneret'); }
+        else toast('Kunne ikke gemme (' + (e.message || 'fejl') + ')');
     } finally { btn.disabled = false; }
 }
 
@@ -695,7 +725,7 @@ async function delTopic(id) {
         });
         const data = await resp.json();
         if (!data.ok) throw new Error(data.error);
-        poll();
+        await poll();
     } catch { toast('Kunne ikke slette'); }
 }
 
@@ -721,7 +751,10 @@ async function control(action, confirmMsg) {
         if (action === 'reset') { myPicks = []; savePicks(); toast('Stemmer nulstillet'); }
         podiumShown = false;
         poll();
-    } catch (e) { toast('Handling fejlede (' + (e.message || 'fejl') + ')'); }
+    } catch (e) {
+        if (e.message === 'forbidden') { setTokenStatus(false); toast('Forkert peek-token — se banneret'); }
+        else toast('Handling fejlede (' + (e.message || 'fejl') + ')');
+    }
 }
 
 // ========== INIT ==========
@@ -730,12 +763,10 @@ if (IS_FAC) {
     document.getElementById('adminBody').style.display = 'block';
     document.getElementById('adminGate').style.display = 'none';
     initAdmin();
+    validateToken();
     document.getElementById('closeBtn').addEventListener('click', () => control('close', 'Afslut afstemningen og vis podiet?'));
     document.getElementById('openBtn').addEventListener('click', () => control('open'));
     document.getElementById('resetBtn').addEventListener('click', () => control('reset', 'Nulstil ALLE stemmer? Emnerne bevares.'));
-    const obs = new MutationObserver(() => {
-        if (document.getElementById('view-admin').classList.contains('active')) renderAdminList();
-    });
     document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
         if (t.dataset.view === 'admin') renderAdminList();
     }));

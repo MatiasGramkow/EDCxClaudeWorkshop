@@ -88,6 +88,12 @@ module.exports = async function handler(req, res) {
 
     const action = typeof body.action === 'string' ? body.action : '';
 
+    // Token er allerede valideret af canPeek ovenfor — 'ping' lader klienten
+    // tjekke om peek-tokenet er gyldigt uden at ændre noget.
+    if (action === 'ping') {
+        return res.status(200).json({ ok: true, valid: true });
+    }
+
     try {
         const round = await readRound();
         if (action === 'close') {
