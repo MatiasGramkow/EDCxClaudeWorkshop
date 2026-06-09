@@ -405,7 +405,6 @@ function savePicks() { localStorage.setItem('bp_picks', JSON.stringify(myPicks))
 let latest = { items: [], closed: false, voterCount: 0, totalVotes: 0 };
 let positions = {};        // id -> {x,y} så bobler beholder cirka-position mellem polls
 let podiumShown = false;
-let saving = false;
 
 // ---------- helpers ----------
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -542,9 +541,11 @@ function renderLive() {
     });
 }
 
-async function toggleVote(id) {
+// Klik er ALTID øjeblikkelige — vi opdaterer lokalt + render med det samme,
+// og gemmer i baggrunden. Gemningen coalescer til den seneste tilstand, så
+// hurtige klik aldrig blokeres (bp-vote erstatter hele pick-listen).
+function toggleVote(id) {
     if (latest.closed) { toast('Afstemningen er afsluttet'); return; }
-    if (saving) return;
     const idx = myPicks.indexOf(id);
     if (idx >= 0) {
         myPicks.splice(idx, 1);
@@ -553,18 +554,33 @@ async function toggleVote(id) {
         myPicks.push(id);
     }
     savePicks();
-    renderLive();
-    saving = true;
+    renderLive();          // instant feedback
+    scheduleVoteSave();    // baggrund, coalesced
+}
+
+let voteSaveInFlight = false, voteSaveDirty = false;
+async function scheduleVoteSave() {
+    if (voteSaveInFlight) { voteSaveDirty = true; return; }
+    voteSaveInFlight = true;
     try {
-        const resp = await fetch('/api/bp-vote', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ voterId: VOTER_ID, picks: myPicks })
-        });
-        if (!resp.ok) throw new Error('vote_failed');
-        poll();
-    } catch {
-        toast('Kunne ikke gemme stemmen — prøv igen');
-    } finally { saving = false; }
+        do {
+            voteSaveDirty = false;
+            const snapshot = myPicks.slice();
+            try {
+                const resp = await fetch('/api/bp-vote', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ voterId: VOTER_ID, picks: snapshot })
+                });
+                if (!resp.ok) throw new Error('vote_failed');
+            } catch {
+                voteSaveDirty = true;   // prøv igen
+                await new Promise(r => setTimeout(r, 800));
+            }
+        } while (voteSaveDirty);
+    } finally {
+        voteSaveInFlight = false;
+        poll();   // én opdatering af tallene når klikkene har lagt sig
+    }
 }
 
 // ========== PODIUM ==========
