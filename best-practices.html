@@ -118,9 +118,14 @@
     .bubble.fald .bubble-inner { background: linear-gradient(135deg, #ee7a5c, #c1432a); }
     .bubble .ttl {
         font-weight: 700; line-height: 1.18;
-        display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4;
+        display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3;
         overflow: hidden; text-shadow: 0 1px 3px rgba(0,0,0,0.28);
         word-break: break-word;
+    }
+    .bubble .who {
+        font-size: 0.74em; opacity: 0.9; margin-top: 0.3em; font-weight: 600;
+        display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1;
+        overflow: hidden; max-width: 100%;
     }
     .bubble .cnt {
         position: absolute; bottom: 7%; left: 50%; transform: translateX(-50%);
@@ -518,7 +523,7 @@ function renderLive() {
             el.style.setProperty('--dur', (5.5 + (h % 40) / 10) + 's');
             el.style.setProperty('--delay', (-(h % 50) / 10) + 's');
             el.innerHTML = `<div class="bubble-inner"><span class="rankbadge"></span><span class="check">✓</span>`
-                + `<div class="ttl"></div><div class="cnt"></div></div>`;
+                + `<div class="ttl"></div><div class="who"></div><div class="cnt"></div></div>`;
             el.addEventListener('click', () => toggleVote(it.id));
             stage.appendChild(el);
         }
@@ -535,6 +540,7 @@ function renderLive() {
         const fs = Math.max(12, Math.min(18, Math.round(size / 8.5)));
         el.querySelector('.ttl').style.fontSize = fs + 'px';
         el.querySelector('.ttl').textContent = it.title;
+        el.querySelector('.who').textContent = it.personName ? '— ' + it.personName : '';
         el.querySelector('.cnt').textContent = it.votes;
         el.querySelector('.rankbadge').textContent = it.votes > 0 ? ['👑','🥈','🥉'][rank] || '' : '';
     });
@@ -612,6 +618,7 @@ function renderPodium(forceTab) {
             pod.className = 'pod ' + placeClass[i];
             pod.innerHTML = `<div class="medal">${medals[i]}</div>`
                 + `<div class="card-name"><div class="t">${esc(it.title)}</div>`
+                + (it.personName ? `<div class="w">${esc(it.personName)}</div>` : '')
                 + `<div class="v">${it.votes} stemmer</div></div>`
                 + `<div class="bar">${i === 1 ? '1' : (i === 0 ? '2' : '3')}</div>`;
             row.appendChild(pod);

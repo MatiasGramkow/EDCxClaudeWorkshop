@@ -76,8 +76,8 @@ module.exports = async function handler(req, res) {
         return res.status(405).json({ ok: false, error: 'method_not_allowed' });
     }
 
-    // Navne/noter er kun for facilitatoren (peek). Deltagere stemmer anonymt
-    // og får hverken personName eller note — afstemningen handler om emnet.
+    // personName vises på boblerne for alle. note er stadig kun for
+    // facilitatoren (peek) — det er facilitatorens egne detaljer fra oplægget.
     const includePrivate = canPeek(parseQuery(req).peek);
 
     try {
@@ -93,7 +93,7 @@ module.exports = async function handler(req, res) {
 
         const items = topics.map(t => ({
             id: t.id,
-            personName: includePrivate ? (t.personName || '') : '',
+            personName: t.personName || '',
             personSlug: includePrivate ? (t.personSlug || '') : '',
             title: t.title || '',
             note: includePrivate ? (t.note || '') : '',
