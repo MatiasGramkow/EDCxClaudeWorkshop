@@ -106,7 +106,7 @@
         align-items: center;
         justify-content: center;
         text-align: center;
-        padding: 8px;
+        padding: 14% 14% 22%;
         color: #fff;
         box-shadow: 0 6px 22px rgba(0,51,102,0.22);
         animation: drift var(--dur, 7s) ease-in-out var(--delay, 0s) infinite;
@@ -114,11 +114,22 @@
         transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s;
         overflow: hidden;
     }
-    .bubble.bp .bubble-inner { background: linear-gradient(135deg, #0066cc, #00408a); }
-    .bubble.fald .bubble-inner { background: linear-gradient(135deg, #e76f51, #c1432a); }
-    .bubble .ttl { font-weight: 700; line-height: 1.15; }
-    .bubble .who { font-size: 0.72em; opacity: 0.92; margin-top: 2px; }
-    .bubble .cnt { font-size: 1.5em; font-weight: 800; margin-top: 3px; }
+    .bubble.bp .bubble-inner { background: linear-gradient(135deg, #0a73d8, #00408a); }
+    .bubble.fald .bubble-inner { background: linear-gradient(135deg, #ee7a5c, #c1432a); }
+    .bubble .ttl {
+        font-weight: 700; line-height: 1.18;
+        display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4;
+        overflow: hidden; text-shadow: 0 1px 3px rgba(0,0,0,0.28);
+        word-break: break-word;
+    }
+    .bubble .cnt {
+        position: absolute; bottom: 7%; left: 50%; transform: translateX(-50%);
+        background: rgba(255,255,255,0.95); color: var(--edc-blue);
+        min-width: 1.7em; height: 1.7em; padding: 0 0.4em; border-radius: 999px;
+        font-size: 0.9em; font-weight: 800; line-height: 1.7em;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    }
+    .bubble.fald .cnt { color: #c1432a; }
     .bubble.picked .bubble-inner {
         border-color: #fff;
         box-shadow: 0 0 0 5px rgba(40,167,69,0.55), 0 8px 26px rgba(0,51,102,0.3);
@@ -447,20 +458,20 @@ function rankLayout(items) {
     const GA = 137.508 * Math.PI / 180;
     const pos = {};
     items.forEach((it, i) => {
-        const radius = i === 0 ? 0 : (9 + Math.sqrt(i) * 13);
+        const radius = i === 0 ? 0 : (17 + Math.sqrt(i) * 15);
         const ang = i * GA;
         let x = 50 + radius * Math.cos(ang);
-        let y = 50 + radius * Math.sin(ang) * 0.82;
-        x = Math.max(8, Math.min(92, x));
-        y = Math.max(10, Math.min(90, y));
+        let y = 50 + radius * Math.sin(ang) * 0.92;
+        x = Math.max(13, Math.min(87, x));
+        y = Math.max(16, Math.min(82, y));
         pos[it.id] = { x, y };
     });
     return pos;
 }
 
 function bubbleSize(votes, maxVotes) {
-    const base = 84;
-    const span = 116;
+    const base = 132;            // læsbar selv ved 0 stemmer
+    const span = 120;
     const ratio = maxVotes > 0 ? votes / maxVotes : 0;
     return Math.round(base + span * Math.sqrt(ratio));
 }
@@ -505,7 +516,7 @@ function renderLive() {
             el.style.setProperty('--dur', (5.5 + (h % 40) / 10) + 's');
             el.style.setProperty('--delay', (-(h % 50) / 10) + 's');
             el.innerHTML = `<div class="bubble-inner"><span class="rankbadge"></span><span class="check">✓</span>`
-                + `<div class="ttl"></div><div class="who"></div><div class="cnt"></div></div>`;
+                + `<div class="ttl"></div><div class="cnt"></div></div>`;
             el.addEventListener('click', () => toggleVote(it.id));
             stage.appendChild(el);
         }
@@ -519,10 +530,9 @@ function renderLive() {
         el.style.top = p.y + '%';
         el.style.width = size + 'px';
         el.style.height = size + 'px';
-        const fs = Math.max(10, Math.round(size / 9.5));
+        const fs = Math.max(12, Math.min(18, Math.round(size / 8.5)));
         el.querySelector('.ttl').style.fontSize = fs + 'px';
         el.querySelector('.ttl').textContent = it.title;
-        el.querySelector('.who').textContent = it.personName ? '— ' + it.personName : '';
         el.querySelector('.cnt').textContent = it.votes;
         el.querySelector('.rankbadge').textContent = it.votes > 0 ? ['👑','🥈','🥉'][rank] || '' : '';
     });
@@ -583,7 +593,6 @@ function renderPodium(forceTab) {
             pod.className = 'pod ' + placeClass[i];
             pod.innerHTML = `<div class="medal">${medals[i]}</div>`
                 + `<div class="card-name"><div class="t">${esc(it.title)}</div>`
-                + `<div class="w">${it.personName ? esc(it.personName) : ''}</div>`
                 + `<div class="v">${it.votes} stemmer</div></div>`
                 + `<div class="bar">${i === 1 ? '1' : (i === 0 ? '2' : '3')}</div>`;
             row.appendChild(pod);
@@ -612,7 +621,9 @@ function confetti() {
 // ========== POLL ==========
 async function poll() {
     try {
-        const resp = await fetch('/api/bp-list');
+        // facilitatoren sender peek så admin-listen kan vise navne; deltagere får intet navn
+        const url = IS_FAC ? '/api/bp-list?peek=' + encodeURIComponent(PEEK) : '/api/bp-list';
+        const resp = await fetch(url);
         if (!resp.ok) return;
         const data = await resp.json();
         if (!data.ok) return;

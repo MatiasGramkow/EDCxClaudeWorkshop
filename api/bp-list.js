@@ -11,6 +11,24 @@
 
 const { list } = require('@vercel/blob');
 
+function parseQuery(req) {
+    if (req.query && typeof req.query === 'object') return req.query;
+    try {
+        const url = new URL(req.url, 'http://localhost');
+        const q = {};
+        for (const [k, v] of url.searchParams.entries()) q[k] = v;
+        return q;
+    } catch {
+        return {};
+    }
+}
+
+function canPeek(token) {
+    const peekToken = process.env.WORKSHOP_PEEK_TOKEN;
+    const isDeployed = !!process.env.VERCEL_ENV;
+    return isDeployed ? (peekToken && token && token === peekToken) : !!token;
+}
+
 async function fetchJson(url) {
     try {
         const resp = await fetch(url);
@@ -58,6 +76,10 @@ module.exports = async function handler(req, res) {
         return res.status(405).json({ ok: false, error: 'method_not_allowed' });
     }
 
+    // Navne/noter er kun for facilitatoren (peek). Deltagere stemmer anonymt
+    // og får hverken personName eller note — afstemningen handler om emnet.
+    const includePrivate = canPeek(parseQuery(req).peek);
+
     try {
         const [topics, votes, state] = await Promise.all([loadTopics(), loadVotes(), loadState()]);
 
@@ -71,10 +93,10 @@ module.exports = async function handler(req, res) {
 
         const items = topics.map(t => ({
             id: t.id,
-            personName: t.personName || '',
-            personSlug: t.personSlug || '',
+            personName: includePrivate ? (t.personName || '') : '',
+            personSlug: includePrivate ? (t.personSlug || '') : '',
             title: t.title || '',
-            note: t.note || '',
+            note: includePrivate ? (t.note || '') : '',
             kind: t.kind || 'best_practice',
             votes: counts[t.id] || 0
         }));
