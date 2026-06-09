@@ -316,7 +316,10 @@
                     <textarea id="noteIn" maxlength="1000" placeholder="Detaljer / pointe fra oplægget"></textarea>
                     <button class="btn" id="addBtn">Tilføj emne</button>
                 </div>
-                <h3 style="margin:0.5rem 0 0.6rem;color:var(--edc-blue)">Emner (<span id="topicCount">0</span>)</h3>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin:0.5rem 0 0.6rem;gap:1rem">
+                    <h3 style="color:var(--edc-blue);margin:0">Emner (<span id="topicCount">0</span>)</h3>
+                    <button class="btn danger" id="clearBtn" style="margin:0;padding:0.45rem 0.9rem;font-size:0.85rem">🗑 Ryd alle emner</button>
+                </div>
                 <div id="adminList"></div>
             </div>
         </div>
@@ -776,6 +779,7 @@ async function control(action, confirmMsg) {
         const data = await resp.json();
         if (!data.ok) throw new Error(data.error);
         if (action === 'reset') { myPicks = []; savePicks(); toast('Stemmer nulstillet'); }
+        if (action === 'clear') { myPicks = []; savePicks(); toast('Alle emner ryddet'); }
         podiumShown = false;
         poll();
     } catch (e) {
@@ -794,6 +798,7 @@ if (IS_FAC) {
     document.getElementById('closeBtn').addEventListener('click', () => control('close', 'Afslut afstemningen og vis podiet?'));
     document.getElementById('openBtn').addEventListener('click', () => control('open'));
     document.getElementById('resetBtn').addEventListener('click', () => control('reset', 'Nulstil ALLE stemmer? Emnerne bevares.'));
+    document.getElementById('clearBtn').addEventListener('click', () => control('clear', 'Slet ALLE emner OG stemmer? Dette kan ikke fortrydes — brug det til at starte blankt.'));
     document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
         if (t.dataset.view === 'admin') renderAdminList();
     }));

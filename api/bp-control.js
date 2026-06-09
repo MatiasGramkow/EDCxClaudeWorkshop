@@ -54,12 +54,16 @@ async function writeState(closed, round) {
     return record;
 }
 
-async function resetVotes() {
-    const listing = await list({ prefix: 'bp/votes/' });
+async function delByPrefix(prefix) {
+    const listing = await list({ prefix });
     const blobs = Array.isArray(listing && listing.blobs) ? listing.blobs : [];
     const urls = blobs.map(b => b.url).filter(Boolean);
     if (urls.length) await del(urls);
     return urls.length;
+}
+
+async function resetVotes() {
+    return delByPrefix('bp/votes/');
 }
 
 module.exports = async function handler(req, res) {
@@ -108,6 +112,13 @@ module.exports = async function handler(req, res) {
             const deleted = await resetVotes();
             const state = await writeState(false, round + 1); // ny runde → klienter rydder picks
             return res.status(200).json({ ok: true, deleted, ...state });
+        }
+        if (action === 'clear') {
+            // Nulstil ALT: emner + stemmer. Bruges til at starte blankt (fx før d. 16.).
+            const votes = await resetVotes();
+            const topics = await delByPrefix('bp/topics/');
+            const state = await writeState(false, round + 1);
+            return res.status(200).json({ ok: true, deletedVotes: votes, deletedTopics: topics, ...state });
         }
         return res.status(400).json({ ok: false, error: 'invalid_action' });
     } catch (err) {
