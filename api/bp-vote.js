@@ -63,6 +63,7 @@ module.exports = async function handler(req, res) {
             access: 'public',
             addRandomSuffix: false,
             allowOverwrite: true, // samme vælger ombestemmer sig → overskriv egen blob
+            cacheControlMaxAge: 60, // minimum — ellers hænger ændringer i CDN'en i minutter
             contentType: 'application/json'
         });
         return res.status(200).json({ ok: true, picks });

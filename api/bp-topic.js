@@ -123,6 +123,7 @@ module.exports = async function handler(req, res) {
             access: 'public',
             addRandomSuffix: false,
             allowOverwrite: true, // 'update' overskriver samme id
+            cacheControlMaxAge: 60, // minimum — ellers hænger ændringer i CDN'en i minutter
             contentType: 'application/json'
         });
         return res.status(200).json({ ok: true, topic: record });

@@ -33,7 +33,8 @@ async function readState() {
         const listing = await list({ prefix: 'bp/state.json' });
         const blob = (listing.blobs || []).find(b => b.pathname === 'bp/state.json');
         if (!blob) return { open: false, closed: false, round: 0 };
-        const resp = await fetch(blob.url, { cache: 'no-store' });
+        // cache-buster: unik query giver ny CDN-cache-key, så vi læser frisk indhold
+        const resp = await fetch(blob.url + (blob.url.includes('?') ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' });
         if (!resp.ok) return { open: false, closed: false, round: 0 };
         const d = await resp.json();
         return {
@@ -49,7 +50,9 @@ async function readState() {
 async function writeState({ open, closed, round }) {
     const record = { open: !!open, closed: !!closed, closedAt: closed ? new Date().toISOString() : '', round };
     await put('bp/state.json', JSON.stringify(record), {
-        access: 'public', addRandomSuffix: false, allowOverwrite: true, contentType: 'application/json'
+        access: 'public', addRandomSuffix: false, allowOverwrite: true,
+        cacheControlMaxAge: 60, // minimum — ellers hænger åbn/luk i CDN'en i minutter
+        contentType: 'application/json'
     });
     return record;
 }

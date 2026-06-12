@@ -31,7 +31,8 @@ function canPeek(token) {
 
 async function fetchJson(url) {
     try {
-        const resp = await fetch(url, { cache: 'no-store' });
+        // cache-buster: unik query giver ny CDN-cache-key, så vi læser frisk indhold
+        const resp = await fetch(url + (url.includes('?') ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' });
         if (!resp.ok) return null;
         return await resp.json();
     } catch {
