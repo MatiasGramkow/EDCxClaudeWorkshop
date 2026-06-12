@@ -277,12 +277,13 @@
 </style>
 </head>
 <body>
-    <div class="header">
+    <!-- header + faner er kun til facilitatoren (peek) — deltagere ser kun bobler -->
+    <div class="header" id="headerBlock" style="display:none">
         <h1>Best practices &amp; faldgruber</h1>
         <p>Stem på de emner du helst vil have gået i dybden med d. 30. juni. Du har <strong>3 stemmer</strong> — du kan ombestemme dig undervejs. De 3 emner med flest stemmer præsenteres næste gang.</p>
     </div>
 
-    <div class="tabs">
+    <div class="tabs" id="tabsBar" style="display:none">
         <button class="tab active" data-view="live">🫧 Stem</button>
         <button class="tab hidden" data-view="admin" id="adminTab">✍️ Skriv emner ind</button>
         <button class="tab hidden" data-view="podie" id="podieTab">🏆 Podie</button>
@@ -870,6 +871,8 @@ async function control(action, confirmMsg) {
 
 // ========== INIT ==========
 if (IS_FAC) {
+    document.getElementById('headerBlock').style.display = '';
+    document.getElementById('tabsBar').style.display = '';
     document.getElementById('adminTab').classList.remove('hidden');
     document.getElementById('podieTab').classList.remove('hidden');
     document.getElementById('adminBody').style.display = 'block';
