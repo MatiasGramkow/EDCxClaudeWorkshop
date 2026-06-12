@@ -733,9 +733,13 @@ async function poll() {
             // hold admin-listen live (nye emner, opdaterede stemmetal) uden faneskift
             if (document.getElementById('view-admin').classList.contains('active')) renderAdminList();
         }
-        // auto-hop til podie — kun facilitatorens skærm (deltagere ser "tak"-skærm)
-        if (IS_FAC && !wasClosed && data.closed) {
+        // auto-hop til podie når afstemningen lukkes — på ALLE skærme (også deltagere)
+        if (!wasClosed && data.closed) {
             switchTo('podie');
+        }
+        // genåbnet → deltagerne hopper tilbage til stem-visningen
+        if (!IS_FAC && wasClosed && !data.closed) {
+            switchTo('live');
         }
     } catch { /* stille — næste poll prøver igen */ }
 }
