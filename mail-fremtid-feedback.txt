@@ -1,0 +1,30 @@
+Emne: Tak for forløbet — og hjælp os forme de næste workshops (2 min)
+
+Hej allesammen,
+
+Tusind tak for fem rigtig gode uger med Claude Code-workshoppen. I har båret det her ved selv at præsentere på skift — og det er præcis derfor det virkede. Stor tak til alle jer der tog en session.
+
+Nu skal vi beslutte, hvordan vi kører videre — og det vil vi gerne gøre EFTER jeres ønsker, ikke vores gæt. Derfor har vi lavet et kort skema (det tager to minutter):
+
+  https://edc-x-claude-workshops.vercel.app/fremtid
+
+Skemaet er IKKE anonymt — vi beder om dit navn, så vi kan planlægge og følge op efter det I svarer.
+
+Vi spørger blandt andet om:
+- Skal vi tage tidligere emner op igen — og i så fald hvilke?
+- Skal vi prøve en ny form? Fx hvor en af jer præsenterer en rigtig problemstilling og viser, hvordan I løste den med Claude Code.
+- Skal vi køre rene best practices-emner, eller en blanding?
+- Hvor ofte og hvor længe passer det jer? (2 gange om ugen, 1 gang, 1 time, kortere, andet …)
+
+Svar gerne inden udgangen af næste uge, så vi kan lægge en plan på den anden side.
+
+Imens holder vi det i live i #claude-code — del jeres prompts, commands og faldgruber, og spørg løs. Ingen spørgsmål er for små.
+
+Tak igen for jeres energi gennem hele forløbet.
+
+Med venlig hilsen
+
+Matias Gramkow
+Head of edc.dk Development
+EDC Gruppen a/s
+Mynstersvej 5

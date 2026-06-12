@@ -4,6 +4,8 @@
         { "source": "/prompts", "destination": "/prompts.html" },
         { "source": "/feedback", "destination": "/feedback.html" },
         { "source": "/feedback-results", "destination": "/feedback-results.html" },
+        { "source": "/fremtid", "destination": "/fremtid.html" },
+        { "source": "/fremtid-resultater", "destination": "/fremtid-resultater.html" },
         { "source": "/best-practices", "destination": "/best-practices.html" },
         { "source": "/demo", "destination": "https://edcxclaudeworkshop-demo.vercel.app/demo" },
         { "source": "/demo/:path*", "destination": "https://edcxclaudeworkshop-demo.vercel.app/demo/:path*" }

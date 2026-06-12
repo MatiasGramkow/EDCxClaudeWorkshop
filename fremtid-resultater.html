@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Fremtids-skema — facilitator-view</title>
+    <style>
+        :root {
+            --edc-blue: #003366;
+            --edc-accent: #0066cc;
+            --edc-green: #28a745;
+            --edc-red: #dc3545;
+            --bg: #f7f8fa;
+            --card: #ffffff;
+            --text: #1a1a2e;
+            --muted: #6b7280;
+            --border: #e2e8f0;
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--edc-blue) 0%, #005599 100%);
+            color: white;
+            padding: 2rem 2rem 1.5rem;
+            text-align: center;
+        }
+
+        .header h1 { font-size: 1.6rem; font-weight: 700; }
+        .header p { font-size: 0.95rem; opacity: 0.85; margin-top: 0.4rem; }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+        .gate {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 2rem;
+            border: 1px solid var(--border);
+            max-width: 480px;
+            margin: 2rem auto;
+        }
+
+        .gate label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+
+        .gate input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .gate button {
+            width: 100%;
+            background: var(--edc-blue);
+            color: white;
+            border: none;
+            padding: 0.85rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .gate .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 0.6rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .gate .error.show { display: block; }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 1.25rem 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .stat-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--edc-blue); }
+        .stat-meta { font-size: 0.85rem; color: var(--muted); margin-top: 0.2rem; }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.45rem;
+            font-size: 0.88rem;
+        }
+
+        .bar-label { flex: 0 0 200px; color: var(--text); }
+
+        .bar-track {
+            flex: 1;
+            background: #f1f5f9;
+            border-radius: 4px;
+            height: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            background: var(--edc-accent);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.25s;
+        }
+
+        .bar-count {
+            flex: 0 0 30px;
+            text-align: right;
+            color: var(--muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .section-heading {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            margin: 2rem 0 0.75rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+
+        .grid-2 .section-heading { margin-top: 0; }
+
+        .text-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--edc-accent);
+        }
+
+        .text-card.neutral { border-left-color: var(--muted); }
+
+        .text-card .meta {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-bottom: 0.35rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-weight: 600;
+        }
+
+        .text-card p { color: var(--text); white-space: pre-wrap; font-size: 0.95rem; }
+
+        .resp-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 1.1rem 1.4rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--border);
+        }
+
+        .resp-card .name {
+            font-weight: 700;
+            color: var(--edc-blue);
+            font-size: 1.05rem;
+        }
+
+        .resp-card .when { font-size: 0.78rem; color: var(--muted); font-weight: 400; }
+
+        .chips { margin-top: 0.6rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+        .chip {
+            background: #eef6ff;
+            color: var(--edc-blue);
+            border: 1px solid #d6e6fb;
+            border-radius: 999px;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .chip .k { color: var(--muted); font-weight: 600; margin-right: 0.25rem; }
+
+        .resp-card .free { margin-top: 0.6rem; font-size: 0.9rem; }
+        .resp-card .free .q { color: var(--muted); font-weight: 600; }
+        .resp-card .free p { white-space: pre-wrap; margin-bottom: 0.4rem; }
+
+        .empty { color: var(--muted); font-style: italic; padding: 1rem 0; }
+        .loading { text-align: center; color: var(--muted); padding: 3rem 0; }
+        .hidden { display: none; }
+
+        @media (max-width: 600px) {
+            .header { padding: 1.5rem 1rem 1.2rem; }
+            .header h1 { font-size: 1.3rem; }
+            .container { padding: 1.25rem 1rem 3rem; }
+            .bar-label { flex: 0 0 140px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Fremtids-skema — facilitator-view</h1>
+        <p>Navngivne svar om fremtidens workshops. Kun synligt med peek-token.</p>
+    </div>
+
+    <div class="container">
+        <div id="gate" class="gate">
+            <div class="error" id="gateError"></div>
+            <label for="peekToken">Peek-token</label>
+            <input type="password" id="peekToken" autocomplete="off" placeholder="WORKSHOP_PEEK_TOKEN">
+            <button id="gateBtn">Vis svar</button>
+        </div>
+
+        <div id="loading" class="loading hidden">Henter svar...</div>
+
+        <div id="results" class="hidden">
+            <div class="summary-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Antal svar</div>
+                    <div class="stat-value" id="statCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Vil prøve en ny form</div>
+                    <div class="stat-value" id="statNewFormat">–</div>
+                    <div class="stat-meta">svarede "ja"</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Mest ønskede frekvens</div>
+                    <div class="stat-value" id="statFreq" style="font-size:1.2rem;">–</div>
+                    <div class="stat-meta" id="statFreqMeta"></div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <div class="section-heading">Tidligere emner op igen?</div>
+                    <div class="stat-card" id="revisitCard"></div>
+                </div>
+                <div>
+                    <div class="section-heading">Ny form?</div>
+                    <div class="stat-card" id="newFormatCard"></div>
+                </div>
+                <div>
+                    <div class="section-heading">Real-life cases? (hvis ny form)</div>
+                    <div class="stat-card" id="realLifeCard"></div>
+                </div>
+                <div>
+                    <div class="section-heading">Hvor ofte?</div>
+                    <div class="stat-card" id="frequencyCard"></div>
+                </div>
+                <div>
+                    <div class="section-heading">Hvor længe?</div>
+                    <div class="stat-card" id="durationCard"></div>
+                </div>
+            </div>
+
+            <div class="section-heading">Hvilke emner skal op igen?</div>
+            <div class="stat-card" id="topicsCard"></div>
+
+            <div class="section-heading">Andre emner at gentage (fritekst)</div>
+            <div id="revisitTopicsOtherList"></div>
+
+            <div class="section-heading">Idéer til ny form</div>
+            <div id="realLifeNoteList"></div>
+
+            <div class="section-heading">Om frekvens / længde / format</div>
+            <div id="formatNoteList"></div>
+
+            <div class="section-heading">Ønskede nye emner</div>
+            <div id="topicsWantedList"></div>
+
+            <div class="section-heading">Andet</div>
+            <div id="otherList"></div>
+
+            <div class="section-heading">Alle svar (navngivne)</div>
+            <div id="respList"></div>
+        </div>
+    </div>
+
+    <script>
+        const REVISIT_LABELS = { ja: 'Ja', maaske: 'Måske', nej: 'Nej' };
+        const NEW_FORMAT_LABELS = { ja: 'Ja, prøv nyt', ved_ikke: 'Ved ikke', nej: 'Nej, behold' };
+        const REAL_LIFE_LABELS = { ja: 'Ja, real-life', blanding: 'En blanding', nej: 'Nej' };
+        const FREQUENCY_LABELS = { '2x_uge': '2 gange om ugen', '1x_uge': '1 gang om ugen', hver_14_dag: 'Hver 14. dag', '1x_maaned': '1 gang om måneden', andet: 'Andet (se note)' };
+        const DURATION_LABELS = { '30': '30 min', '45': '45 min', '60': '1 time', '90': '1,5 time', andet: 'Andet (se note)' };
+        const TOPIC_LABELS = {
+            prompts: 'Gode vs. dårlige prompts',
+            plan_mode: 'Plan mode & permissions',
+            kontekst: 'Kontekst, /clear & @-syntaks',
+            claude_md: 'CLAUDE.md & hukommelse',
+            subagents: 'Subagents',
+            git: 'Git, commits & review (PAT)',
+            skills: 'Skills, commands & model-tuning',
+            mcp_hooks: 'MCP & hooks',
+            best_practices: 'Best practices & faldgruber'
+        };
+
+        const gate = document.getElementById('gate');
+        const gateBtn = document.getElementById('gateBtn');
+        const gateInput = document.getElementById('peekToken');
+        const gateError = document.getElementById('gateError');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+
+        function showGateError(msg) { gateError.textContent = msg; gateError.classList.add('show'); }
+
+        async function fetchResults(token) {
+            gateError.classList.remove('show');
+            gate.classList.add('hidden');
+            loading.classList.remove('hidden');
+
+            try {
+                const resp = await fetch(`/api/future-list?peek=${encodeURIComponent(token)}`);
+                const data = await resp.json();
+                if (!resp.ok || !data.ok) {
+                    loading.classList.add('hidden');
+                    gate.classList.remove('hidden');
+                    if (resp.status === 403) showGateError('Forkert peek-token.');
+                    else showGateError('Kunne ikke hente svar (' + (data.error || resp.status) + ').');
+                    return;
+                }
+                render(data.items || []);
+                loading.classList.add('hidden');
+                results.classList.remove('hidden');
+                try { sessionStorage.setItem('futurePeek', token); } catch {}
+            } catch (err) {
+                loading.classList.add('hidden');
+                gate.classList.remove('hidden');
+                showGateError('Netværksfejl.');
+            }
+        }
+
+        function renderBars(container, labels, items, field) {
+            container.innerHTML = '';
+            const counts = {};
+            for (const k of Object.keys(labels)) counts[k] = 0;
+            for (const item of items) {
+                if (counts[item[field]] != null) counts[item[field]]++;
+            }
+            const total = items.length || 1;
+            for (const [key, label] of Object.entries(labels)) {
+                const count = counts[key];
+                const pct = Math.round((count / total) * 100);
+                const row = document.createElement('div');
+                row.className = 'bar-row';
+                row.innerHTML = `
+                    <div class="bar-label">${label}</div>
+                    <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+                    <div class="bar-count">${count}</div>
+                `;
+                container.appendChild(row);
+            }
+        }
+
+        function renderTopicBars(container, items) {
+            container.innerHTML = '';
+            const counts = {};
+            for (const k of Object.keys(TOPIC_LABELS)) counts[k] = 0;
+            for (const item of items) {
+                for (const t of (item.revisit_topics || [])) {
+                    if (counts[t] != null) counts[t]++;
+                }
+            }
+            const total = items.length || 1;
+            const sorted = Object.entries(TOPIC_LABELS).sort((a, b) => counts[b[0]] - counts[a[0]]);
+            for (const [key, label] of sorted) {
+                const count = counts[key];
+                const pct = Math.round((count / total) * 100);
+                const row = document.createElement('div');
+                row.className = 'bar-row';
+                row.innerHTML = `
+                    <div class="bar-label">${label}</div>
+                    <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+                    <div class="bar-count">${count}</div>
+                `;
+                container.appendChild(row);
+            }
+        }
+
+        function renderTextList(container, items, field, variant) {
+            container.innerHTML = '';
+            const filtered = items.filter(i => i[field] && i[field].trim().length > 0);
+            if (filtered.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'empty';
+                empty.textContent = 'Ingen svar endnu.';
+                container.appendChild(empty);
+                return;
+            }
+            for (const item of filtered) {
+                const card = document.createElement('div');
+                card.className = 'text-card' + (variant ? ' ' + variant : '');
+                card.innerHTML = `<div class="meta"></div><p></p>`;
+                card.querySelector('.meta').textContent =
+                    [item.name, (item.submittedAt || '').slice(0, 10)].filter(Boolean).join(' · ');
+                card.querySelector('p').textContent = item[field];
+                container.appendChild(card);
+            }
+        }
+
+        function topCount(labels, items, field) {
+            const counts = {};
+            for (const k of Object.keys(labels)) counts[k] = 0;
+            for (const item of items) if (counts[item[field]] != null) counts[item[field]]++;
+            let bestKey = null, bestN = -1;
+            for (const [k, n] of Object.entries(counts)) if (n > bestN) { bestN = n; bestKey = k; }
+            return { key: bestKey, n: bestN, label: bestKey ? labels[bestKey] : '–' };
+        }
+
+        function render(items) {
+            document.getElementById('statCount').textContent = items.length;
+
+            const yesNewFormat = items.filter(i => i.new_format === 'ja').length;
+            document.getElementById('statNewFormat').textContent =
+                items.length ? `${yesNewFormat}/${items.length}` : '–';
+
+            const freq = topCount(FREQUENCY_LABELS, items, 'frequency');
+            document.getElementById('statFreq').textContent = items.length ? freq.label : '–';
+            document.getElementById('statFreqMeta').textContent =
+                items.length ? `${freq.n} af ${items.length} svar` : '';
+
+            renderBars(document.getElementById('revisitCard'), REVISIT_LABELS, items, 'revisit');
+            renderBars(document.getElementById('newFormatCard'), NEW_FORMAT_LABELS, items, 'new_format');
+            renderBars(document.getElementById('realLifeCard'), REAL_LIFE_LABELS, items, 'real_life');
+            renderBars(document.getElementById('frequencyCard'), FREQUENCY_LABELS, items, 'frequency');
+            renderBars(document.getElementById('durationCard'), DURATION_LABELS, items, 'duration');
+            renderTopicBars(document.getElementById('topicsCard'), items);
+
+            renderTextList(document.getElementById('revisitTopicsOtherList'), items, 'revisit_topics_other', '');
+            renderTextList(document.getElementById('realLifeNoteList'), items, 'real_life_note', '');
+            renderTextList(document.getElementById('formatNoteList'), items, 'format_note', '');
+            renderTextList(document.getElementById('topicsWantedList'), items, 'topics_wanted', '');
+            renderTextList(document.getElementById('otherList'), items, 'other', 'neutral');
+
+            renderResponses(document.getElementById('respList'), items);
+        }
+
+        function renderResponses(container, items) {
+            container.innerHTML = '';
+            if (items.length === 0) {
+                container.innerHTML = '<div class="empty">Ingen svar endnu.</div>';
+                return;
+            }
+            for (const item of items) {
+                const card = document.createElement('div');
+                card.className = 'resp-card';
+
+                const head = document.createElement('div');
+                const nameEl = document.createElement('span');
+                nameEl.className = 'name';
+                nameEl.textContent = item.name || '(uden navn)';
+                head.appendChild(nameEl);
+                if (item.team) {
+                    const teamEl = document.createElement('span');
+                    teamEl.className = 'when';
+                    teamEl.textContent = '  ·  ' + item.team;
+                    head.appendChild(teamEl);
+                }
+                const whenEl = document.createElement('span');
+                whenEl.className = 'when';
+                whenEl.textContent = '  ·  ' + (item.submittedAt || '').replace('T', ' ').slice(0, 16);
+                head.appendChild(whenEl);
+                card.appendChild(head);
+
+                const chips = document.createElement('div');
+                chips.className = 'chips';
+                const pairs = [
+                    ['Tidl. emner', REVISIT_LABELS[item.revisit]],
+                    ['Ny form', NEW_FORMAT_LABELS[item.new_format]],
+                    ['Real-life', REAL_LIFE_LABELS[item.real_life]],
+                    ['Frekvens', FREQUENCY_LABELS[item.frequency]],
+                    ['Længde', DURATION_LABELS[item.duration]]
+                ];
+                for (const [k, v] of pairs) {
+                    if (!v) continue;
+                    const chip = document.createElement('span');
+                    chip.className = 'chip';
+                    chip.innerHTML = `<span class="k">${k}</span>`;
+                    chip.appendChild(document.createTextNode(v));
+                    chips.appendChild(chip);
+                }
+                card.appendChild(chips);
+
+                if ((item.revisit_topics || []).length) {
+                    const topicChips = document.createElement('div');
+                    topicChips.className = 'chips';
+                    for (const t of item.revisit_topics) {
+                        const chip = document.createElement('span');
+                        chip.className = 'chip';
+                        chip.textContent = TOPIC_LABELS[t] || t;
+                        topicChips.appendChild(chip);
+                    }
+                    card.appendChild(topicChips);
+                }
+
+                const freeFields = [
+                    ['Andre emner (gentag)', item.revisit_topics_other],
+                    ['Idé til form', item.real_life_note],
+                    ['Andet frekvens', item.frequency_other],
+                    ['Anden længde', item.duration_other],
+                    ['Frekvens/format', item.format_note],
+                    ['Ønskede emner', item.topics_wanted],
+                    ['Andet', item.other]
+                ].filter(([, v]) => v && v.trim().length);
+                if (freeFields.length) {
+                    const free = document.createElement('div');
+                    free.className = 'free';
+                    for (const [q, v] of freeFields) {
+                        const qEl = document.createElement('div');
+                        qEl.className = 'q';
+                        qEl.textContent = q + ':';
+                        const pEl = document.createElement('p');
+                        pEl.textContent = v;
+                        free.appendChild(qEl);
+                        free.appendChild(pEl);
+                    }
+                    card.appendChild(free);
+                }
+
+                container.appendChild(card);
+            }
+        }
+
+        gateBtn.addEventListener('click', () => {
+            const v = gateInput.value.trim();
+            if (!v) return showGateError('Indtast peek-token.');
+            fetchResults(v);
+        });
+        gateInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') gateBtn.click(); });
+
+        const urlToken = new URLSearchParams(window.location.search).get('peek');
+        let cachedToken = null;
+        try { cachedToken = sessionStorage.getItem('futurePeek'); } catch {}
+        if (urlToken) fetchResults(urlToken);
+        else if (cachedToken) fetchResults(cachedToken);
+    </script>
+</body>
+</html>
