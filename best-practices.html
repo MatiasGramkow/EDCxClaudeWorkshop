@@ -162,9 +162,9 @@
         100% { transform: translate(0, 0); }
     }
 
-    /* På mobil dur bobleskyen ikke — så vi stabler boblerne lodret efter
-       hinanden (flest stemmer øverst via flex-order, sat i renderLive). */
-    @media (max-width: 640px) {
+    /* På mindre skærme dur bobleskyen ikke (for lidt plads) — så vi stabler
+       boblerne lodret efter hinanden (flest stemmer øverst via flex-order). */
+    @media (max-width: 1024px) {
         #stage.stacked {
             height: auto;
             min-height: 0;
@@ -520,29 +520,59 @@ document.querySelectorAll('.tab').forEach(tab => {
 
 // ========== LIVE / BUBBLES ==========
 function rankLayout(items) {
-    // Placér efter rang: #1 i midten, resten i en phyllotaxis-spiral (solsikke) udad →
-    // bobler "flyver" hen til nye pladser når stemmetallet ændrer rækkefølgen.
-    // Radius normaliseres til scenens FAKTISKE størrelse, så yderste boble lige akkurat
-    // er indenfor kanten — uanset antal emner eller skærmbredde. Tidligere voksede
-    // radius ubegrænset og blev clampet, så overskydende bobler klumpede langs kanten.
-    const GA = 137.508 * Math.PI / 180;
-    const pos = {};
-    const n = items.length;
+    // Kollisionsfri pakning via kraft-relaxation (som d3 force-collide): boblerne
+    // skubbes fra hinanden til intet overlapper, og holdes inde i scenen. Tidligere
+    // forsøg (phyllotaxis / fladtrykt spiral) fordelte kun efter areal og lod store
+    // bobler overlappe i midten på en bred skærm.
+    //   KOLD start (1. render): fuld relaxation med svag tyngdekraft → kompakt,
+    //     centreret klynge.
+    //   VARM opdatering (resten): kun kollisions-løsning seedet fra forrige
+    //     placering → ~0 flytning når intet overlapper (ingen jitter pr. poll), og
+    //     boblerne glider blødt på plads når stemmetal ændrer deres størrelse.
     const stage = document.getElementById('stage');
     const W = stage.offsetWidth || 1000;
     const H = stage.offsetHeight || 500;
-    // margin holder de yderste (små, lav-stemte) bobler helt inde i scenen
-    const margin = 80;
-    const halfW = Math.max(60, W / 2 - margin);
-    const halfH = Math.max(60, H / 2 - margin);
-    items.forEach((it, i) => {
-        const frac = n > 1 ? i / (n - 1) : 0;
-        const r = Math.sqrt(frac);          // 0..1 → jævn fyldning af disken, ingen klumper
-        const ang = i * GA;
-        const x = 50 + (r * Math.cos(ang) * halfW) / W * 100;
-        const y = 50 + (r * Math.sin(ang) * halfH) / H * 100;
-        pos[it.id] = { x, y };
+    const cx = W / 2, cy = H / 2, PAD = 10, GA = 137.508 * Math.PI / 180;
+    const n = items.length;
+    const maxVotes = items.reduce((m, it) => Math.max(m, displayVotes(it)), 0);
+    const radii = items.map(it => bubbleSize(displayVotes(it), maxVotes) / 2);
+
+    const prev = positions;                          // forrige placering (i %)
+    const warm = Object.keys(prev).length > 0;
+
+    // startpositioner: genbrug forrige hvor muligt (blød overgang), ellers
+    // en phyllotaxis-spredning som udgangspunkt for relaxationen.
+    const p = items.map((it, i) => {
+        const seed = prev[it.id];
+        if (seed) return { x: seed.x / 100 * W, y: seed.y / 100 * H };
+        const rad = Math.sqrt(i / Math.max(1, n - 1)), ang = i * GA;
+        return { x: cx + Math.cos(ang) * rad * (W / 2 - radii[i] - 10),
+                 y: cy + Math.sin(ang) * rad * (H / 2 - radii[i] - 10) };
     });
+
+    const ITER = warm ? 90 : 500;
+    for (let it = 0; it < ITER; it++) {
+        if (!warm) {                                  // kun kold start trækker mod centrum
+            const g = it < ITER * 0.6 ? 0.006 : 0.0015;
+            for (let i = 0; i < n; i++) { p[i].x += (cx - p[i].x) * g * 0.6; p[i].y += (cy - p[i].y) * g; }
+        }
+        for (let pass = 0; pass < 2; pass++)
+            for (let i = 0; i < n; i++)
+                for (let j = i + 1; j < n; j++) {
+                    let dx = p[j].x - p[i].x, dy = p[j].y - p[i].y;
+                    const d = Math.hypot(dx, dy) || 0.01;
+                    const min = radii[i] + radii[j] + PAD;
+                    if (d < min) { const s = (min - d) / 2 / d; dx *= s; dy *= s; p[i].x -= dx; p[i].y -= dy; p[j].x += dx; p[j].y += dy; }
+                }
+        for (let i = 0; i < n; i++) {                 // hold inde i scenen
+            const r = radii[i];
+            p[i].x = Math.max(r, Math.min(W - r, p[i].x));
+            p[i].y = Math.max(r, Math.min(H - r, p[i].y));
+        }
+    }
+
+    const pos = {};
+    items.forEach((it, i) => { pos[it.id] = { x: p[i].x / W * 100, y: p[i].y / H * 100 }; });
     return pos;
 }
 
@@ -595,7 +625,7 @@ function renderLive() {
 
     // På mobil stabler vi boblerne lodret (flow + flex-order) i stedet for den
     // absolutte sky, som klumper på en smal skærm.
-    const isMobile = window.matchMedia('(max-width: 640px)').matches;
+    const isMobile = window.matchMedia('(max-width: 1024px)').matches;
     stage.classList.toggle('stacked', isMobile);
 
     const seen = new Set();
