@@ -161,6 +161,29 @@
         75%  { transform: translate(4px, 8px); }
         100% { transform: translate(0, 0); }
     }
+
+    /* På mobil dur bobleskyen ikke — så vi stabler boblerne lodret efter
+       hinanden (flest stemmer øverst via flex-order, sat i renderLive). */
+    @media (max-width: 640px) {
+        #stage.stacked {
+            height: auto;
+            min-height: 0;
+            overflow: visible;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            padding: 8px 0 28px;
+        }
+        #stage.stacked .bubble {
+            position: static;       /* ignorér inline left/top fra renderLive */
+            transform: none;        /* drop absolut-centreringen */
+            margin: 0;
+        }
+        #stage.stacked .bubble-inner {
+            animation: none;        /* ingen drift-jitter i en liste */
+        }
+    }
     #emptyHint {
         position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
         color: var(--muted); font-size: 1.05rem; text-align: center; padding: 2rem;
@@ -280,7 +303,7 @@
     <!-- header + faner er kun til facilitatoren (peek) — deltagere ser kun bobler -->
     <div class="header" id="headerBlock" style="display:none">
         <h1>Best practices &amp; faldgruber</h1>
-        <p>Stem på de emner du helst vil have gået i dybden med d. 30. juni. Du har <strong>3 stemmer</strong> — du kan ombestemme dig undervejs. De 3 emner med flest stemmer præsenteres næste gang.</p>
+        <p>Stem på de emner du helst vil have gået i dybden med d. 30. juni. Stem på <strong>så mange du vil</strong> (én stemme pr. boble) — du kan ombestemme dig undervejs. De 3 emner med flest stemmer præsenteres næste gang.</p>
     </div>
 
     <div class="tabs" id="tabsBar" style="display:none">
@@ -419,7 +442,7 @@ const PARTICIPANTS = [
     {slug:"esengul",name:"Esengül Yildirim"}
 ];
 
-const MAX_VOTES = 3;
+const MAX_PICKS = 200; // sanity-loft (matcher serveren) — ingen stemme-budget
 const PEEK = new URLSearchParams(location.search).get('peek') || '';
 const IS_FAC = !!PEEK;
 
@@ -436,7 +459,7 @@ const VOTER_ID = getVoterId();
 
 // ---- lokal stemme-state ----
 function loadPicks() {
-    try { const p = JSON.parse(localStorage.getItem('bp_picks') || '[]'); return Array.isArray(p) ? p.slice(0, MAX_VOTES) : []; }
+    try { const p = JSON.parse(localStorage.getItem('bp_picks') || '[]'); return Array.isArray(p) ? p.slice(0, MAX_PICKS) : []; }
     catch { return []; }
 }
 let myPicks = loadPicks();
@@ -553,16 +576,15 @@ function renderLive() {
         ? `<strong>${items.length}</strong> emner · <strong>${latest.voterCount + meVoted}</strong> har stemt · <strong>${latest.totalVotes + myPicks.length}</strong> stemmer afgivet`
         : '';
 
-    // budget-bar
+    // stemme-status: ubegrænset antal, men kun én pr. boble
     const used = myPicks.length;
-    const left = MAX_VOTES - used;
     const bb = document.getElementById('budgetBar');
     if (latest.closed) {
         bb.innerHTML = '🔒 Afstemningen er afsluttet';
+    } else if (used > 0) {
+        bb.innerHTML = `Du har stemt på <strong>${used}</strong> ${used === 1 ? 'emne' : 'emner'} &nbsp; <span style="color:var(--muted);font-size:0.9rem">(tryk på en boble for at stemme — så mange du vil, én stemme pr. boble)</span>`;
     } else {
-        let dots = '';
-        for (let i = 0; i < MAX_VOTES; i++) dots += `<span class="dot ${i < used ? 'full' : 'empty'}"></span>`;
-        bb.innerHTML = `Dine stemmer: ${dots} &nbsp; <span style="color:var(--muted);font-size:0.9rem">(${left} tilbage — tryk på en boble)</span>`;
+        bb.innerHTML = `Tryk på boblerne for at stemme — <strong>så mange du vil</strong>, men kun én stemme pr. boble.`;
     }
 
     document.getElementById('emptyHint').style.display = items.length ? 'none' : 'flex';
@@ -570,6 +592,11 @@ function renderLive() {
 
     const maxVotes = items.reduce((m, it) => Math.max(m, displayVotes(it)), 0);
     positions = rankLayout(items);
+
+    // På mobil stabler vi boblerne lodret (flow + flex-order) i stedet for den
+    // absolutte sky, som klumper på en smal skærm.
+    const isMobile = window.matchMedia('(max-width: 640px)').matches;
+    stage.classList.toggle('stacked', isMobile);
 
     const seen = new Set();
     items.forEach((it, rank) => {
@@ -596,8 +623,14 @@ function renderLive() {
         el.classList.toggle('r0', rank === 0 && dv > 0);
         el.classList.toggle('r1', rank === 1 && dv > 0);
         el.classList.toggle('r2', rank === 2 && dv > 0);
-        el.style.left = p.x + '%';
-        el.style.top = p.y + '%';
+        el.style.order = rank;            // mobil-stak: flest stemmer øverst (no-op på desktop)
+        if (isMobile) {
+            el.style.left = '';
+            el.style.top = '';
+        } else {
+            el.style.left = p.x + '%';
+            el.style.top = p.y + '%';
+        }
         el.style.width = size + 'px';
         el.style.height = size + 'px';
         const fs = Math.max(12, Math.min(18, Math.round(size / 8.5)));
@@ -620,10 +653,10 @@ function toggleVote(id) {
     if (latest.closed) { toast('Afstemningen er afsluttet'); return; }
     const idx = myPicks.indexOf(id);
     if (idx >= 0) {
-        myPicks.splice(idx, 1);
+        myPicks.splice(idx, 1);          // klik igen = fjern egen stemme
     } else {
-        if (myPicks.length >= MAX_VOTES) { toast('Du har brugt alle 3 stemmer — fjern én først'); return; }
-        myPicks.push(id);
+        if (myPicks.length >= MAX_PICKS) { toast('Du har stemt på alle emner'); return; }
+        myPicks.push(id);                // én stemme pr. boble (ingen dubletter)
     }
     savePicks();
     renderLive();          // instant feedback
