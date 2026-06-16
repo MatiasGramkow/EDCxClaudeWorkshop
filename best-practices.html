@@ -497,17 +497,27 @@ document.querySelectorAll('.tab').forEach(tab => {
 
 // ========== LIVE / BUBBLES ==========
 function rankLayout(items) {
-    // Placér efter rang: #1 nær midten, resten i en spiral udad → bobler "flyver"
-    // hen til nye pladser når stemmetallet ændrer rækkefølgen.
+    // Placér efter rang: #1 i midten, resten i en phyllotaxis-spiral (solsikke) udad →
+    // bobler "flyver" hen til nye pladser når stemmetallet ændrer rækkefølgen.
+    // Radius normaliseres til scenens FAKTISKE størrelse, så yderste boble lige akkurat
+    // er indenfor kanten — uanset antal emner eller skærmbredde. Tidligere voksede
+    // radius ubegrænset og blev clampet, så overskydende bobler klumpede langs kanten.
     const GA = 137.508 * Math.PI / 180;
     const pos = {};
+    const n = items.length;
+    const stage = document.getElementById('stage');
+    const W = stage.offsetWidth || 1000;
+    const H = stage.offsetHeight || 500;
+    // margin holder de yderste (små, lav-stemte) bobler helt inde i scenen
+    const margin = 80;
+    const halfW = Math.max(60, W / 2 - margin);
+    const halfH = Math.max(60, H / 2 - margin);
     items.forEach((it, i) => {
-        const radius = i === 0 ? 0 : (17 + Math.sqrt(i) * 15);
+        const frac = n > 1 ? i / (n - 1) : 0;
+        const r = Math.sqrt(frac);          // 0..1 → jævn fyldning af disken, ingen klumper
         const ang = i * GA;
-        let x = 50 + radius * Math.cos(ang);
-        let y = 50 + radius * Math.sin(ang) * 0.92;
-        x = Math.max(13, Math.min(87, x));
-        y = Math.max(16, Math.min(82, y));
+        const x = 50 + (r * Math.cos(ang) * halfW) / W * 100;
+        const y = 50 + (r * Math.sin(ang) * halfH) / H * 100;
         pos[it.id] = { x, y };
     });
     return pos;
